@@ -16,4 +16,8 @@ private:
 	Ui::LoadSchemaClass ui;
 };
 
+class OptimaView : public QGraphicsView
+{
+	Q_OBJECT;
+}
 #endif // LOADSCHEMA_H
