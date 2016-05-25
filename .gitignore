@@ -29,3 +29,5 @@ _ReSharper*/
 $tf*/
 LoadSchema.sdf
 *.sdf
+LoadSchema.opensdf
+ipch/loadschema-76f93f9a/loadschema-a7de2ebd.ipch

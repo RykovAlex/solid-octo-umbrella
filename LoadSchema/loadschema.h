@@ -12,12 +12,11 @@ public:
 	LoadSchema(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~LoadSchema();
 
+public slots:
+	void loadXml();
+
 private:
 	Ui::LoadSchemaClass ui;
 };
 
-class OptimaView : public QGraphicsView
-{
-	Q_OBJECT;
-}
 #endif // LOADSCHEMA_H
