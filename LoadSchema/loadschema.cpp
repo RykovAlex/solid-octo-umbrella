@@ -6,7 +6,7 @@ LoadSchema::LoadSchema(QWidget *parent, Qt::WFlags flags)
 {
 	ui.setupUi(this);
 
-	ui.action->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+	//ui.action->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
 }
 
 LoadSchema::~LoadSchema()
