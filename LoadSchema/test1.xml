@@ -1,0 +1,716 @@
+﻿<Schema>
+  <Noworkspace>
+    <BackColor>c0c0c0ff</BackColor>
+    <UserProperties></UserProperties>
+    <ProgName>OptimaDrawEd</ProgName>
+    <ProgVersion>140</ProgVersion>
+  </Noworkspace>
+  <Workspace>
+    <UserProperties></UserProperties>
+    <BackColor>ffffffff</BackColor>
+    <PaintLine>b0c4de4c</PaintLine>
+    <TypeLine>dotdash</TypeLine>
+    <RealStep>10</RealStep>
+    <VirtualStep>5</VirtualStep>
+    <Scale>100</Scale>
+    <Center>1421:1298</Center>
+    <Lhdot>1841:1595</Lhdot>
+    <ViewMode>0</ViewMode>
+    <DrawingConnector>no</DrawingConnector>
+    <CrossLineEnable>0</CrossLineEnable>
+  </Workspace>
+  <Figure>
+    <ID>a7de4bb5-72a3-4b9b-b0c0-c095fbceeb87</ID>
+    <PaintLine>ff0000ff</PaintLine>
+    <ThicknessLine>4</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>ffe4e1ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>60</Order>
+    <PosCoordinate>1650:1445</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>0</PictureHeight>
+    <PictureWidth>0</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>1</DropShadow>
+    <Picture></Picture>
+    <PictureCoordinate>0:0</PictureCoordinate>
+    <ScalePicToOwner>1</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>1</BiDirectResize>
+    <StructureDot>
+      <dot>30:15</dot>
+      <dot>29.49:18.88</dot>
+      <dot>27.99:22.5</dot>
+      <dot>25.61:25.61</dot>
+      <dot>22.5:27.99</dot>
+      <dot>18.88:29.49</dot>
+      <dot>15:30</dot>
+      <dot>11.12:29.49</dot>
+      <dot>7.5:27.99</dot>
+      <dot>4.39:25.61</dot>
+      <dot>2.01:22.5</dot>
+      <dot>0.51:18.88</dot>
+      <dot>0:15</dot>
+      <dot>0.51:11.12</dot>
+      <dot>2.01:7.5</dot>
+      <dot>4.39:4.39</dot>
+      <dot>7.5:2.01</dot>
+      <dot>11.12:0.51</dot>
+      <dot>15:0</dot>
+      <dot>18.88:0.51</dot>
+      <dot>22.5:2.01</dot>
+      <dot>25.61:4.39</dot>
+      <dot>27.99:7.5</dot>
+      <dot>29.49:11.12</dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:8e39080027ab154011e50df75220133a}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Figure>
+    <ID>3102766b-4f55-4cd0-9e02-cf3edc56f963</ID>
+    <PaintLine>ff0000ff</PaintLine>
+    <ThicknessLine>4</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>ffe4e1ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>58</Order>
+    <PosCoordinate>1410:1190</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>0</PictureHeight>
+    <PictureWidth>0</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>1</DropShadow>
+    <Picture></Picture>
+    <PictureCoordinate>0:0</PictureCoordinate>
+    <ScalePicToOwner>1</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>1</BiDirectResize>
+    <StructureDot>
+      <dot>30:15</dot>
+      <dot>29.49:18.88</dot>
+      <dot>27.99:22.5</dot>
+      <dot>25.61:25.61</dot>
+      <dot>22.5:27.99</dot>
+      <dot>18.88:29.49</dot>
+      <dot>15:30</dot>
+      <dot>11.12:29.49</dot>
+      <dot>7.5:27.99</dot>
+      <dot>4.39:25.61</dot>
+      <dot>2.01:22.5</dot>
+      <dot>0.51:18.88</dot>
+      <dot>0:15</dot>
+      <dot>0.51:11.12</dot>
+      <dot>2.01:7.5</dot>
+      <dot>4.39:4.39</dot>
+      <dot>7.5:2.01</dot>
+      <dot>11.12:0.51</dot>
+      <dot>15:0</dot>
+      <dot>18.88:0.51</dot>
+      <dot>22.5:2.01</dot>
+      <dot>25.61:4.39</dot>
+      <dot>27.99:7.5</dot>
+      <dot>29.49:11.12</dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:8e39080027ab154011e50df752201336}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Figure>
+    <ID>bdfd3d3b-21a4-4434-bcf4-e593c8251ab4</ID>
+    <PaintLine>1e90ffff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>f0f8ffff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>55</Order>
+    <PosCoordinate>1280:1175</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>16</PictureHeight>
+    <PictureWidth>16</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>1</DropShadow>
+    <Picture>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJTSURBVDiNlZNPSJNxGMc/v3evc//Qg8haojgTUbbZzKAlOqggQtxFEmJRBz2ESBBeOnmQTl3qEmEQHYJgUIdAjOgycGWhWVJJpLgSD2Mgakv3vu/e7f11SKRyIX0vz8PDhy/PHx5BGfnAJeCCEKIbQEr5UkIiA/m/WbWcgQKXWoLBK5FIpLVgWbxJpcLflpcrgHtl2P0qCdHn9XoDG7mcc3193VlVWxsoCdFXji3bQVFK/+hQjz3Y4gPg01LG3jsz4/9Ht39qIibGPW53Xbjdj5QSKSXhdj8et7tuIibGDzSQFkq801w0NY2iYVA0DExNI95pLkprP7+vMDwlx7wec2kzm9EMTcPQNDazGc3rMZeGp+TYgQYAJUsmZpOTaUPXMXSd2eRkumTJRDm27BJH/am5G/PRnOI6BMDi/PvcWFtqDnoONlAHk8ctwzxrD/Q2hjvCAHzZEI2KZg4rg8kXxQen3v7Oi73s8rMjirCdE4imu1ejo98/v2KofgGA+2tHqW7tZuTO9C2JTFuy9JyHvSsANgA1/jTqrXJe62rznhmJBQdUVSWbt6Ntb/N1p5rVyhDV1W5Oh3wnJaWa/I4e0Jv7N6yPiVUVQBb1gXg0OOBxOV35vInDUYlpmvSf7wdg9nEagHy+QKSp5kTosDt0+8ncD2BaBVyWsdXgsKsuKeXeRIVCgWw2a+3me9eSUuKoUF2WsdXAr6ejQwlfjEnfsSiKrYDi0LE5NBS70b5y8zXAh+brXVhGJUXDgaU7sEp2kXk3bS08mhRABVC/G/9HJrD2EyqH9535eGNoAAAAAElFTkSuQmCC</Picture>
+    <PictureCoordinate>50:4</PictureCoordinate>
+    <ScalePicToOwner>1</ScalePicToOwner>
+    <PictureLinked>TopRight</PictureLinked>
+    <BiDirectResize>0</BiDirectResize>
+    <StructureDot>
+      <dot>0:0:5</dot>
+      <dot>70:0:5</dot>
+      <dot>70:60:5</dot>
+      <dot>0:60:5</dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:8e39080027ab154011e50df75220132f}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Figure>
+    <ID>5f30beda-e4a5-434c-8c60-5e6585f57453</ID>
+    <PaintLine>ff8c00ff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>ffefd5ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>65</Order>
+    <PosCoordinate>1655:1370</PosCoordinate>
+    <KX>0.667</KX>
+    <KY>0.667</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>22</PictureHeight>
+    <PictureWidth>17</PictureWidth>
+    <DoubleLine>3</DoubleLine>
+    <DropShadow>1</DropShadow>
+    <Picture>iVBORw0KGgoAAAANSUhEUgAAABEAAAAWCAYAAAAmaHdCAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAD1JREFUOI1jZGBg+M9ABUCpIf+ZqOEKqhjCgsQmx1uM6IYwkuuS0TDBBKNhgglGwwQTDJ4woYohjAxUKKgBnswIOZCSZ1kAAAAASUVORK5CYII=</Picture>
+    <PictureCoordinate>1:1</PictureCoordinate>
+    <ScalePicToOwner>1</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>1</BiDirectResize>
+    <StructureDot>
+      <dot>30:15</dot>
+      <dot>29.49:18.88</dot>
+      <dot>27.99:22.5</dot>
+      <dot>25.61:25.61</dot>
+      <dot>22.5:27.99</dot>
+      <dot>18.88:29.49</dot>
+      <dot>15:30</dot>
+      <dot>11.12:29.49</dot>
+      <dot>7.5:27.99</dot>
+      <dot>4.39:25.61</dot>
+      <dot>2.01:22.5</dot>
+      <dot>0.51:18.88</dot>
+      <dot>0:15</dot>
+      <dot>0.51:11.12</dot>
+      <dot>2.01:7.5</dot>
+      <dot>4.39:4.39</dot>
+      <dot>7.5:2.01</dot>
+      <dot>11.12:0.51</dot>
+      <dot>15:0</dot>
+      <dot>18.88:0.51</dot>
+      <dot>22.5:2.01</dot>
+      <dot>25.61:4.39</dot>
+      <dot>27.99:7.5</dot>
+      <dot>29.49:11.12</dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:8e39080027ab154011e50df752201328}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Figure>
+    <ID>e13e0f05-9040-4eb8-912b-29aa7a3dc4f1</ID>
+    <PaintLine>1e90ffff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>f0f8ffff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>62</Order>
+    <PosCoordinate>1160:1175</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>16</PictureHeight>
+    <PictureWidth>16</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>1</DropShadow>
+    <Picture>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJTSURBVDiNlZNPSJNxGMc/v3evc//Qg8haojgTUbbZzKAlOqggQtxFEmJRBz2ESBBeOnmQTl3qEmEQHYJgUIdAjOgycGWhWVJJpLgSD2Mgakv3vu/e7f11SKRyIX0vz8PDhy/PHx5BGfnAJeCCEKIbQEr5UkIiA/m/WbWcgQKXWoLBK5FIpLVgWbxJpcLflpcrgHtl2P0qCdHn9XoDG7mcc3193VlVWxsoCdFXji3bQVFK/+hQjz3Y4gPg01LG3jsz4/9Ht39qIibGPW53Xbjdj5QSKSXhdj8et7tuIibGDzSQFkq801w0NY2iYVA0DExNI95pLkprP7+vMDwlx7wec2kzm9EMTcPQNDazGc3rMZeGp+TYgQYAJUsmZpOTaUPXMXSd2eRkumTJRDm27BJH/am5G/PRnOI6BMDi/PvcWFtqDnoONlAHk8ctwzxrD/Q2hjvCAHzZEI2KZg4rg8kXxQen3v7Oi73s8rMjirCdE4imu1ejo98/v2KofgGA+2tHqW7tZuTO9C2JTFuy9JyHvSsANgA1/jTqrXJe62rznhmJBQdUVSWbt6Ntb/N1p5rVyhDV1W5Oh3wnJaWa/I4e0Jv7N6yPiVUVQBb1gXg0OOBxOV35vInDUYlpmvSf7wdg9nEagHy+QKSp5kTosDt0+8ncD2BaBVyWsdXgsKsuKeXeRIVCgWw2a+3me9eSUuKoUF2WsdXAr6ejQwlfjEnfsSiKrYDi0LE5NBS70b5y8zXAh+brXVhGJUXDgaU7sEp2kXk3bS08mhRABVC/G/9HJrD2EyqH9535eGNoAAAAAElFTkSuQmCC</Picture>
+    <PictureCoordinate>50:4</PictureCoordinate>
+    <ScalePicToOwner>1</ScalePicToOwner>
+    <PictureLinked>TopRight</PictureLinked>
+    <BiDirectResize>0</BiDirectResize>
+    <StructureDot>
+      <dot>0:0:5</dot>
+      <dot>70:0:5</dot>
+      <dot>70:60:5</dot>
+      <dot>0:60:5</dot>
+    </StructureDot>
+    <StructureGroup>e13e0f05-9040-4eb8-912b-29aa7a3dc4f1,a74f85f5-03dd-4a8b-8a4a-3788f2980dc6,6647ebbb-02e8-4b2e-9672-2a141d47ce95</StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:8e39080027ab154011e50df752201321}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Figure>
+    <ID>94270913-32de-4c7c-8e4c-10ca543a5e9b</ID>
+    <PaintLine>32cd32ff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>c0dcc0ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>1</Order>
+    <PosCoordinate>1065:1190</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>26</PictureHeight>
+    <PictureWidth>26</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>1</DropShadow>
+    <Picture>iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAQBJREFUSIm1VdEOgyAMbAlqTDRRp8b9/yeamKBT9rCobCtSIN6TKdc72iIg8KEtceQku0imOBoxdHC8YKvAFnetkeQYMVc+n8Qw/9MRRBIGmpkml7OidsUVZmuEVsDJ0wB0625BjJFzFlRCqBGbG1qRdzUy0Gg3o4C/64+mOYx87ysvjl5XLbq23YMIgZeiE9sG4qXULdom0jz/fHR1HXPluHD+sPf06xsCAEDImMPniVbK0Ev1KofWaM+F2GcChqqyv0eyKHZizNgQAPQ2TdesZ9/roWluf8o5gkGbuDpuWCSJ1ssCIk1hnGeynWVZHuLjOFpbzp5FlmXkbpVSLI03J5BTnMBd7/gAAAAASUVORK5CYII=</Picture>
+    <PictureCoordinate>2:2</PictureCoordinate>
+    <ScalePicToOwner>1</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>1</BiDirectResize>
+    <StructureDot>
+      <dot>30:15</dot>
+      <dot>29.49:18.88</dot>
+      <dot>27.99:22.5</dot>
+      <dot>25.61:25.61</dot>
+      <dot>22.5:27.99</dot>
+      <dot>18.88:29.49</dot>
+      <dot>15:30</dot>
+      <dot>11.12:29.49</dot>
+      <dot>7.5:27.99</dot>
+      <dot>4.39:25.61</dot>
+      <dot>2.01:22.5</dot>
+      <dot>0.51:18.88</dot>
+      <dot>0:15</dot>
+      <dot>0.51:11.12</dot>
+      <dot>2.01:7.5</dot>
+      <dot>4.39:4.39</dot>
+      <dot>7.5:2.01</dot>
+      <dot>11.12:0.51</dot>
+      <dot>15:0</dot>
+      <dot>18.88:0.51</dot>
+      <dot>22.5:2.01</dot>
+      <dot>25.61:4.39</dot>
+      <dot>27.99:7.5</dot>
+      <dot>29.49:11.12</dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:8e39080027ab154011e50df75220131d}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Line>
+    <ID>2d47f0e2-a4fc-437e-bc82-1b304888b2e3</ID>
+    <PaintLine>4677bfff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <TypeLine>line</TypeLine>
+    <Order>54</Order>
+    <IDBegin>5f30beda-e4a5-434c-8c60-5e6585f57453</IDBegin>
+    <BeginConnectCenter>1</BeginConnectCenter>
+    <IDEnd>a7de4bb5-72a3-4b9b-b0c0-c095fbceeb87</IDEnd>
+    <EndConnectCenter>1</EndConnectCenter>
+    <Type>direct</Type>
+    <CrossType>CrossBreak</CrossType>
+    <Linkable>1</Linkable>
+    <RadiusCorner>10</RadiusCorner>
+    <ShapeBegin>none</ShapeBegin>
+    <ShapeEnd>normal</ShapeEnd>
+    <SizeShapeBegin>3</SizeShapeBegin>
+    <SizeShapeEnd>7</SizeShapeEnd>
+    <DropShadow>1</DropShadow>
+    <StructureDot>
+      <dot>
+        <ID>b39c2c2c-5e35-4514-a6ec-9253e025a7a1</ID>
+        <IDOwner>2d47f0e2-a4fc-437e-bc82-1b304888b2e3</IDOwner>
+        <Coordinate>1665:1390</Coordinate>
+      </dot>
+      <dot>
+        <ID>dd6fff4c-1aab-44ef-96e5-56d87119c3c6</ID>
+        <IDOwner>2d47f0e2-a4fc-437e-bc82-1b304888b2e3</IDOwner>
+        <Coordinate>1665:1445</Coordinate>
+      </dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",fcc7239a-b195-419e-a296-a77ba68646c2,15:8e39080027ab154011e50df75220134a}
+}
+}
+}</UserProperties>
+  </Line>
+  <Line>
+    <ID>6e8ca6bd-7c4c-4b6f-897d-9ba6fbfbd5e1</ID>
+    <PaintLine>4677bfff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <TypeLine>line</TypeLine>
+    <Order>44</Order>
+    <IDBegin>bdfd3d3b-21a4-4434-bcf4-e593c8251ab4</IDBegin>
+    <BeginConnectCenter>1</BeginConnectCenter>
+    <IDEnd>3102766b-4f55-4cd0-9e02-cf3edc56f963</IDEnd>
+    <EndConnectCenter>1</EndConnectCenter>
+    <Type>direct</Type>
+    <CrossType>CrossBreak</CrossType>
+    <Linkable>1</Linkable>
+    <RadiusCorner>10</RadiusCorner>
+    <ShapeBegin>none</ShapeBegin>
+    <ShapeEnd>normal</ShapeEnd>
+    <SizeShapeBegin>3</SizeShapeBegin>
+    <SizeShapeEnd>7</SizeShapeEnd>
+    <DropShadow>1</DropShadow>
+    <StructureDot>
+      <dot>
+        <ID>4f049d53-abe2-467a-963e-f1c01af7de19</ID>
+        <IDOwner>6e8ca6bd-7c4c-4b6f-897d-9ba6fbfbd5e1</IDOwner>
+        <Coordinate>1350:1205</Coordinate>
+      </dot>
+      <dot>
+        <ID>61497d93-29d9-44cc-b969-7a60c849e825</ID>
+        <IDOwner>6e8ca6bd-7c4c-4b6f-897d-9ba6fbfbd5e1</IDOwner>
+        <Coordinate>1410:1205</Coordinate>
+      </dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",fcc7239a-b195-419e-a296-a77ba68646c2,15:8e39080027ab154011e50df752201346}
+}
+}
+}</UserProperties>
+  </Line>
+  <Line>
+    <ID>04a7bf63-f3ce-4b24-97e1-6a713c000c7a</ID>
+    <PaintLine>4677bfff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <TypeLine>line</TypeLine>
+    <Order>34</Order>
+    <IDBegin>e13e0f05-9040-4eb8-912b-29aa7a3dc4f1</IDBegin>
+    <BeginConnectCenter>1</BeginConnectCenter>
+    <IDEnd>bdfd3d3b-21a4-4434-bcf4-e593c8251ab4</IDEnd>
+    <EndConnectCenter>1</EndConnectCenter>
+    <Type>direct</Type>
+    <CrossType>CrossBreak</CrossType>
+    <Linkable>1</Linkable>
+    <RadiusCorner>10</RadiusCorner>
+    <ShapeBegin>none</ShapeBegin>
+    <ShapeEnd>normal</ShapeEnd>
+    <SizeShapeBegin>3</SizeShapeBegin>
+    <SizeShapeEnd>7</SizeShapeEnd>
+    <DropShadow>1</DropShadow>
+    <StructureDot>
+      <dot>
+        <ID>015af1a6-8907-42d6-a999-f08d1e5bcbee</ID>
+        <IDOwner>04a7bf63-f3ce-4b24-97e1-6a713c000c7a</IDOwner>
+        <Coordinate>1230:1205</Coordinate>
+      </dot>
+      <dot>
+        <ID>6d5de4bf-d9ba-4d68-8dcb-5d414b591246</ID>
+        <IDOwner>04a7bf63-f3ce-4b24-97e1-6a713c000c7a</IDOwner>
+        <Coordinate>1280:1205</Coordinate>
+      </dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",fcc7239a-b195-419e-a296-a77ba68646c2,15:8e39080027ab154011e50df752201342}
+}
+}
+}</UserProperties>
+  </Line>
+  <Line>
+    <ID>0b0dedae-09bb-42d2-9f84-c16974be1185</ID>
+    <PaintLine>4677bfff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <TypeLine>line</TypeLine>
+    <Order>24</Order>
+    <IDBegin>94270913-32de-4c7c-8e4c-10ca543a5e9b</IDBegin>
+    <BeginConnectCenter>1</BeginConnectCenter>
+    <IDEnd>e13e0f05-9040-4eb8-912b-29aa7a3dc4f1</IDEnd>
+    <EndConnectCenter>1</EndConnectCenter>
+    <Type>direct</Type>
+    <CrossType>CrossBreak</CrossType>
+    <Linkable>1</Linkable>
+    <RadiusCorner>10</RadiusCorner>
+    <ShapeBegin>none</ShapeBegin>
+    <ShapeEnd>normal</ShapeEnd>
+    <SizeShapeBegin>3</SizeShapeBegin>
+    <SizeShapeEnd>7</SizeShapeEnd>
+    <DropShadow>1</DropShadow>
+    <StructureDot>
+      <dot>
+        <ID>2b7801db-70f5-42d6-88ad-fd33a52623c9</ID>
+        <IDOwner>0b0dedae-09bb-42d2-9f84-c16974be1185</IDOwner>
+        <Coordinate>1095:1205</Coordinate>
+      </dot>
+      <dot>
+        <ID>688a61f4-fffc-4023-b9c5-14dec58496cd</ID>
+        <IDOwner>0b0dedae-09bb-42d2-9f84-c16974be1185</IDOwner>
+        <Coordinate>1160:1205</Coordinate>
+      </dot>
+    </StructureDot>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",fcc7239a-b195-419e-a296-a77ba68646c2,15:8e39080027ab154011e50df75220133e}
+}
+}
+}</UserProperties>
+  </Line>
+  <TextLabel>
+    <ID>9919645f-4168-4af7-aaed-2724a3080920</ID>
+    <IDOwner>94270913-32de-4c7c-8e4c-10ca543a5e9b</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Подошло время очередного платежа</Text>
+    <PosCoordinate>1040:1220</PosCoordinate>
+    <Order>2</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>7</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>BottomCenter</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>100</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>7ede83a6-33b4-4ad3-b64a-db0d69cec8bd</ID>
+    <IDOwner>e13e0f05-9040-4eb8-912b-29aa7a3dc4f1</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Напомнить клиенту о продлении услуги</Text>
+    <PosCoordinate>1160:1180</PosCoordinate>
+    <Order>63</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>7</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>TopLeft</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>75</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>a28f1324-8b39-4a5c-8353-2855d4751963</ID>
+    <IDOwner>e13e0f05-9040-4eb8-912b-29aa7a3dc4f1</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>ffffff00</BackColor>
+    <Text></Text>
+    <PosCoordinate>1225:1220</PosCoordinate>
+    <Order>64</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>10</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>1</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>BottomCenter</LinkToOwner>
+    <Angle>90</Angle>
+    <TextWidth>20</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","СтрокаМаркеров"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>232304dc-34b9-4383-a500-a39b617cb786</ID>
+    <IDOwner>5f30beda-e4a5-434c-8c60-5e6585f57453</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Клиент отказался</Text>
+    <PosCoordinate>1635:1390</PosCoordinate>
+    <Order>66</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>7</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>BottomCenter</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>60</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>359556fd-ef2a-4c53-993b-9d67e067a95d</ID>
+    <IDOwner>bdfd3d3b-21a4-4434-bcf4-e593c8251ab4</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Выставить счет</Text>
+    <PosCoordinate>1280:1180</PosCoordinate>
+    <Order>56</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>7</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>TopLeft</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>75</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>43e67d74-16f9-42ca-a446-e38ad3b32313</ID>
+    <IDOwner>bdfd3d3b-21a4-4434-bcf4-e593c8251ab4</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>ffffff00</BackColor>
+    <Text></Text>
+    <PosCoordinate>1345:1220</PosCoordinate>
+    <Order>57</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>10</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>1</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>BottomCenter</LinkToOwner>
+    <Angle>90</Angle>
+    <TextWidth>20</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","СтрокаМаркеров"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>3f7e7564-fd5e-4716-874c-14b07c40b31c</ID>
+    <IDOwner>3102766b-4f55-4cd0-9e02-cf3edc56f963</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Счет на услугу выставлен</Text>
+    <PosCoordinate>1395:1220</PosCoordinate>
+    <Order>59</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>7</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>BottomCenter</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>70</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+  <TextLabel>
+    <ID>d2de6a29-9b05-4be3-9800-7b72e57e4410</ID>
+    <IDOwner>a7de4bb5-72a3-4b9b-b0c0-c095fbceeb87</IDOwner>
+    <TextColor>505050ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Клиент отказался</Text>
+    <PosCoordinate>1635:1475</PosCoordinate>
+    <Order>61</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>7</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>BottomCenter</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>70</TextWidth>
+    <StructureGroup></StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+</Schema>
