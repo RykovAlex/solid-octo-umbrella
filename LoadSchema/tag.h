@@ -6,6 +6,7 @@ namespace tag
 	{
 		enum {
 			id
+			,xml
 		};
 	}
 	
