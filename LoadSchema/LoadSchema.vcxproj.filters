@@ -65,6 +65,9 @@
     <ClCompile Include="optimafigure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimaelement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

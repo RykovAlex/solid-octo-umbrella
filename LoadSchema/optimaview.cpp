@@ -31,9 +31,9 @@ void OptimaView::loadFigures(const QDomNodeList &figures, bool loadAllways)
 			QGraphicsItem* item = *i;
 			OptimaElement *optimaElement = dynamic_cast<OptimaElement*>(item);
 		}
+		OptimaFigure *optimaFigure = new OptimaFigure(uuidFigure);
+		scene()->addItem(optimaFigure);
 	}
-	OptimaFigure *optimaFigure = new OptimaFigure();
-	scene()->addItem(optimaFigure);
 }
 
 QString OptimaView::LoadScheme(const QString &filename, bool load_allways)

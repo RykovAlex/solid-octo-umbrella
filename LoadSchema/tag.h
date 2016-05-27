@@ -2,6 +2,13 @@
 
 namespace tag
 {
+	namespace data 
+	{
+		enum {
+			id
+		};
+	}
+	
 	static const QString back_color( "BackColor" );
 	static const QString gradient_color( "GradientColor" );
 	static const QString gradient_type( "GradientType" );

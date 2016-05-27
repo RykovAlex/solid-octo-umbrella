@@ -97,6 +97,7 @@
     </ClCompile>
     <ClCompile Include="loadschema.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="optimaelement.cpp" />
     <ClCompile Include="optimafigure.cpp" />
     <ClCompile Include="optimaview.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -4,15 +4,13 @@
 class OptimaFigure : public QGraphicsPathItem, public OptimaElement
 {
 public:
-	OptimaFigure();
+	OptimaFigure(const QString &uuid);
 
 	~OptimaFigure()
 	{
 	}
 
 protected:
-
-private:
 
 };
 
