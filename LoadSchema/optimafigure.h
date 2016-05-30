@@ -1,10 +1,11 @@
 #pragma once
 #include "optimaelement.h"
+#include <QtXml/QDOMDocument>
 
 class OptimaFigure : public QGraphicsPathItem, public OptimaElement
 {
 public:
-	OptimaFigure(const QString &uuid);
+	OptimaFigure(const QString &itemUuid);
 
 	~OptimaFigure()
 	{
@@ -12,6 +13,10 @@ public:
 
 protected:
 
+public:
+	void apply(const QDomNode & figure);
+private:
+	void applyXml(const QDomNode & figure);
 };
 
 

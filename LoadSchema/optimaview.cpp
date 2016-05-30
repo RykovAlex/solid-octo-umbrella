@@ -16,7 +16,7 @@ void OptimaView::loadFigures(const QDomNodeList &figures, bool loadAllways)
 	{
 		const QDomNode &figure = figures.at( nn );
 		const QString uuidFigure = figure.namedItem( tag::id ).toElement().text();
-	
+
 		if (uuidFigure.isEmpty())
 		{			
 			if ( !loadAllways )
@@ -24,24 +24,61 @@ void OptimaView::loadFigures(const QDomNodeList &figures, bool loadAllways)
 			continue;
 		}
 
-		//Найдем на схеме элемент с uuid из xml
-		const QList<QGraphicsItem*> itemList = items();
-		for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
-		{
-			QGraphicsItem* item = *i;
-			OptimaElement *optimaElement = dynamic_cast<OptimaElement*>(item);
-		}
-		OptimaFigure *optimaFigure = new OptimaFigure(uuidFigure);
-		scene()->addItem(optimaFigure);
+		//Найдем на схеме элемент с itemUuid из xml, если его нет, то зоздадим его
+		OptimaFigure *item = getItem<OptimaFigure>(uuidFigure);
+
+		Q_ASSERT( nullptr != item );
+
+		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
+		//к графическому элементу
+		item->apply(figure);
 	}
+}
+
+
+QGraphicsItem *OptimaView::findItem(const QString &itemUuid)
+{
+	const QList<QGraphicsItem*> itemList = items();
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		QGraphicsItem* item = *i;
+		QString itemUuid = getUuid(item);
+		if (itemUuid == itemUuid)
+		{
+			return item;
+		}
+	}
+
+	return nullptr;
+}
+
+template <class T>
+T *OptimaView::getItem(const QString &itemUuid)
+{
+	const QList<QGraphicsItem*> itemList = items();
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		QGraphicsItem* item = *i;
+		QString uuid = getUuid(item);
+		if (itemUuid == uuid)
+		{
+			return dynamic_cast<T*>(item);
+		}
+	}
+	
+	T *item = new T(itemUuid);
+	scene()->addItem(item);			
+	
+	return item; 
+}
+
+QString OptimaView::getUuid(QGraphicsItem* item)
+{
+	return item->data(tag::data::uuid).toString();
 }
 
 QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 {
-	int xml_error_column;
-	int xml_error_line;
-	QString xml_error_msg;
-	
 	//setScene( new QGraphicsScene );
 	
 	beforeExecute1CCall();
@@ -49,6 +86,10 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 	QDomDocument doc;	
 	try
 	{
+		int xml_error_column;
+		int xml_error_line;
+		QString xml_error_msg;
+
 		if ( !doc.setContent( filename, &xml_error_msg, &xml_error_line, &xml_error_column ) )
 			throw QString().append( tr( "Ошибка при анализе xml, сообщение: %1, строка: %2, столбец: %3\n" ).arg( xml_error_msg ).arg( xml_error_line ).arg( xml_error_column ) );
 

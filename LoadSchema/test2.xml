@@ -1,0 +1,27 @@
+﻿<Schema>
+  <Noworkspace>
+    <BackColor>c0c0c0ff</BackColor>
+    <UserProperties></UserProperties>
+    <ProgName>OptimaDrawEd</ProgName>
+    <ProgVersion>140</ProgVersion>
+  </Noworkspace>
+  <Workspace>
+    <UserProperties></UserProperties>
+    <BackColor>ffffffff</BackColor>
+    <PaintLine>b0c4de4c</PaintLine>
+    <TypeLine>dotdash</TypeLine>
+    <RealStep>10</RealStep>
+    <VirtualStep>5</VirtualStep>
+    <Scale>100</Scale>
+    <Center>1421:1298</Center>
+    <Lhdot>1841:1595</Lhdot>
+    <ViewMode>0</ViewMode>
+    <DrawingConnector>no</DrawingConnector>
+    <CrossLineEnable>0</CrossLineEnable>
+  </Workspace>
+  <Figure>
+    <ID>a7de4bb5-72a3-4b9b-b0c0-c095fbceeb87</ID>
+    <PaintLine>ff0000ff</PaintLine>
+    <ThicknessLine>6</ThicknessLine>
+  </Figure>
+</Schema>

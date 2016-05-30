@@ -17,4 +17,12 @@ Q_SIGNALS:
 private:
 	void beforeExecute1CCall();
 	void loadFigures(const QDomNodeList &figures, bool load_allways);
+
+	QGraphicsItem *findItem(const QString &itemUuid);
+	
+	///Найдем на схеме элемент с itemUuid из xml, если его нет, то зоздадим его
+	template <class T>
+	T *getItem(const QString &itemUuid);
+
+	QString getUuid(QGraphicsItem* item);
 };

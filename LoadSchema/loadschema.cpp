@@ -23,7 +23,7 @@ void LoadSchema::loadXml()
 	QString fileName =QFileDialog::getOpenFileName(this,
 		tr("QFileDialog::getOpenFileName()"),
 		tr(""),
-		tr("All Files (*);;Text Files (*.txt)"),&selectedFilter,
+		tr("XML files (*.xml)"),&selectedFilter,
 		options);
 	
 	if (fileName.isEmpty())

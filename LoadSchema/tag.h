@@ -5,7 +5,7 @@ namespace tag
 	namespace data 
 	{
 		enum {
-			id
+			uuid
 			,xml
 		};
 	}

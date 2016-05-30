@@ -1,13 +1,18 @@
 #pragma once
+#include <QtXml/QDOMDocument>
 
 class OptimaElement
 {
 private:
-	QString uuid;
+	QGraphicsItem *item;
+
+protected:	
+	QString getXml(const QDomNode & figure);
 
 public:
-	OptimaElement(const QString &_uuid);
+	OptimaElement(QGraphicsItem *_item);
 	
+
 	~OptimaElement()
 	{
 	}
