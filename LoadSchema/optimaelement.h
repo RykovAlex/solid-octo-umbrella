@@ -13,7 +13,7 @@ public:
 	}
 
 protected:	
-	///Получить тектовоу представление xml
+	///Получить тектовое представление xml
 	QString getXmlString(const QDomNode & element) const;
 
 	///Принять новый xml
@@ -21,6 +21,8 @@ protected:
 
 	///Получить из xml - описателя поле
 	const QDomElement getXmlNode(const QString & name) const;
+	qreal getXmlRealValue(const QString & name) const;
+	void setXmlValue(const QString & name, const qreal value) const;
 private:
 	QGraphicsItem *mItem;///<Указатель на графический объект - предок
 

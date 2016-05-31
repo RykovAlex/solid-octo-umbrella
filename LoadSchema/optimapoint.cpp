@@ -7,7 +7,12 @@ OptimaPoint::OptimaPoint()
 
 }
 
-OptimaPoint::OptimaPoint(qreal xpos, qreal ypos, int radius) : QPointF( xpos, ypos), mRadius(radius)
+OptimaPoint::OptimaPoint(qreal xpos, qreal ypos, int radius) : QPointF(xpos, ypos), mRadius(radius)
+{
+
+}
+
+OptimaPoint::OptimaPoint(const QPointF &point, int radius) : QPointF(point), mRadius(radius)
 {
 
 }

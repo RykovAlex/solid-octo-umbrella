@@ -285,8 +285,8 @@
     <BackLine>Solid</BackLine>
     <Order>1</Order>
     <PosCoordinate>1065:1190</PosCoordinate>
-    <KX>1</KX>
-    <KY>1</KY>
+    <KX>1.5</KX>
+    <KY>1.5</KY>
     <Transparent>100</Transparent>
     <PictureHeight>26</PictureHeight>
     <PictureWidth>26</PictureWidth>

@@ -5,7 +5,8 @@ namespace tag
 	namespace data 
 	{
 		enum {
-			uuid
+			uuid = 0
+			,uuidOwner
 		};
 	}
 	

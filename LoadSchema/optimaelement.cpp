@@ -52,11 +52,22 @@ void OptimaElement::updateXml(const QDomNode &element)
 		}
 		newNode = newNode.nextSibling();	
 	}
-
-//	QString s = getXml(nodeXml);
+	
+	QString::number( value )
+	QString s = getXml(nodeXml);
 }
 
 const QDomElement OptimaElement::getXmlNode(const QString & name) const
 {
 	return mNodeXml.namedItem( name ).toElement();
+}
+
+qreal OptimaElement::getXmlRealValue(const QString & name) const
+{
+	mNodeXml.namedItem( name ).toElement().text().toDouble();
+}
+
+void OptimaElement::setXmlValue(const QString & name, const qreal value) const
+{
+	mNodeXml.namedItem( name ).toElement().setNodeValue(QString::number( value ));
 }

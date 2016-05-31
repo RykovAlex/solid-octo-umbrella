@@ -18,6 +18,7 @@ public:
 	///ѕрименить изенени€ переданне через струтуру xml
 	void apply(const QDomNode & figure);
 
+	void scale();
 	///–азобрать структуру точек и сохранить дл€ дальнейшей обработки
 	void parseStructureDot(const QDomNode &figure);
 
