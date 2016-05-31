@@ -14,7 +14,7 @@ protected:
 	///Получить тектовоу представление xml
 	QString getXml(const QDomNode & element);
 
-	QPointF convert( const QString & text, int & radius = 0);
+	QPointF convert( const QString & text, int & radius);
 	///Принять новый xml
 	void applyXml(const QDomNode & element);
 

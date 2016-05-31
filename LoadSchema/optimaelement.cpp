@@ -16,7 +16,7 @@ QString OptimaElement::getXml(const QDomNode & element)
 	return s;
 }
 
-QPointF OptimaElement::convert( const QString & text, int & radius /*= 0*/ )
+QPointF OptimaElement::convert( const QString & text, int & radius )
 {
 	if ( text.isEmpty( ) )
 	{
@@ -30,6 +30,7 @@ QPointF OptimaElement::convert( const QString & text, int & radius /*= 0*/ )
 	}
 
 	// если 2 элемента, то это просто угол, если 3 то третий параметр это радиус
+	radius = 0;
 	if ( pointsList.size( ) >= 3 )
 	{
 		radius = pointsList.at( 2 ).toInt( );
