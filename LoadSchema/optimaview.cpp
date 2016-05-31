@@ -24,13 +24,13 @@ void OptimaView::loadFigures(const QDomNodeList &figures, bool loadAllways)
 			continue;
 		}
 
-		//Найдем на схеме элемент с itemUuid из xml, если его нет, то зоздадим его
+		//Найдем на схеме элемент с itemUuid из xml, если его нет, то создадим его
 		OptimaFigure *item = getItem<OptimaFigure>(uuidFigure);
 
 		Q_ASSERT( nullptr != item );
 
 		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
-		//к графическому элементу
+		//к графическому элементу, после этого он должен отрисоваться на схеме
 		item->apply(figure);
 	}
 }

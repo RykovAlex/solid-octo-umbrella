@@ -2,12 +2,12 @@
 #include "tag.h"
 #include "optimaelement.h"
 
-OptimaElement::OptimaElement(QGraphicsItem *_item) : item(_item)
+OptimaElement::OptimaElement(QGraphicsItem *_item) : mItem(_item)
 {
 
 }
 
-QString OptimaElement::getXml(const QDomNode & element)
+QString OptimaElement::getXmlString(const QDomNode & element) const
 {
 	QString s;
 	QTextStream figureText(&s);
@@ -16,35 +16,12 @@ QString OptimaElement::getXml(const QDomNode & element)
 	return s;
 }
 
-QPointF OptimaElement::convert( const QString & text, int & radius )
-{
-	if ( text.isEmpty( ) )
-	{
-			throw QObject::tr( "Ошибка анализа координаты, пустая координата" );
-	}
-	
-	const QStringList pointsList = text.split( ":" );
-	if ( pointsList.size( ) < 2 )
-	{
-		throw QObject::tr( "Ошибка анализа координаты, недостает параметров" );
-	}
-
-	// если 2 элемента, то это просто угол, если 3 то третий параметр это радиус
-	radius = 0;
-	if ( pointsList.size( ) >= 3 )
-	{
-		radius = pointsList.at( 2 ).toInt( );
-	}
-
-	return QPointF( pointsList.at( 0 ).toDouble( ), pointsList.at( 1 ).toDouble( ) );
-}
-
 void OptimaElement::applyXml(const QDomNode & element)
 {
 	//если объекта нет, то проинициализируем его переданым
-	if (nodeXml.isNull())
+	if (mNodeXml.isNull())
 	{
-		nodeXml = element.cloneNode();
+		mNodeXml = element.cloneNode();
 	}
 	else
 	{
@@ -62,14 +39,14 @@ void OptimaElement::updateXml(const QDomNode &element)
 		{
 			QString tagName = newNode.toElement().tagName();
 
-			QDomNode oldNode = nodeXml.namedItem(tagName);
+			QDomNode oldNode = mNodeXml.namedItem(tagName);
 			if(oldNode.isNull())
 			{
-				nodeXml.appendChild(newNode.cloneNode());
+				mNodeXml.appendChild(newNode.cloneNode());
 			}
 			else
 			{
-				nodeXml.replaceChild(newNode.cloneNode(), oldNode);
+				mNodeXml.replaceChild(newNode.cloneNode(), oldNode);
 			}
 			
 		}
@@ -79,3 +56,7 @@ void OptimaElement::updateXml(const QDomNode &element)
 //	QString s = getXml(nodeXml);
 }
 
+const QDomElement OptimaElement::getXmlNode(const QString & name) const
+{
+	return mNodeXml.namedItem( name ).toElement();
+}

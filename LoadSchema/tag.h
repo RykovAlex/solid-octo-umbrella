@@ -25,6 +25,7 @@ namespace tag
 	static const QString name_font( "NameFont" );
 	static const QString paint_line( "PaintLine" );
 	static const QString picture( "Picture" );
+	static const QString coordinate( "Coordinate" );
 	static const QString picture_coordinate( "PictureCoordinate" );
 	static const QString pos_coordinate( "PosCoordinate" );
 	static const QString size_font( "SizeFont" );
