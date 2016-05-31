@@ -4,6 +4,8 @@
 
 OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this)
 {
+	setData(tag::data::uuid, itemUuid);
+
 	QPainterPath path( QPointF(0,0));
 	path.lineTo(0,100);
 	path.lineTo(100,100);
@@ -12,50 +14,18 @@ OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this)
 	setPath( path );
 	setFlag(QGraphicsItem::ItemIsMovable);
 	setFlag(QGraphicsItem::ItemIsSelectable);
-	
-	setData(tag::data::uuid, itemUuid);
+
 }
 
 void OptimaFigure::apply(const QDomNode & figure)
 {
 	applyXml(figure);
-}
 
-void OptimaFigure::applyXml(const QDomNode & figure)
-{
-	//Получим существующий xml - описатель объекта
-	QString xml = data(tag::data::xml).toString();
-	
-	//Если его нет, то все просто, присваиваем новый
-	if (xml.isEmpty())
+	const QDomNodeList dn_dots = figure.namedItem( tag::structure_dot ).toElement( ).childNodes( );
+	for ( int mm = 0; mm < dn_dots.size( ); ++mm )
 	{
-		xml = getXml(figure);
-		setData(tag::data::xml, xml);
-
-		return;
+		fd.m_points << convert( dn_dots.at( mm ).toElement( ).text( ) );
 	}
-	
-	//xml - описатель есть, значит нужно внести в него изменения
-	QDomDocument doc;
-	Q_ASSERT( doc.setContent( xml ));
-	QDomElement d = doc.documentElement();
+	fd.m_points << fd.m_points.first( );
 
-	QDomNode newNode = figure.firstChild();
-	while (!newNode.isNull()) 
-	{
-		if (newNode.isElement()) 
-		{
-			QString tagName = newNode.toElement().tagName();
-
-			QDomNode oldNode = d.namedItem(tagName);
-			Q_ASSERT( !oldNode.isNull() );
-
-			d.replaceChild(newNode.cloneNode(), oldNode);
-		}
-		newNode = newNode.nextSibling();
-		
-	}
-
-	xml = getXml(d);
-	setData(tag::data::xml, xml);
 }

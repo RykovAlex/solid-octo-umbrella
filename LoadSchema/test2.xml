@@ -23,5 +23,14 @@
     <ID>a7de4bb5-72a3-4b9b-b0c0-c095fbceeb87</ID>
     <PaintLine>ff0000ff</PaintLine>
     <ThicknessLine>6</ThicknessLine>
+    <StructureDot>
+      <dot>30:15</dot>
+      <dot>29.49:18.88</dot>
+      <dot>27.99:22.5</dot>
+      <dot>25.61:25.61</dot>
+      <dot>22.5:27.99</dot>
+      <dot>18.88:29.49</dot>
+      <dot>15:30</dot>
+    </StructureDot>
   </Figure>
 </Schema>

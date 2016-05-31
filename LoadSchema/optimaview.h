@@ -15,6 +15,8 @@ Q_SIGNALS:
 	void ErrorOccur( const QString & text );
 
 private:
+	QDomDocument doc;	
+	
 	void beforeExecute1CCall();
 	void loadFigures(const QDomNodeList &figures, bool load_allways);
 

@@ -15,8 +15,6 @@ protected:
 
 public:
 	void apply(const QDomNode & figure);
-private:
-	void applyXml(const QDomNode & figure);
 };
 
 

@@ -4,10 +4,19 @@
 class OptimaElement
 {
 private:
-	QGraphicsItem *item;
+	QGraphicsItem *item;///<Указатель на графический объект - предок
+	QDomNode nodeXml;///<Здесь будем хранить текущий xml - описатель элемента
+
+	///Применить изменения согласно новому xml - описателю путем внесения изменний в существующий xml
+	void updateXml(const QDomNode &element);
 
 protected:	
-	QString getXml(const QDomNode & figure);
+	///Получить тектовоу представление xml
+	QString getXml(const QDomNode & element);
+
+	QPointF convert( const QString & text, int & radius = 0);
+	///Принять новый xml
+	void applyXml(const QDomNode & element);
 
 public:
 	OptimaElement(QGraphicsItem *_item);

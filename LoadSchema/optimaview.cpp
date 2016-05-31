@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "tag.h"
 #include "optimaview.h"
-#include "OptimaElement.h"
+#include "optimaelement.h"
 #include "optimafigure.h"
 
 OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent) 
@@ -83,7 +83,6 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 	
 	beforeExecute1CCall();
 	
-	QDomDocument doc;	
 	try
 	{
 		int xml_error_column;

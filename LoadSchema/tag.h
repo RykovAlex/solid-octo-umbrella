@@ -6,7 +6,6 @@ namespace tag
 	{
 		enum {
 			uuid
-			,xml
 		};
 	}
 	
