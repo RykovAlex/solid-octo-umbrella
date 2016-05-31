@@ -42,19 +42,17 @@ void OptimaPoint::initialize( const QString & text )
 
 OptimaPoint::OptimaPoint(QDomNode nodeDot)
 {
+	QDomNode nodeCoordinate = nodeDot.namedItem(tag::coordinate);
 	//Проверим в каком формате передана структура точки
-	//if (nodeDot.hasChildNodes())
-	//{
-	//	//Это структура коннектора
-	//	initialize(nodeDot.namedItem(tag::coordinate).toElement( ).text( ));
-	//}
-	//else
-	//{
-	//	//Просто точка в формате x:y[:radius] для всего остального
-	//	initialize(nodeDot.toElement( ).text( ));
-	//}
-	//Просто точка в формате x:y[:radius] для всего остального
-	initialize(nodeDot.toElement( ).text( ));
-
+	if (nodeCoordinate.isNull())
+	{
+		//Просто точка в формате x:y[:radius] для всего остального
+		initialize(nodeDot.toElement( ).text( ));
+	}
+	else
+	{
+		//Это структура коннектора
+		initialize(nodeCoordinate.toElement( ).text( ));
+	}
 }
 
