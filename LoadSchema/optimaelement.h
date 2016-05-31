@@ -21,7 +21,11 @@ protected:
 
 	///Получить из xml - описателя поле
 	const QDomElement getXmlNode(const QString & name) const;
-	qreal getXmlRealValue(const QString & name) const;
+	
+	qreal getXmlValue(const QString & name, const qreal defaultValue) const;
+	void getXmlValue(const QString & name, QVector<OptimaPoint> &optimaPoints) const;
+	void getXmlValue(const QString & name, OptimaPoint &optimaPoint) const;
+
 	void setXmlValue(const QString & name, const qreal value) const;
 private:
 	QGraphicsItem *mItem;///<Указатель на графический объект - предок

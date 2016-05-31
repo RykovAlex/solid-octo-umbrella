@@ -10,6 +10,8 @@ public:
 	OptimaPoint(const QPointF &point, int radius);
 	OptimaPoint(QDomNode nodeDot);
 
+	void apply(const QDomNode &nodeDot);
+
 	int getRadius() const;
 
 	operator QPointF()

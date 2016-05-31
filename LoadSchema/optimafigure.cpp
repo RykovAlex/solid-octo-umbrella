@@ -10,17 +10,31 @@ OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this)
 
 void OptimaFigure::apply(const QDomNode & figure)
 {
+	//1. Примем XML
 	applyXml(figure);
 
-	parseStructureDot(figure);
+	//2. Заполним рабочие переменные
+	//Эта переменная выделена из XML потому что при изменении размера фигуры
+	//постоянно требуется пересчет, теоритически можно извлекать непосредственно перед использованием
+	//а не хранить. Значение неизменно. не требует изменения XML при сохранении
+	getXmlValue(tag::structure_dot, mOriginalPoints );
 
+	//Значения этих трех переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
+	//Требуется изменить XML перед сохранением, длясохранения действий пользователя
+	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,
+	//нерационально
+	getXmlValue(tag::pos_coordinate, mPositionPoint );
+	mScaleX = getXmlValue(tag::kx, 1.0);
+	mScaleY = getXmlValue(tag::ky, 1.0);
+
+	//3. Нарисуем
 	applyPath();
 }
 
 void OptimaFigure::scale()
 {
 	QMatrix matrixScale;
-	matrixScale = matrixScale.scale( 1.0, 1.0 );
+	matrixScale = matrixScale.scale( mScaleX, mScaleY );
 	
 	mPoints.clear();
 	for( int i = 0; i < mOriginalPoints.size(); i++ ) {
@@ -45,26 +59,6 @@ void OptimaFigure::scale()
 
 }
 
-void OptimaFigure::parseStructureDot(const QDomNode &figure)
-{
-	const QDomNodeList dots = getXmlNode( tag::structure_dot ).childNodes();
-	if (dots.isEmpty())
-	{
-		return;
-	}
-
-	mOriginalPoints.clear();
-	for ( int i = 0; i < dots.size( ); ++i )
-	{
-		int radius;
-
-		mOriginalPoints << OptimaPoint(dots.at( i ));
-	}
-	mOriginalPoints << mOriginalPoints.first( );
-	
-	//mPoints = mOriginalPoints;
-}
-
 void OptimaFigure::applyPath()
 {
 	scale();
@@ -79,8 +73,8 @@ void OptimaFigure::applyPath()
 			end_i = 1;
 		}
 		
-		QLineF line1(createLine(i-1, i));
-		QLineF line2(createLine(end_i, i));
+		QLineF line1(createLineToCurve(i-1, i));
+		QLineF line2(createLineToCurve(end_i, i));
 		
 		if ( i == 1 ) 
 		{
@@ -97,11 +91,14 @@ void OptimaFigure::applyPath()
 	path.closeSubpath();
 
 	setPath(path);
+
+	setPos( mPositionPoint);
+
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
 }
 
-QLineF OptimaFigure::createLine(int iStart, int iEnd) const
+QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
 {
 	QLineF line( mPoints[ iStart ], mPoints[ iEnd ] );
 	int radius = mPoints[ iEnd ].getRadius();

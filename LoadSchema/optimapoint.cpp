@@ -45,7 +45,7 @@ void OptimaPoint::initialize( const QString & text )
 	setY(pointsList.at( 1 ).toDouble( ));
 }
 
-OptimaPoint::OptimaPoint(QDomNode nodeDot)
+void OptimaPoint::apply(const QDomNode & nodeDot)
 {
 	QDomNode nodeCoordinate = nodeDot.namedItem(tag::coordinate);
 	//Проверим в каком формате передана структура точки
@@ -59,5 +59,10 @@ OptimaPoint::OptimaPoint(QDomNode nodeDot)
 		//Это структура коннектора
 		initialize(nodeCoordinate.toElement( ).text( ));
 	}
+}
+
+OptimaPoint::OptimaPoint(QDomNode nodeDot)
+{
+	apply(nodeDot);
 }
 
