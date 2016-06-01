@@ -19,9 +19,9 @@ public:
 protected:
 
 private:
-	QVector<OptimaPoint> mPoints;///< действительные точки фигуры, после преобразования
+	OptimaPointVector mPoints;///< действительные точки фигуры, для отрисовке на сцене
 
-	QVector<OptimaPoint> mOriginalPoints;///< начальные точки фигуры для преобразования
+	OptimaPointVector mOriginalPoints;///< начальные точки фигуры для преобразования
 
 	OptimaPoint mPositionPoint;///< позиция фигуры
 
@@ -30,7 +30,7 @@ private:
 	qreal mScaleY;///< коэффициент масштабирования по оси Y
 
 	///Задать контуры фигуры
-	void applyPath();
+	void draw();
 
 	///Создает отрезок фигуры за минусом радиуса скругления
 	QLineF createLineToCurve(int iStart, int iEnd) const;

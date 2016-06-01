@@ -39,7 +39,7 @@ public:
     {
         if (LoadSchemaClass->objectName().isEmpty())
             LoadSchemaClass->setObjectName(QString::fromUtf8("LoadSchemaClass"));
-        LoadSchemaClass->resize(600, 400);
+        LoadSchemaClass->resize(808, 519);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -64,7 +64,7 @@ public:
         LoadSchemaClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(LoadSchemaClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 18));
+        menuBar->setGeometry(QRect(0, 0, 808, 18));
         LoadSchemaClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(LoadSchemaClass);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));

@@ -2,9 +2,9 @@
 #include "tag.h"
 #include "optimaelement.h"
 
-OptimaElement::OptimaElement(QGraphicsItem *_item) : mItem(_item)
+OptimaElement::OptimaElement(QGraphicsItem *_item, const QString &itemUuid) : mItem(_item)
 {
-
+	mItem->setData(tag::data::uuid, itemUuid);
 }
 
 QString OptimaElement::getXmlString(const QDomNode & element) const
@@ -28,6 +28,8 @@ void OptimaElement::applyXml(const QDomNode & element)
 		//xml - описатель есть, значит нужно внести в него изменения
 		updateXml(element);
 	}
+
+	applyCommonProperties();
 }
 
 void OptimaElement::updateXml(const QDomNode &element)
@@ -54,6 +56,11 @@ void OptimaElement::updateXml(const QDomNode &element)
 	}
 
 //	QString s = getXmlString(mNodeXml);
+}
+
+void OptimaElement::applyCommonProperties()
+{
+	mItem->setZValue(getXmlValue(tag::order, 1.0));
 }
 
 const QDomElement OptimaElement::getXmlNode(const QString & name) const
@@ -101,6 +108,18 @@ void OptimaElement::getXmlValue(const QString & name, OptimaPoint &optimaPoint) 
 	} 
 
 	optimaPoint.apply(node);
+}
+
+void OptimaElement::getXmlValue(const QString & name, OptimaConnectorArrow &optimaConnectorArrow) const
+{
+	QDomNode node(mNodeXml.namedItem( name ));
+
+	if (node.isNull())
+	{
+		return;
+	} 
+
+	optimaConnectorArrow.apply(node.toElement().text());
 }
 
 void OptimaElement::setXmlValue(const QString & name, const qreal value) const

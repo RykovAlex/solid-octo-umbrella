@@ -68,6 +68,11 @@ namespace tag
 	static const QString owner_width( "OwnerWidth" );
 	static const QString percent_width_to_owner( "PercentWidthToOwner" );
 	static const QString type_setting_width( "TypeSettingWidth" );
+	static const QString order( "Order" );
+	static const QString size_shape_begin("SizeShapeBegin");
+	static const QString size_shape_end("SizeShapeEnd");
+	static const QString shape_begin("ShapeBegin");
+	static const QString shape_end("ShapeEnd");
 
 	inline QString to_string( const QColor& cl )
 	{

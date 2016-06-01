@@ -2,10 +2,8 @@
 #include "tag.h"
 #include "optimafigure.h"
 
-OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this)
+OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this, itemUuid)
 {
-	setData(tag::data::uuid, itemUuid);
-
 }
 
 void OptimaFigure::apply(const QDomNode & figure)
@@ -16,7 +14,7 @@ void OptimaFigure::apply(const QDomNode & figure)
 	//2. «аполним рабочие переменные
 	//Ёта переменна€ выделена из XML потому что при изменении размера фигуры
 	//посто€нно требуетс€ пересчет, теоритически можно извлекать непосредственно перед использованием
-	//а не хранить. «начение неизменно. не требует изменени€ XML при сохранении
+	//а не хранить. «начение неизменно. не требует изменени€ XML при сохранении элемента
 	getXmlValue(tag::structure_dot, mOriginalPoints );
 
 	//«начени€ этих трех переменных вынесены в переменные, потому что они интерактивно измен€ютс€ пользователем,
@@ -28,7 +26,10 @@ void OptimaFigure::apply(const QDomNode & figure)
 	mScaleY = getXmlValue(tag::ky, 1.0);
 
 	//3. Ќарисуем
-	applyPath();
+	draw();
+
+	//4. ѕереестим в нужную позицию на схеме
+	setPos(mPositionPoint);
 }
 
 void OptimaFigure::scale()
@@ -38,7 +39,7 @@ void OptimaFigure::scale()
 	
 	mPoints.clear();
 	for( int i = 0; i < mOriginalPoints.size(); i++ ) {
-		mPoints.push_back(OptimaPoint(matrixScale.map(mOriginalPoints[i]), mOriginalPoints[i].getRadius()));
+		mPoints.push_back(OptimaPoint(matrixScale.map(mOriginalPoints.at(i)), mOriginalPoints.at(i).getRadius()));
 	}
 	//m_polygon->setPath( doPath( m_points ) );
 
@@ -59,7 +60,7 @@ void OptimaFigure::scale()
 
 }
 
-void OptimaFigure::applyPath()
+void OptimaFigure::draw()
 {
 	scale();
 	
@@ -85,14 +86,12 @@ void OptimaFigure::applyPath()
 			path.lineTo( line1.p2() );
 		}
 
-		path.quadTo( mPoints[ i ], line2.p2() );
+		path.quadTo( mPoints.at( i ), line2.p2() );
 	}
 
 	path.closeSubpath();
 
 	setPath(path);
-
-	setPos( mPositionPoint);
 
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
@@ -100,8 +99,8 @@ void OptimaFigure::applyPath()
 
 QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
 {
-	QLineF line( mPoints[ iStart ], mPoints[ iEnd ] );
-	int radius = mPoints[ iEnd ].getRadius();
+	QLineF line( mPoints.at( iStart ), mPoints.at( iEnd ) );
+	int radius = mPoints.at( iEnd ).getRadius();
 
 	//≈сли длина стороны фигуры меньше чем два размера радиуса,
 	//то просто начнем закругление с середины

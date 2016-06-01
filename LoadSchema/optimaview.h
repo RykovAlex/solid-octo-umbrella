@@ -18,7 +18,9 @@ private:
 	QDomDocument doc;	
 	
 	void beforeExecute1CCall();
-	void loadFigures(const QDomNodeList &figures, bool load_allways);
+
+	///Загружает файл XML - описателя сцены и создает / изменяет ее графическое отображение
+	template <class T> void load(const QDomNodeList &elements, bool loadAllways);
 
 	QGraphicsItem *findItem(const QString &itemUuid);
 	

@@ -3,38 +3,39 @@
 #include "optimaview.h"
 #include "optimaelement.h"
 #include "optimafigure.h"
+#include "optimaconnector.h"
 
 OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent) 
 { 
 	setScene( new QGraphicsScene(parent) );
 };
 
-
-void OptimaView::loadFigures(const QDomNodeList &figures, bool loadAllways)
+template <class T>
+void OptimaView::load(const QDomNodeList &elements, bool loadAllways)
 {
-	for ( int nn = 0; nn < figures.size( ); ++nn )
+	for ( int nn = 0; nn < elements.size( ); ++nn )
 	{
-		const QDomNode &figure = figures.at( nn );
-		const QString uuidFigure = figure.namedItem( tag::id ).toElement().text();
+		const QDomNode &element = elements.at( nn );
+		const QString uuid = element.namedItem( tag::id ).toElement().text();
 
-		if (uuidFigure.isEmpty())
+		if (uuid.isEmpty())
 		{			
 			if ( !loadAllways )
-				throw QString().append( tr( "У фигуры не найден UUID" ) );
+				throw QString().append( tr( "У элемента не найден UUID" ) );
 			continue;
 		}
 
 		//Найдем на схеме элемент с itemUuid из xml, если его нет, то создадим его
-		OptimaFigure *item = getItem<OptimaFigure>(uuidFigure);
+		T *item = getItem<T>(uuid);
 
 		Q_ASSERT( nullptr != item );
 
 		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
-		//к графическому элементу, после этого он должен отрисоваться на схеме
-		item->apply(figure);
+		//к графическому элементу, после этого он отрисуется на схеме
+		item->apply(element);
 	}
-}
 
+}
 
 QGraphicsItem *OptimaView::findItem(const QString &itemUuid)
 {
@@ -77,6 +78,7 @@ QString OptimaView::getUuid(QGraphicsItem* item)
 	return item->data(tag::data::uuid).toString();
 }
 
+
 QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 {
 	//setScene( new QGraphicsScene );
@@ -105,8 +107,8 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 		//	}
 		//}
 		//load_workspace_from_xml( doc_el.namedItem( tag::workspace ) );
-		loadFigures( docElement.elementsByTagName( tag::figure ), load_allways );
-		//load_connectors_from_xml( doc_el.elementsByTagName( tag::line ), ret, load_allways );			
+		load<OptimaFigure>( docElement.elementsByTagName( tag::figure ), load_allways );
+		load<OptimaConnector>( docElement.elementsByTagName( tag::line ), load_allways );
 		//load_text_labels( doc_el.elementsByTagName( tag::text_label ), current_doc.documentElement().childNodes() );
 	}
 	catch (std::exception* e)

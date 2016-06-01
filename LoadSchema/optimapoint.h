@@ -10,23 +10,16 @@ public:
 	OptimaPoint(const QPointF &point, int radius);
 	OptimaPoint(QDomNode nodeDot);
 
+	///принять изменения из переданного узла XML 
 	void apply(const QDomNode &nodeDot);
 
+	///getter для радиуса скругления
 	int getRadius() const;
 
-	operator QPointF()
-	{
-		return (*this);
-	}
-
-	OptimaPoint operator= (const QPointF &point) 
-	{
-		return OptimaPoint(point.x(), point.y(), mRadius);
-	}
-
 protected:
-private:
-	int mRadius;
+
+private:	
+	int mRadius;///<Радиус скругления в этой точке
 
 	///Получить из строки вида x:y[:radius] точку и радиус скругления, и проинициализировать ими объект
 	void initialize( const QString & text );
