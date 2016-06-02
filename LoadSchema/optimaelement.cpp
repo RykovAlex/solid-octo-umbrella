@@ -62,6 +62,12 @@ void OptimaElement::applyCommonProperties()
 {
 	mItem->setZValue(getXmlValue(tag::order, 1.0));
 
+	tag::drop_shadow
+	QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();	
+	effect->setBlurRadius(10.);
+	mItem->setGraphicsEffect( effect );
+
+
 	QGraphicsPathItem *pathItem = dynamic_cast<QGraphicsPathItem*>(mItem);
 	QGraphicsTextItem *textItem = dynamic_cast<QGraphicsTextItem*>(mItem);
 
@@ -71,6 +77,7 @@ void OptimaElement::applyCommonProperties()
 		pen.setColor( getXmlValue(tag::paint_line, QColor(Qt::black)) );
 		pen.setWidth( getXmlValue(tag::thickness_line, 1.0));
 		pen.setStyle( getXmlValue(tag::type_line, Qt::SolidLine));
+		pen.setCosmetic( true );
 
 		pathItem->setPen(pen);
 	}

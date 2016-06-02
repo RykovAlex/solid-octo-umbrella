@@ -17,6 +17,8 @@ public:
 	void apply(const QDomNode & connector);
 
 protected:
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+		QWidget *widget = 0);
 
 private:
 	OptimaPointVector mPoints;///< действительные точки фигуры, для отрисовке на сцене
@@ -29,8 +31,7 @@ private:
 	
 	qreal mRadiusCorner;///< радиус скругления углов коннетора
 	
-	QPen mPen;
-
+	QPainterPath mPathArrow;
 	//Рисует коннетор, точнее формирует путь, которй добавляется на схему
 	void draw();
 	
@@ -38,6 +39,8 @@ private:
 	
 	void drawCorner( QPainterPath &path, const QLineF originalLine, const int indexCorner ) const;
 
+	bool mIsHighlight;
+	QPen mPen;
 };
 
 

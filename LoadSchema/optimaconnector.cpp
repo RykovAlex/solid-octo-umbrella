@@ -28,6 +28,10 @@ void OptimaConnector::apply(const QDomNode & connector)
 	
 	mRadiusCorner = getXmlValue(tag::radius_corner, 0.0);
 
+	//Сохраняем текущий карандаш, так как надо отрабатывать выделение коннеторов при подводе к ним мышки
+	mPen = pen();
+	
+	
 	//Значения этих переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
 	//Требуется изменить XML перед сохранением, длясохранения действий пользователя
 	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,
@@ -39,31 +43,46 @@ void OptimaConnector::apply(const QDomNode & connector)
 	//3. Нарисуем
 	draw();
 
-	//4. Переестим в нужную позицию на схеме
-	//setPos(mPositionPoint);
+}
+
+void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
+{
+	if (mIsHighlight)
+	{
+		QPen localPen(mPen);
+		localPen.setWidth(mPen.width() + 1);
+		setPen(localPen);
+	}
+	else
+	{
+		setPen(mPen);
+	}
+	QGraphicsPathItem::paint(painter, option, widget);
+
+	painter->setBrush(this->pen().color());
+	painter->drawPath(mPathArrow);
 }
 
 void OptimaConnector::draw()
 {
-	QPainterPath pathLine, pathArrow;
+	QPainterPath pathLine;
 	QPolygonF points;
 
 	Q_ASSERT(mPoints.size() >= 2);
 
 	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
-	QPointF startPoint = mBeginArrow.getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
-	//points.push_back( startPoint );
+	QPointF startPoint = mBeginArrow.getPath(mPathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
+	points.push_back( startPoint );
 
-	//for ( int i = 1; i < mPoints.size( ) - 1; ++i )
-	for ( int i = 0; i < mPoints.size( ); ++i )
+	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
 	{
 		points.push_back( mPoints.at( i ) );
 	}
 
 	// рисуем конец
-	const QPointF endPoint = mEndArrow.getPath( pathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
+	const QPointF endPoint = mEndArrow.getPath( mPathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
 
-	//points.push_back( endPoint);
+	points.push_back( endPoint);
 
 	pathLine.moveTo( *points.begin() );
 
@@ -81,16 +100,8 @@ void OptimaConnector::draw()
 		drawCorner( pathLine, originalLine, i );
 	}
 	
-	pathLine.addPath(pathArrow);
-	
 	setPath( pathLine );
 
-//	setBrush( Qt::NoBrush );
-
-	//QPen con_pen( m_color, m_width + (m_highlight?1:0), m_line_style );
-
-	//con_pen.setCosmetic( true );
-	//m_lines->setPen( con_pen );
 	//if ( m_drop_shadow )
 	//{
 	//	QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();	
