@@ -61,6 +61,24 @@ void OptimaElement::updateXml(const QDomNode &element)
 void OptimaElement::applyCommonProperties()
 {
 	mItem->setZValue(getXmlValue(tag::order, 1.0));
+
+	QGraphicsPathItem *pathItem = dynamic_cast<QGraphicsPathItem*>(mItem);
+	QGraphicsTextItem *textItem = dynamic_cast<QGraphicsTextItem*>(mItem);
+
+	if ( pathItem != nullptr )
+	{
+		QPen pen;
+		pen.setColor( getXmlValue(tag::paint_line, QColor(Qt::black)) );
+		pen.setWidth( getXmlValue(tag::thickness_line, 1.0));
+		pen.setStyle( getXmlValue(tag::type_line, Qt::SolidLine));
+
+		pathItem->setPen(pen);
+	}
+	else
+	if ( textItem != nullptr )
+	{
+	}
+	
 }
 
 const QDomElement OptimaElement::getXmlNode(const QString & name) const
@@ -79,7 +97,7 @@ qreal OptimaElement::getXmlValue(const QString & name, const qreal defaultValue)
 	return mNodeXml.namedItem( name ).toElement().text().toDouble();
 }
 
-void OptimaElement::getXmlValue(const QString & name, QVector<OptimaPoint> &optimaPoints) const
+void OptimaElement::getXmlValue(const QString & name, OptimaPointVector &optimaPoints) const
 {
 	const QDomNodeList dots = getXmlNode( tag::structure_dot ).childNodes();
 	if (dots.isEmpty())
@@ -94,8 +112,6 @@ void OptimaElement::getXmlValue(const QString & name, QVector<OptimaPoint> &opti
 
 		optimaPoints << OptimaPoint(dots.at( i ));
 	}
-	optimaPoints << optimaPoints.first( );
-
 }
 
 void OptimaElement::getXmlValue(const QString & name, OptimaPoint &optimaPoint) const
@@ -122,6 +138,41 @@ void OptimaElement::getXmlValue(const QString & name, OptimaConnectorArrow &opti
 	optimaConnectorArrow.apply(node.toElement().text());
 }
 
+void OptimaElement::getXmlValue(const QString & name, OptimaCross &optimaCrossing) const
+{
+	QDomNode node(mNodeXml.namedItem( name ));
+
+	if (node.isNull())
+	{
+		return;
+	} 
+
+	optimaCrossing.apply(node.toElement().text());
+}
+
+Qt::PenStyle OptimaElement::getXmlValue(const QString & name, const Qt::PenStyle defaultStyle) const
+{
+	QDomNode node(mNodeXml.namedItem( name ));
+
+	if (node.isNull())
+	{
+		return defaultStyle;
+	} 
+
+	const QString borderStyle = node.toElement( ).text( );
+	if ( borderStyle == "dot" )
+		return Qt::DotLine;
+	else if ( borderStyle == "dash" )
+		return Qt::DashLine;
+	else if ( borderStyle == "dotdash" )
+		return Qt::DashDotLine;
+	else if ( borderStyle == "no" )
+		return Qt::NoPen;
+	else
+		return Qt::SolidLine;
+
+}
+
 void OptimaElement::setXmlValue(const QString & name, const qreal value) const
 {
 	for(QDomNode n = mNodeXml.namedItem( name ).firstChild(); !n.isNull(); n = n.nextSibling())
@@ -133,4 +184,33 @@ void OptimaElement::setXmlValue(const QString & name, const qreal value) const
 			break;
 		}
 	}
+}
+
+QColor OptimaElement::getXmlValue(const QString & name, const QColor defaultColor) const
+{
+	QDomNode node(mNodeXml.namedItem( name ));
+
+	if (node.isNull())
+	{
+		return defaultColor;
+	} 
+
+	QColor resultColor( defaultColor );
+
+	const QString colorName = node.toElement( ).text( );
+	if ( colorName.size( ) == 6 )
+	{
+		resultColor = QColor( "#" + node.toElement( ).text( ) );
+	}
+	else 
+	if ( colorName.size( ) == 8 )
+	{
+		bool ok1, ok2, ok3, ok4;
+		resultColor = QColor( static_cast< unsigned char >( colorName.mid( 0, 2 ).toInt( &ok1, 16 ) )
+			, static_cast< unsigned char >( colorName.mid( 2, 2 ).toInt( &ok2, 16 ) )
+			, static_cast< unsigned char >( colorName.mid( 4, 2 ).toInt( &ok3, 16 ) )
+			, static_cast< unsigned char >( colorName.mid( 6, 2 ).toInt( &ok4, 16 ) ) );
+	}
+
+	return resultColor.isValid( ) ? resultColor : Qt::gray;
 }

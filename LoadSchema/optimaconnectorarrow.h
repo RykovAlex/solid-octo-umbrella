@@ -31,6 +31,8 @@ public:
 
 	OptimaConnectorArrow( OptimaConnectorArrowShape _shape);
 
+	OptimaConnectorArrow( OptimaConnectorArrowShape _shape, bool isBegining);
+
 	bool operator ==( OptimaConnectorArrowShape _shape );
 
 	bool operator ==( const char *_shape_as_text );
@@ -51,7 +53,28 @@ public:
 
 	void setSize(qreal size);
 
-	QPointF drawArrow( QPainterPath & path, const QPointF & beginPoint, const QPointF & endPoint, bool isBegining );
+	QPointF getPath( QPainterPath & path, const QPointF & beginPoint, const QPointF & endPoint );
+
+protected:
+
+private:
+	QString mShapeAsText;
+
+	OptimaConnectorArrowShape mShape;
+
+	QChar mMod;
+
+	QChar mSide;
+
+	qreal mSize;
+
+	bool mIsBegining;
+
+	void applyAsGraphviz(const QString & shapeName);
+	
+	void getQuadPoints( const qreal arrowSize, const qreal arrowWidth,  const QLineF l0, QPointF &corner1, QPointF &corner2, QPointF &corner3, QPointF &corner4, QPointF &corner5 );
+	
+	void rotateArrow( QPolygonF &pp, const QPointF &at_point, const QPointF &to_point );
 
 	QPointF drawArrowOndef(const QLineF &l0, QPainterPath &path);
 
@@ -67,32 +90,13 @@ public:
 
 	QPointF drawFilledArrow(const QLineF &l0, QLineF &l1, QLineF &l2, QPainterPath &path);
 
-	QPointF drawTriangleArrow(const QLineF &l0, QLineF &l1, QLineF &l2, bool isBegining, QPainterPath &path);
+	QPointF drawTriangleArrow(const QLineF &l0, QLineF &l1, QLineF &l2, QPainterPath &path);
 
-	QPointF drawBoxArrow(const QLineF &l0, bool isBegining, QPainterPath &path);
+	QPointF drawBoxArrow(const QLineF &l0, QPainterPath &path);
 
-	QPointF drawCurveArrow(const QLineF &l0, bool isBegining, QPainterPath &path);
+	QPointF drawCurveArrow(const QLineF &l0, QPainterPath &path);
 
-	QPointF drawDiamondArrow(const QLineF &l0, QLineF &l1, QLineF &l2, bool isBegining, QPainterPath &path);
-
-protected:
-
-private:
-	QString mShapeAsText;
-
-	OptimaConnectorArrowShape mShape;
-
-	QChar mMod;
-
-	QChar mSide;
-
-	qreal mSize;
-
-	void applyAsGraphviz(const QString & shapeName);
-	
-	void getQuadPoints( const qreal arrowSize, const qreal arrowWidth,  const QLineF l0, QPointF &corner1, QPointF &corner2, QPointF &corner3, QPointF &corner4, QPointF &corner5, const bool isBegining );
-	
-	void rotateArrow( QPolygonF &pp, const QPointF &at_point, const QPointF &to_point );
+	QPointF drawDiamondArrow(const QLineF &l0, QLineF &l1, QLineF &l2, QPainterPath &path);
 };
 
 

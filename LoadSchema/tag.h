@@ -73,6 +73,8 @@ namespace tag
 	static const QString size_shape_end("SizeShapeEnd");
 	static const QString shape_begin("ShapeBegin");
 	static const QString shape_end("ShapeEnd");
+	static const QString cross_type("CrossType");
+	static const QString radius_corner("RadiusCorner");
 
 	inline QString to_string( const QColor& cl )
 	{

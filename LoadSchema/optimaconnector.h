@@ -21,13 +21,23 @@ protected:
 private:
 	OptimaPointVector mPoints;///< действительные точки фигуры, дл€ отрисовке на сцене
 
-	OptimaConnectorArrow mBeginArrow;///<—трелка в начале коннектора
+	OptimaConnectorArrow mBeginArrow;///< стрелка в начале коннектора
 
-	OptimaConnectorArrow mEndArrow;///<—трелка в конце коннектора
+	OptimaConnectorArrow mEndArrow;///< стрелка в конце коннектора
 
+	OptimaCross mCross;///< класс отвечает за отрисовку пересечений с другими коннеторами
+	
+	qreal mRadiusCorner;///< радиус скруглени€ углов коннетора
+	
+	QPen mPen;
+
+	//–исует коннетор, точнее формирует путь, которй добавл€етс€ на схему
 	void draw();
+	
+	qreal getCircleRadius(const int indexCorner) const;
+	
+	void drawCorner( QPainterPath &path, const QLineF originalLine, const int indexCorner ) const;
 
-	const QPointF & drawArrow(QPainterPath pp_arrows, UnknownType param2, UnknownType param3, OptimaConnectorArrow beginArrow, bool param5);
 };
 
 

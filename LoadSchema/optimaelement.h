@@ -2,6 +2,7 @@
 #include <QtXml/QDOMDocument>
 #include "optimapoint.h"
 #include "optimaconnectorarrow.h"
+#include "OptimaCross.h"
 
 class OptimaElement
 {
@@ -27,11 +28,14 @@ protected:
 
 	///Получить из xml - описателя поле
 	const QDomElement getXmlNode(const QString & name) const;
-	
+
 	qreal getXmlValue(const QString & name, const qreal defaultValue) const;
-	void getXmlValue(const QString & name, QVector<OptimaPoint> &optimaPoints) const;
+	void getXmlValue(const QString & name, OptimaPointVector &optimaPoints) const;
 	void getXmlValue(const QString & name, OptimaPoint &optimaPoint) const;
 	void getXmlValue(const QString & name, OptimaConnectorArrow &optimaConnectorArrow) const;
+	void getXmlValue(const QString & name, OptimaCross &optimaCrossing) const;
+	QColor getXmlValue(const QString & name, const QColor defaultColor) const;
+	Qt::PenStyle getXmlValue(const QString & name, const Qt::PenStyle defaultStyle) const;
 	void setXmlValue(const QString & name, const qreal value) const;
 private:
 	QGraphicsItem *mItem;///<Указатель на графический объект - предок

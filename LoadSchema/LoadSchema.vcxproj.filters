@@ -77,6 +77,9 @@
     <ClCompile Include="optimaconnectorarrow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimacross.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -84,9 +87,6 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_loadschema.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OptimaElement.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimafigure.h">
       <Filter>Header Files</Filter>
@@ -98,6 +98,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimaconnectorarrow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimacross.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimaelement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

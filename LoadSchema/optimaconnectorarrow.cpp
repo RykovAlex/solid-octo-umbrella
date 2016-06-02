@@ -1,17 +1,35 @@
 #include "stdafx.h"
 #include "optimaconnectorarrow.h"
 
-
-
-OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape, QChar _mod, QChar _side) : mShape( _shape ), mMod( _mod ), mSide( _side )
+OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape, QChar _mod, QChar _side) 
+	: mShape( _shape )
+	, mMod( _mod )
+	, mSide( _side )
+	, mIsBegining(false)
 {
 }
 
-OptimaConnectorArrow::OptimaConnectorArrow(const QString &_shape, QChar _mod, QChar _side) : mShapeAsText( _shape ), mMod( _mod ), mSide( _side )
+OptimaConnectorArrow::OptimaConnectorArrow(const QString &_shape, QChar _mod, QChar _side) 
+	: mShapeAsText( _shape )
+	, mMod( _mod )
+	, mSide( _side )
+	, mIsBegining(false)
 {
 }
 
-OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape) : mShape( _shape ), mMod( '\0' ), mSide( '\0' )
+OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape) 
+	: mShape( _shape )
+	, mMod( '\0' )
+	, mSide( '\0' )
+	, mIsBegining(false)
+{
+}
+
+OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape, bool isBegining) 
+	: mShape( _shape )
+	, mMod( '\0' )
+	, mSide( '\0' )
+	, mIsBegining(isBegining)
 {
 }
 
@@ -155,7 +173,7 @@ void OptimaConnectorArrow::applyAsGraphviz(const QString & shapeName)
 	}
 }
 
-void OptimaConnectorArrow::getQuadPoints( const qreal arrowSize, const qreal arrowWidth,  const QLineF l0, QPointF &corner1, QPointF &corner2, QPointF &corner3, QPointF &corner4, QPointF &corner5, const bool isBegining )
+void OptimaConnectorArrow::getQuadPoints( const qreal arrowSize, const qreal arrowWidth,  const QLineF l0, QPointF &corner1, QPointF &corner2, QPointF &corner3, QPointF &corner4, QPointF &corner5 )
 {
 	const qreal diamond_angle = 90;
 	QLineF l1( l0 ), l2( l0 );
@@ -171,7 +189,7 @@ void OptimaConnectorArrow::getQuadPoints( const qreal arrowSize, const qreal arr
 	l3.setAngle( l3.angle( ) + diamond_angle );
 	l4.setAngle( l4.angle( ) - diamond_angle );
 
-	if ( isBegining )
+	if ( mIsBegining )
 	{
 		corner1 = l1.pointAt( arrowSize / 2 / l1.length() );
 		corner2 = l2.pointAt( arrowSize / 2 / l2.length() );
@@ -201,7 +219,7 @@ void OptimaConnectorArrow::rotateArrow( QPolygonF &poligon, const QPointF &atPoi
 	poligon = matrix.map( poligon );
 }
 
-QPointF OptimaConnectorArrow::drawArrow( QPainterPath & path, const QPointF & beginPoint, const QPointF & endPoint, bool isBegining )
+QPointF OptimaConnectorArrow::getPath( QPainterPath & path, const QPointF & beginPoint, const QPointF & endPoint )
 {
 	if ( *this == connector_arrow_no && !this->isLikeGraphviz() )
 		return beginPoint;
@@ -229,25 +247,25 @@ QPointF OptimaConnectorArrow::drawArrow( QPainterPath & path, const QPointF & be
 		)
 	{
 		// рисуем ромб
-		return drawDiamondArrow(l0, l1, l2, isBegining, path);
+		return drawDiamondArrow(l0, l1, l2, path);
 	} 
 	else 
 	if ( *this == "curve" )
 	{
 		// рисуем кривую
-		return drawCurveArrow(l0, isBegining, path);
+		return drawCurveArrow(l0, path);
 	} 
 	else 
 	if ( *this == "box" || *this == "tee" )
 	{
 		// рисуем квадрат и треть квадрата
-		return drawBoxArrow(l0, isBegining, path);
+		return drawBoxArrow(l0, path);
 	} 
 	else 
 	if ( *this == "inv" || *this == "normal" || ( *this == "vee" || *this == "crow" ) )
 	{		
 		// рисуем прямой и обратный треугольник
-		return drawTriangleArrow(l0, l1, l2, isBegining, path);
+		return drawTriangleArrow(l0, l1, l2, path);
 	}
 	else 
 	if ( *this == connector_arrow_filled )
@@ -434,12 +452,12 @@ QPointF OptimaConnectorArrow::drawFilledArrow(const QLineF &l0, QLineF &l1, QLin
 	return ret;
 }
 
-QPointF OptimaConnectorArrow::drawTriangleArrow(const QLineF &l0, QLineF &l1, QLineF &l2, bool isBegining, QPainterPath &path)
+QPointF OptimaConnectorArrow::drawTriangleArrow(const QLineF &l0, QLineF &l1, QLineF &l2, QPainterPath &path)
 {
 	QPolygonF pp;
 	QPointF corner1, corner2;
 
-	if ( isBegining )
+	if ( mIsBegining )
 	{
 		corner1 = l1.pointAt( mSize / l1.length() );
 		corner2 = l2.pointAt( mSize / l2.length() );
@@ -491,12 +509,12 @@ QPointF OptimaConnectorArrow::drawTriangleArrow(const QLineF &l0, QLineF &l1, QL
 	return ret;
 }
 
-QPointF OptimaConnectorArrow::drawBoxArrow(const QLineF &l0, bool isBegining, QPainterPath &path)
+QPointF OptimaConnectorArrow::drawBoxArrow(const QLineF &l0, QPainterPath &path)
 {
 	QPolygonF pp;
 	QPointF corner1, corner2, corner3, corner4, corner5;
 
-	getQuadPoints( mSize, ((*this == "tee") ? mSize / 3 : mSize), l0, corner1, corner2, corner3, corner4, corner5, isBegining );
+	getQuadPoints( mSize, ((*this == "tee") ? mSize / 3 : mSize), l0, corner1, corner2, corner3, corner4, corner5);
 
 	pp.push_back( l0.p1() );
 
@@ -538,11 +556,11 @@ QPointF OptimaConnectorArrow::drawBoxArrow(const QLineF &l0, bool isBegining, QP
 	return corner3;
 }
 
-QPointF OptimaConnectorArrow::drawCurveArrow(const QLineF &l0, bool isBegining, QPainterPath &path)
+QPointF OptimaConnectorArrow::drawCurveArrow(const QLineF &l0, QPainterPath &path)
 {
 	QPointF corner1, corner2, corner3, corner4, corner5;
 
-	getQuadPoints( mSize, mSize / 2, l0, corner1, corner2, corner3, corner4, corner5, isBegining );
+	getQuadPoints( mSize, mSize / 2, l0, corner1, corner2, corner3, corner4, corner5);
 
 	if ( this->isRight() )
 	{
@@ -560,7 +578,7 @@ QPointF OptimaConnectorArrow::drawCurveArrow(const QLineF &l0, bool isBegining, 
 	return l0.p1();
 }
 
-QPointF OptimaConnectorArrow::drawDiamondArrow(const QLineF &l0, QLineF &l1, QLineF &l2, bool isBegining, QPainterPath &path)
+QPointF OptimaConnectorArrow::drawDiamondArrow(const QLineF &l0, QLineF &l1, QLineF &l2, QPainterPath &path)
 {
 	QPolygonF pp;
 	const qreal diamond_angle = 30;
@@ -582,7 +600,7 @@ QPointF OptimaConnectorArrow::drawDiamondArrow(const QLineF &l0, QLineF &l1, QLi
 	l3.intersect( l2, &corner2 );
 	l4.intersect( l1, &corner1 );
 
-	if ( isBegining )
+	if ( mIsBegining )
 	{
 		l3.intersect( l2, &corner1 );
 		l4.intersect( l1, &corner2 );
