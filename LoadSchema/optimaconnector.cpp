@@ -16,7 +16,7 @@ void OptimaConnector::apply(const QDomNode & connector)
 	applyXml(connector);
 
 	//2. «аполним рабочие переменные
-	//Ёта переменна€ выделена из XML потому что испльзуютс€ при отрисовке
+	//Ёти переменные выделены из XML потому что испльзуютс€ при отрисовке
 	//«начение неизменно. не требует изменени€ XML при сохранении элемента
 	getXmlValue(tag::shape_begin, mBeginArrow);
 	mBeginArrow.setSize(getXmlValue(tag::size_shape_begin, 10.0));
@@ -29,6 +29,7 @@ void OptimaConnector::apply(const QDomNode & connector)
 	mRadiusCorner = getXmlValue(tag::radius_corner, 0.0);
 
 	//—охран€ем текущий карандаш, так как надо отрабатывать выделение коннеторов при подводе к ним мышки
+	//Ќачальные настройки карандаша устанавливаюс€ в applyXml
 	mPen = pen();
 	
 	
@@ -101,18 +102,6 @@ void OptimaConnector::draw()
 	}
 	
 	setPath( pathLine );
-
-	//if ( m_drop_shadow )
-	//{
-	//	QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();	
-	//	effect->setBlurRadius(10.);
-	//	m_lines->setGraphicsEffect( effect );
-	//}
-	//else
-	//{
-	//	m_lines->setGraphicsEffect( 0 );
-	//}	
-
 
 	//m_arrows->setZValue( m_z_order );
 	//m_arrows->setPath( pathArrow );

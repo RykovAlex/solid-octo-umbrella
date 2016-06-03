@@ -60,14 +60,22 @@ void OptimaElement::updateXml(const QDomNode &element)
 
 void OptimaElement::applyCommonProperties()
 {
+	//Задаем порядок отображеняи на схеме
 	mItem->setZValue(getXmlValue(tag::order, 1.0));
 
-	tag::drop_shadow
-	QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();	
-	effect->setBlurRadius(10.);
-	mItem->setGraphicsEffect( effect );
+	//Задаем отбрасывание тени
+	if ( getXmlValue(tag::drop_shadow, 0.0) != 0 )
+	{
+		QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();	
+		effect->setBlurRadius(10.0);
+		mItem->setGraphicsEffect( effect );
+	}
+	else
+	{
+		mItem->setGraphicsEffect( nullptr );
+	}	
 
-
+	//Задаем цвет и заливку или фон, по разному, в зависимости от разных объектов
 	QGraphicsPathItem *pathItem = dynamic_cast<QGraphicsPathItem*>(mItem);
 	QGraphicsTextItem *textItem = dynamic_cast<QGraphicsTextItem*>(mItem);
 
