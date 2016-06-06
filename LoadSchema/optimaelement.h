@@ -14,17 +14,18 @@ public:
 	{
 	}
 
-	virtual void apply(const QDomNode &) = 0;
+	///Изменить переменные графического элемента согласно xml - описателю
+	virtual void apply() = 0;
 	virtual void draw()  = 0;
+
+	///Принять новый xml
+	void applyXml(const QDomNode & element);
 
 protected:	
 	typedef QVector<OptimaPoint> OptimaPointVector;
 
 	///Получить тектовое представление xml
 	QString getXmlString(const QDomNode & element) const;
-
-	///Принять новый xml
-	void applyXml(const QDomNode & element);
 
 	///Получить из xml - описателя поле
 	const QDomElement getXmlNode(const QString & name) const;
@@ -36,7 +37,11 @@ protected:
 	void getXmlValue(const QString & name, OptimaCross &optimaCrossing) const;
 	QColor getXmlValue(const QString & name, const QColor defaultColor) const;
 	Qt::PenStyle getXmlValue(const QString & name, const Qt::PenStyle defaultStyle) const;
+	QString getXmlValue(const QString & name, const QString &defaultString) const;
+	const QFont getXmlValue(const QString & name, const QFont &defaultFont) const;
+
 	void setXmlValue(const QString & name, const qreal value) const;
+
 private:
 	QGraphicsItem *mItem;///<Указатель на графический объект - предок
 
@@ -45,6 +50,7 @@ private:
 	///Применить изменения согласно новому xml - описателю путем внесения изменний в существующий xml
 	void updateXml(const QDomNode &element);
 
+	///Изменить общие переменные для всех графических элементов согласно xml - описателю
 	void applyCommonProperties();
 };
 

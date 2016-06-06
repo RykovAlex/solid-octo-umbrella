@@ -80,6 +80,9 @@
     <ClCompile Include="optimacross.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimatext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -104,6 +107,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimaelement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimatext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

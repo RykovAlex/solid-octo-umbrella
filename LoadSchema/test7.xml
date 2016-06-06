@@ -1,0 +1,30 @@
+<Schema>
+  <TextLabel>
+    <ID>5d0366ef-4004-4342-b016-1a56ea3c01f9</ID>
+    <IDOwner>c0979283-ceb4-47fc-8d46-4a20a8404771</IDOwner>
+    <TextColor>000000ff</TextColor>
+    <BackColor>00000000</BackColor>
+    <Text>Диспетчер</Text>
+    <HAlign></HAlign>
+    <PosCoordinate>1405:1025</PosCoordinate>
+    <Order>83</Order>
+    <NameFont>Arial</NameFont>
+    <SizeFont>10</SizeFont>
+    <BoldFont>0</BoldFont>
+    <ItalicFont>0</ItalicFont>
+    <UnderlineFont>0</UnderlineFont>
+    <StrikethruFont>0</StrikethruFont>
+    <LinkToOwner>TopLeft</LinkToOwner>
+    <Angle>0</Angle>
+    <TextWidth>70</TextWidth>
+    <StructureGroup>c0979283-ceb4-47fc-8d46-4a20a8404771,6963584e-7ee7-4d7d-b117-45bd7349eba9,5d0366ef-4004-4342-b016-1a56ea3c01f9</StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","НаименованиеЧасти"},
+{"S","ИмяЭлементаДереваПроцессов"}
+}
+}
+}</UserProperties>
+  </TextLabel>
+</Schema>

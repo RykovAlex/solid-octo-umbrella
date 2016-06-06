@@ -7,15 +7,13 @@ OptimaConnector::OptimaConnector(const QString &itemUuid)
 	:OptimaElement(this, itemUuid)
 	,mBeginArrow(connector_arrow_no, true)
 	,mEndArrow(connector_arrow_no, false)
+	,mIsHighlight(false)
 {
 }
 
-void OptimaConnector::apply(const QDomNode & connector)
+void OptimaConnector::apply()
 {
-	//1. ѕримем XML
-	applyXml(connector);
-
-	//2. «аполним рабочие переменные
+	//1. «аполним рабочие переменные
 	//Ёти переменные выделены из XML потому что испльзуютс€ при отрисовке
 	//«начение неизменно. не требует изменени€ XML при сохранении элемента
 	getXmlValue(tag::shape_begin, mBeginArrow);
@@ -37,13 +35,7 @@ void OptimaConnector::apply(const QDomNode & connector)
 	//“ребуетс€ изменить XML перед сохранением, дл€сохранени€ действий пользовател€
 	//Ќепосредственное испрользование из XML требует затрат процессора на посто€нное извлечение и перезапись,
 	//нерационально
-	//getXmlValue(tag::pos_coordinate, mPositionPoint );
-	//mScaleX = getXmlValue(tag::kx, 1.0);
 	getXmlValue(tag::structure_dot, mPoints );
-
-	//3. Ќарисуем
-	draw();
-
 }
 
 void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)

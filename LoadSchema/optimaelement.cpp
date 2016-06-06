@@ -30,6 +30,8 @@ void OptimaElement::applyXml(const QDomNode & element)
 	}
 
 	applyCommonProperties();
+
+	apply();
 }
 
 void OptimaElement::updateXml(const QDomNode &element)
@@ -186,6 +188,38 @@ Qt::PenStyle OptimaElement::getXmlValue(const QString & name, const Qt::PenStyle
 	else
 		return Qt::SolidLine;
 
+}
+
+QString OptimaElement::getXmlValue(const QString & name, const QString &defaultString) const
+{
+	QDomNode node(mNodeXml.namedItem( name ));
+
+	if (node.isNull())
+	{
+		return defaultString;
+	} 
+
+	return node.toElement( ).text( );
+}
+
+const QFont OptimaElement::getXmlValue(const QString & name, const QFont &defaultFont) const
+{
+	QDomNode node(mNodeXml.namedItem( tag::name_font ));
+	
+	if (node.isNull())
+	{
+		return defaultFont;
+	}
+
+	QFont font(node.toElement( ).text());
+	font.setPointSize(getXmlValue(tag::size_font, 10.0));
+	font.setBold(getXmlValue(tag::bold_font, 0.0));
+	font.setItalic(getXmlValue(tag::italic_font, 0.0));
+	font.setUnderline(getXmlValue(tag::underline_font, 0.0));
+	font.setStrikeOut(getXmlValue(tag::strikethru_font, 0.0));
+
+
+	return font;
 }
 
 void OptimaElement::setXmlValue(const QString & name, const qreal value) const

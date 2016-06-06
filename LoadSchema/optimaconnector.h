@@ -14,7 +14,10 @@ public:
 	}
 	
 	///Применить изенения переданне через струтуру xml
-	void apply(const QDomNode & connector);
+	void apply();
+
+	//Рисует коннетор, точнее формирует путь, которй добавляется на схему
+	void draw();
 
 protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -32,8 +35,6 @@ private:
 	qreal mRadiusCorner;///< радиус скругления углов коннетора
 	
 	QPainterPath mPathArrow;
-	//Рисует коннетор, точнее формирует путь, которй добавляется на схему
-	void draw();
 	
 	qreal getCircleRadius(const int indexCorner) const;
 	

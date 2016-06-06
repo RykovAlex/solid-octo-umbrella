@@ -104,6 +104,7 @@
     <ClCompile Include="optimafigure.cpp" />
     <ClCompile Include="optimacross.cpp" />
     <ClCompile Include="optimapoint.cpp" />
+    <ClCompile Include="optimatext.cpp" />
     <ClCompile Include="optimaview.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -138,6 +139,7 @@
     <ClInclude Include="optimafigure.h" />
     <ClInclude Include="optimacross.h" />
     <ClInclude Include="optimapoint.h" />
+    <ClInclude Include="optimatext.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

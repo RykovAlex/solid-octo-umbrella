@@ -6,12 +6,9 @@ OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this, itemUu
 {
 }
 
-void OptimaFigure::apply(const QDomNode & figure)
+void OptimaFigure::apply()
 {
-	//1. Примем XML
-	applyXml(figure);
-
-	//2. Заполним рабочие переменные
+	//1. Заполним рабочие переменные
 	//Эта переменная выделена из XML потому что при изменении размера фигуры
 	//постоянно требуется пересчет, теоритически можно извлекать непосредственно перед использованием
 	//а не хранить. Значение неизменно. не требует изменения XML при сохранении элемента
@@ -26,10 +23,7 @@ void OptimaFigure::apply(const QDomNode & figure)
 	mScaleX = getXmlValue(tag::kx, 1.0);
 	mScaleY = getXmlValue(tag::ky, 1.0);
 
-	//3. Нарисуем
-	draw();
-
-	//4. Переестим в нужную позицию на схеме
+	//3. Переестим в нужную позицию на схеме
 	setPos(mPositionPoint);
 }
 
@@ -96,6 +90,7 @@ void OptimaFigure::draw()
 
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
+
 }
 
 QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const

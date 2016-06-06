@@ -4,6 +4,7 @@
 #include "optimaelement.h"
 #include "optimafigure.h"
 #include "optimaconnector.h"
+#include "optimatext.h"
 
 OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent) 
 { 
@@ -32,7 +33,8 @@ void OptimaView::load(const QDomNodeList &elements, bool loadAllways)
 
 		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
 		//к графическому элементу, после этого он отрисуется на схеме
-		item->apply(element);
+		item->applyXml(element);
+		item->draw();
 	}
 
 }
@@ -109,6 +111,7 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 		//load_workspace_from_xml( doc_el.namedItem( tag::workspace ) );
 		load<OptimaFigure>( docElement.elementsByTagName( tag::figure ), load_allways );
 		load<OptimaConnector>( docElement.elementsByTagName( tag::line ), load_allways );
+		load<OptimaText>( docElement.elementsByTagName( tag::text_label ), load_allways );
 		//load_text_labels( doc_el.elementsByTagName( tag::text_label ), current_doc.documentElement().childNodes() );
 	}
 	catch (std::exception* e)

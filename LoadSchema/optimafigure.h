@@ -13,12 +13,15 @@ public:
 	}
 
 	///Применить изенения переданне через струтуру xml
-	void apply(const QDomNode & figure);
+	void apply();
 
+	///Задать контуры фигуры
+	void draw();
 
 protected:
 
 private:
+
 	OptimaPointVector mPoints;///< действительные точки фигуры, для отрисовке на сцене
 
 	OptimaPointVector mOriginalPoints;///< начальные точки фигуры для преобразования
@@ -28,9 +31,6 @@ private:
 	qreal mScaleX;///< коэффициент масштабирования по оси X
 
 	qreal mScaleY;///< коэффициент масштабирования по оси Y
-
-	///Задать контуры фигуры
-	void draw();
 
 	///Создает отрезок фигуры за минусом радиуса скругления
 	QLineF createLineToCurve(int iStart, int iEnd) const;
