@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "tag.h"
 #include "optimafigure.h"
+#include "optimapath.h"
 
 OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this, itemUuid)
 {
@@ -14,7 +15,7 @@ void OptimaFigure::apply()
 	//а не хранить. Значение неизменно. не требует изменения XML при сохранении элемента
 	getXmlValue(tag::structure_dot, mOriginalPoints );
 	mOriginalPoints << mOriginalPoints.first( );
-
+	
 	//Значения этих трех переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
 	//Требуется изменить XML перед сохранением, длясохранения действий пользователя
 	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,

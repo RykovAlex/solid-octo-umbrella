@@ -42,6 +42,8 @@ private:
 
 	bool mIsHighlight;
 	QPen mPen;
+public:
+	void buildIntersection(const QList<QGraphicsItem*> &itemList);
 };
 
 

@@ -2,6 +2,7 @@
 #include "optimaconnector.h"
 #include "tag.h"
 #include "OptimaCross.h"
+#include "optimapath.h"
 
 OptimaConnector::OptimaConnector(const QString &itemUuid) 
 	:OptimaElement(this, itemUuid)
@@ -28,8 +29,7 @@ void OptimaConnector::apply()
 
 	//Сохраняем текущий карандаш, так как надо отрабатывать выделение коннеторов при подводе к ним мышки
 	//Начальные настройки карандаша устанавливаюся в applyXml
-	mPen = pen();
-	
+	mPen = pen();	
 	
 	//Значения этих переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
 	//Требуется изменить XML перед сохранением, длясохранения действий пользователя
@@ -57,8 +57,7 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 }
 
 void OptimaConnector::draw()
-{
-	QPainterPath pathLine;
+{	
 	QPolygonF points;
 
 	Q_ASSERT(mPoints.size() >= 2);
@@ -77,7 +76,7 @@ void OptimaConnector::draw()
 
 	points.push_back( endPoint);
 
-	pathLine.moveTo( *points.begin() );
+	QPainterPath pathLine(*points.begin());
 
 	for ( int i = 1; i < points.size(); ++i )
 	{
@@ -92,6 +91,9 @@ void OptimaConnector::draw()
 		// дорисовываем до угла и сам угол
 		drawCorner( pathLine, originalLine, i );
 	}
+
+	OptimaPath a(pathLine);
+	qDebug() << a;
 	
 	setPath( pathLine );
 
@@ -182,5 +184,29 @@ void OptimaConnector::drawCorner( QPainterPath &path, const QLineF originalLine,
 
 	path.lineTo( line1.p2() );
 	path.quadTo ( original_line1.p2(), line2.p2() );
+}
+
+void OptimaConnector::buildIntersection(const QList<QGraphicsItem*> &itemList)
+{
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		OptimaConnector* item = dynamic_cast<OptimaConnector*>(*i);
+		if (item == nullptr)
+		{
+			continue;
+		}
+		if (item == this)
+		{
+			continue;
+		}
+		if (path().intersects(item->path()))
+		{
+			QPolygonF intersectionPath = path().toSubpathPolygons().at(0).intersected(  item->path().toSubpathPolygons().at(0) );
+
+			qDebug() << intersectionPath;
+
+			QPolygonF g;
+		}
+	}
 
 }

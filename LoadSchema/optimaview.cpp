@@ -81,6 +81,23 @@ QString OptimaView::getUuid(QGraphicsItem* item)
 }
 
 
+void OptimaView::buildIntersectionConnectors()
+{
+	const QList<QGraphicsItem*> itemList = items();
+	
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		OptimaConnector* item = dynamic_cast<OptimaConnector*>(*i);
+		if (item == nullptr)
+		{
+			continue;
+		}
+		
+		item->buildIntersection(itemList);
+	}
+
+}
+
 QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 {
 	//setScene( new QGraphicsScene );
@@ -112,7 +129,8 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 		load<OptimaFigure>( docElement.elementsByTagName( tag::figure ), load_allways );
 		load<OptimaConnector>( docElement.elementsByTagName( tag::line ), load_allways );
 		load<OptimaText>( docElement.elementsByTagName( tag::text_label ), load_allways );
-		//load_text_labels( doc_el.elementsByTagName( tag::text_label ), current_doc.documentElement().childNodes() );
+
+		buildIntersectionConnectors();
 	}
 	catch (std::exception* e)
 	{

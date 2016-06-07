@@ -444,6 +444,7 @@ QPointF OptimaConnectorArrow::drawFilledArrow(const QLineF &l0, QLineF &l1, QLin
 	pp.push_back( corner1 );
 	const QPointF corner2 = l2.pointAt( mSize / l2.length() );
 	pp.push_back( corner2 );
+	
 	pp.push_back( l0.p1() );
 	path.addPolygon( pp );
 	QPointF ret;

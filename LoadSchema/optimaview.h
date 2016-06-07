@@ -29,4 +29,5 @@ private:
 	T *getItem(const QString &itemUuid);
 
 	QString getUuid(QGraphicsItem* item);
+	void buildIntersectionConnectors();
 };

@@ -22,8 +22,6 @@ public:
 	void applyXml(const QDomNode & element);
 
 protected:	
-	typedef QVector<OptimaPoint> OptimaPointVector;
-
 	///Получить тектовое представление xml
 	QString getXmlString(const QDomNode & element) const;
 

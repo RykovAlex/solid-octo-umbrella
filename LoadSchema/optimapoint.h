@@ -36,4 +36,5 @@ private:
 
 };
 
+typedef QVector<OptimaPoint> OptimaPointVector;
 

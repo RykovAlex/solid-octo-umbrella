@@ -52,7 +52,7 @@ void OptimaText::draw()
 		//Почему то текст в Win7 при тех же настройках шрифта немного больше чем Xp
 		//это должно решить проблему
 		int deltaWidth = boundingRect().width() - mTextWidth;
-		if (deltaWidth > 0 && deltaWidth < 5)
+		if (deltaWidth > 0 && deltaWidth < 3)
 		{
 			mTextWidth = textWidth();
 		}
