@@ -21,6 +21,53 @@ const OptimaCorner& OptimaPath::cornerAt(int i) const
 	return mCorners.at(i);
 }
 
+void OptimaPath::lineTo(const QPointF &endPoint)
+{
+	mLines.push_back(QLineF(mCurrentPosition, endPoint));
+	mCurrentPosition = endPoint;
+}
+
+qreal OptimaPath::getCornerRadius(const QLineF &line1, const QLineF &line2, qreal radius) const
+{
+	qreal radius( mRadiusCorner );
+
+	const QLineF line1( mPoints.at( indexCorner - 1 ), mPoints.at( indexCorner ) );
+	const QLineF line2( mPoints.at( indexCorner + 1), mPoints.at( indexCorner ) );
+
+	qreal len = std::min( line1.length(), line2.length() );
+
+	if ( len < radius * 2. )
+	{
+		radius = len / 2.;
+	}
+
+	return radius;
+
+}
+
+void OptimaPath::lineTo(const QPointF &endPoint, QLineF nextLine, qreal radius)
+{
+	QLineF firstLine(mCurrentPosition, endPoint);
+
+	//проверим что радиус скругления не больше чем размер отрезка, в противном случае уменьшим радиус
+	//скругления до половины размера отрезка и применим этот радиус также и ко второму отрезку
+	qreal len = std::min(firstLine.length(), nextLine.length());
+
+	if ( len < radius * 2. )
+	{
+		radius = len / 2.;
+	}
+
+	firstLine.setLength( firstLine.length() - radius );
+	nextLine.setLength( nextLine.length() - radius );
+
+	mLines.push_back(firstLine);
+	
+	mCorners.push_back(OptimaCorner(firstLine.p2(), endPoint, nextLine.p2()));
+	
+	mCurrentPosition = nextLine.p2();
+}
+
 void OptimaPath::initialize(const QPainterPath & points)
 {
 	mLines.clear();

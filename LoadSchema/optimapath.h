@@ -10,6 +10,10 @@ public:
 		initialize(points);
 	}
 
+	OptimaPath(const QPointF &startPoint): mCurrentPosition(startPoint)
+	{
+	}
+
 	~OptimaPath()
 	{
 	}
@@ -18,6 +22,8 @@ public:
 	const QLineF& lineAt(int i) const;
 	int cornersCount() const;
 	const OptimaCorner& cornerAt(int i) const;
+	void lineTo(const QPointF &endPoint);
+	void lineTo(const QPointF &endPoint, QLineF nextLine, qreal radius);
 protected:
 
 private:
@@ -27,6 +33,7 @@ private:
 
 	void initialize(const QPainterPath & points);
 
+	QPointF mCurrentPosition;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

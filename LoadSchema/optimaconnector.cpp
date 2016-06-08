@@ -64,10 +64,15 @@ void OptimaConnector::draw()
 
 	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
 	QPointF startPoint = mBeginArrow.getPath(mPathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
+
+	OptimaPath a(startPoint);
+
 	points.push_back( startPoint );
 
 	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
 	{
+		a.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i ), mRadiusCorner));
+
 		points.push_back( mPoints.at( i ) );
 	}
 
@@ -77,9 +82,10 @@ void OptimaConnector::draw()
 	points.push_back( endPoint);
 
 	QPainterPath pathLine(*points.begin());
-
 	for ( int i = 1; i < points.size(); ++i )
 	{
+
+		
 		// учтем расстояние занимаемое элементом в начале отрезка, тэг ShapeBegin
 		qreal lengthFromBegin = QLineF(mPoints.at(i - 1), points.at( i - 1 )).length();
 
@@ -92,7 +98,7 @@ void OptimaConnector::draw()
 		drawCorner( pathLine, originalLine, i );
 	}
 
-	OptimaPath a(pathLine);
+	
 	qDebug() << a;
 	
 	setPath( pathLine );
