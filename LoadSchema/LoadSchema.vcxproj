@@ -103,6 +103,7 @@
     <ClCompile Include="optimaelement.cpp" />
     <ClCompile Include="optimafigure.cpp" />
     <ClCompile Include="optimacross.cpp" />
+    <ClCompile Include="optimaline.cpp" />
     <ClCompile Include="optimapath.cpp" />
     <ClCompile Include="optimapoint.cpp" />
     <ClCompile Include="optimatext.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="optimaelement.h" />
     <ClInclude Include="optimafigure.h" />
     <ClInclude Include="optimacross.h" />
+    <ClInclude Include="optimaline.h" />
     <ClInclude Include="optimapath.h" />
     <ClInclude Include="optimapoint.h" />
     <ClInclude Include="optimatext.h" />

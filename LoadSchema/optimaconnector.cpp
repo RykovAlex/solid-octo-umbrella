@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "optimaconnector.h"
 #include "tag.h"
-#include "OptimaCross.h"
-#include "optimapath.h"
 
 OptimaConnector::OptimaConnector(const QString &itemUuid) 
 	:OptimaElement(this, itemUuid)
@@ -58,141 +56,51 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 
 void OptimaConnector::draw()
 {	
-	QPolygonF points;
-
 	Q_ASSERT(mPoints.size() >= 2);
 
+	//Здесь будут изображения стрелок начала и конца коннетора
+	QPainterPath pathArrow;
+	
 	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
-	QPointF startPoint = mBeginArrow.getPath(mPathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
+	QPointF startPoint = mBeginArrow.getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
 
-	OptimaPath a(startPoint);
-
-	points.push_back( startPoint );
+	mConnectorPath = OptimaPath(startPoint);
 
 	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
 	{
-		a.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i ), mRadiusCorner));
-
-		points.push_back( mPoints.at( i ) );
+		mConnectorPath.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i )), mRadiusCorner);
 	}
 
 	// рисуем конец
-	const QPointF endPoint = mEndArrow.getPath( mPathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
-
-	points.push_back( endPoint);
-
-	QPainterPath pathLine(*points.begin());
-	for ( int i = 1; i < points.size(); ++i )
-	{
-
-		
-		// учтем расстояние занимаемое элементом в начале отрезка, тэг ShapeBegin
-		qreal lengthFromBegin = QLineF(mPoints.at(i - 1), points.at( i - 1 )).length();
-
-		// точки пересечения с текущим отрезком храняться от начала отрезка
-		const QLineF originalLine(points.at( i - 1 ), points.at( i ));
-		mCross.draw( pathLine, originalLine,  mPoints.at(i - 1).getCrossingWithConnetorLengths(), lengthFromBegin );
-
-		// точка рисования остановилась после последнего пересечения
-		// дорисовываем до угла и сам угол
-		drawCorner( pathLine, originalLine, i );
-	}
-
+	const QPointF endPoint = mEndArrow.getPath( pathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
 	
-	qDebug() << a;
+	mConnectorPath.lineTo(endPoint);
 	
-	setPath( pathLine );
+	// сохраним для отрисовки в paint()
+	mPathArrow = pathArrow;
 
-	//m_arrows->setZValue( m_z_order );
-	//m_arrows->setPath( pathArrow );
-
-	//QBrush con_brush( m_color, Qt::SolidPattern );
-	//m_arrows->setBrush( con_brush );
-	//m_arrows->setPen( con_pen );
-	//if ( m_drop_shadow )
+	//for ( int i = 1; i < points.size(); ++i )
 	//{
-	//	QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();	
-	//	effect->setBlurRadius(10.);
-	//	m_arrows->setGraphicsEffect( effect );
+	//	// точки пересечения с текущим отрезком храняться от начала отрезка
+	//	const QLineF originalLine(points.at( i - 1 ), points.at( i ));
+	//	mCross.draw( pathLine, originalLine,  mPoints.at(i - 1).getCrossingWithConnetorLengths(), lengthFromBegin );
+
 	//}
-	//else
-	//{
-	//	m_arrows->setGraphicsEffect( 0 );
-	//}	
-	//m_scene->addItem( m_arrows.data() );
-
+	
+	setPath( mConnectorPath.toPath() );
+	
 	//if ( is_selected( ) )
 	//{
 	//	redraw_coners( redraw_borders );
 	//}
 }
 
-qreal OptimaConnector::getCircleRadius(const int indexCorner) const
+void OptimaConnector::intersected(const OptimaPath & connectorPath)
 {
-	qreal radius( mRadiusCorner );
-
-	const QLineF line1( mPoints.at( indexCorner - 1 ), mPoints.at( indexCorner ) );
-	const QLineF line2( mPoints.at( indexCorner + 1), mPoints.at( indexCorner ) );
-
-	qreal len = std::min( line1.length(), line2.length() );
-
-	if ( len < radius * 2. )
-	{
-		radius = len / 2.;
-	}
-
-	return radius;
-
+	mConnectorPath.intersected(connectorPath);
 }
 
-void OptimaConnector::drawCorner( QPainterPath &path, const QLineF originalLine, const int indexCorner ) const
-{
-	Q_ASSERT( mPoints.count() > indexCorner );
-
-	const QLineF original_line1( mPoints.at( indexCorner - 1 ), mPoints.at( indexCorner ) );
-	QLineF line1( original_line1 );
-
-	// это конец отрезка или радиус не задан или это коннектор не angled 
-	if ( mRadiusCorner == 0.0 || indexCorner + 1 >= mPoints.count() )
-	{
-		path.lineTo( originalLine.p2() );
-		return;
-	}
-
-	QLineF line2( mPoints.at( indexCorner + 1 ), mPoints.at( indexCorner ) );
-
-	// отсечем нулевые отрезки
-	if ( line1.length() == 0 || line2.length() == 0 )
-	{
-		path.lineTo( original_line1.p2() );
-		return;
-	}
-
-	// это последовательные прямые
-	if ( line1.intersect( line2, NULL ) == QLineF::NoIntersection )
-	{
-		path.lineTo( original_line1.p2() );
-		return;
-	}
-
-	qreal radius = getCircleRadius( indexCorner );
-
-	line1.setLength( line1.length() - radius );
-	line2.setLength( line2.length() - radius );
-
-	qreal angle = line1.angleTo( QLineF( line2.p1(), line2.p2() ) );
-
-	if ( angle == 0. )
-	{
-		path.lineTo( original_line1.p2() );
-		return;
-	}
-
-	path.lineTo( line1.p2() );
-	path.quadTo ( original_line1.p2(), line2.p2() );
-}
-
-void OptimaConnector::buildIntersection(const QList<QGraphicsItem*> &itemList)
+void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList)
 {
 	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
 	{
@@ -205,14 +113,13 @@ void OptimaConnector::buildIntersection(const QList<QGraphicsItem*> &itemList)
 		{
 			continue;
 		}
-		if (path().intersects(item->path()))
+		if (zValue() > item->zValue())
 		{
-			QPolygonF intersectionPath = path().toSubpathPolygons().at(0).intersected(  item->path().toSubpathPolygons().at(0) );
-
-			qDebug() << intersectionPath;
-
-			QPolygonF g;
+			intersected(item->mConnectorPath);
 		}
+		else
+		{
+			item->intersected(mConnectorPath);
+		}		
 	}
-
 }

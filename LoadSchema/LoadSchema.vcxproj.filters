@@ -86,6 +86,9 @@
     <ClCompile Include="optimapath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimaline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -119,6 +122,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimacorner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimaline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

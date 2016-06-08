@@ -3,6 +3,7 @@
 #include <QtXml/QDOMDocument>
 #include "optimapoint.h"
 #include "optimaconnectorarrow.h"
+#include "optimapath.h"
 
 class OptimaConnector : public QGraphicsPathItem, public OptimaElement
 {
@@ -18,6 +19,8 @@ public:
 
 	//Рисует коннетор, точнее формирует путь, которй добавляется на схему
 	void draw();
+
+	void getIntersection(const QList<QGraphicsItem*> &itemList);
 
 protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -36,14 +39,13 @@ private:
 	
 	QPainterPath mPathArrow;
 	
-	qreal getCircleRadius(const int indexCorner) const;
-	
-	void drawCorner( QPainterPath &path, const QLineF originalLine, const int indexCorner ) const;
+	OptimaPath mConnectorPath;
 
 	bool mIsHighlight;
+
 	QPen mPen;
-public:
-	void buildIntersection(const QList<QGraphicsItem*> &itemList);
+
+	void intersected(const OptimaPath & connectorPath);
 };
 
 

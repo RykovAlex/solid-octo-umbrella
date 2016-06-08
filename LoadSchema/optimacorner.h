@@ -4,6 +4,10 @@
 class OptimaCorner : public QPolygonF
 {
 public:
+	OptimaCorner()
+	{
+	}
+
 	OptimaCorner(const QPointF &startPoint, const QPointF &cornerPoint, const QPointF &endPoint )
 	{
 		push_back(startPoint);

@@ -93,7 +93,7 @@ void OptimaView::buildIntersectionConnectors()
 			continue;
 		}
 		
-		item->buildIntersection(itemList);
+		item->getIntersection(itemList);
 	}
 
 }
