@@ -34,7 +34,8 @@ void OptimaView::load(const QDomNodeList &elements, bool loadAllways)
 		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
 		//к графическому элементу, после этого он отрисуется на схеме
 		item->applyXml(element);
-		item->draw();
+		
+		item->draw(true);
 	}
 
 }
@@ -84,7 +85,20 @@ QString OptimaView::getUuid(QGraphicsItem* item)
 void OptimaView::buildIntersectionConnectors()
 {
 	const QList<QGraphicsItem*> itemList = items();
-	
+
+	//очистку приходится делать отдельно, так как пересечения с углами не подчиняется правилу zOrder
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		OptimaConnector* item = dynamic_cast<OptimaConnector*>(*i);
+		if (item == nullptr)
+		{
+			continue;
+		}
+
+		//очистим предыдущие точки пересечения
+		item->clearIntersection();
+	}
+
 	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
 	{
 		OptimaConnector* item = dynamic_cast<OptimaConnector*>(*i);
@@ -93,7 +107,9 @@ void OptimaView::buildIntersectionConnectors()
 			continue;
 		}
 		
-		item->getIntersection(itemList);
+		item->getIntersection(itemList, i - itemList.constBegin());
+
+		item->draw();
 	}
 
 }

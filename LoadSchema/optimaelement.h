@@ -16,7 +16,7 @@ public:
 
 	///Изменить переменные графического элемента согласно xml - описателю
 	virtual void apply() = 0;
-	virtual void draw()  = 0;
+	virtual void draw(bool isProcessLoading = false) = 0;
 
 	///Принять новый xml
 	void applyXml(const QDomNode & element);

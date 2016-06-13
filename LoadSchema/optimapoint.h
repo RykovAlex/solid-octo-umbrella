@@ -18,18 +18,12 @@ public:
 	///getter для радиуса скругления
 	int getRadius() const;
 
-	const OptimaPoint::OptimaLengthVector & getCrossingWithConnetorLengths() const;
-	
-	void addCrossingWithConnetorLength(qreal length);
-
-	void clearCrossingWithConnetorLengths();
 
 protected:
 
+
 private:	
 	int mRadius;///<Радиус скругления в этой точке
-
-	OptimaLengthVector mCrossingWithConnectorLengths;///<Массив расстояний от этой точки, до точек пересечения с другими коннекторами
 
 	///Получить из строки вида x:y[:radius] точку и радиус скругления, и проинициализировать ими объект
 	void initialize( const QString & text );

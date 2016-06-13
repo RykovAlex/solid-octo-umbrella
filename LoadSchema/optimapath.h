@@ -2,6 +2,7 @@
 #include "optimapoint.h"
 #include "optimacorner.h"
 #include "optimaline.h"
+#include "OptimaCross.h"
 
 class OptimaPath
 {
@@ -10,9 +11,7 @@ public:
 
 	OptimaPath(const QPainterPath &points);
 
-	OptimaPath(const QPointF &startPoint): mCurrentPosition(startPoint)
-	{
-	}
+	OptimaPath(const QPointF &startPoint, const OptimaCross & cross);
 
 	~OptimaPath()
 	{
@@ -32,20 +31,29 @@ public:
 	
 	const QPainterPath toPath() const;
 
+	QVector<qreal> intersected(const OptimaLine & otherLine, int start = 0);
 
+	void intersected(OptimaPath & path);
 
-	void intersected(const OptimaPath path);
+	void clearIntersection();
+
 protected:
 
 
-
 private:
+	OptimaCross mCross;
 
 	QVector<OptimaLine> mLines;
 	
 	QPointF mCurrentPosition;
 
 	void initialize(const QPainterPath & points);
+
+	template <class T>
+	bool getIntersectionPoint(const T & line, const OptimaLine &otherLine, QPointF *intersectionPoint) const;
+
+	qreal getLineSublength(const OptimaLine &line, const QPointF & point) const;
+
 };
 
 #ifndef QT_NO_DEBUG_STREAM

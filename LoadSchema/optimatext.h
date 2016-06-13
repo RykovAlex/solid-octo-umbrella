@@ -14,7 +14,7 @@ public:
 
 	virtual void apply();
 
-	virtual void draw();
+	virtual void draw(bool isProcessLoading = false);
 
 protected:
 

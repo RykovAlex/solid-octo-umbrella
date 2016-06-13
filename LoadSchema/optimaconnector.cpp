@@ -34,6 +34,9 @@ void OptimaConnector::apply()
 	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,
 	//нерационально
 	getXmlValue(tag::structure_dot, mPoints );
+
+	//Зная точки построим непосредственно коннектор
+	buildPath(mCross);
 }
 
 void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
@@ -54,17 +57,33 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 	painter->drawPath(mPathArrow);
 }
 
-void OptimaConnector::draw()
+void OptimaConnector::draw(bool isProcessLoading /*= false*/)
 {	
+	//нет смысла рисовать коннетор до загрузки всех коннеткоров и определения точек их пересечения
+	//для коннекторов будет вызвана draw еще раз, после определения точек пересечения с другими коннеторами
+	if (isProcessLoading)
+	{
+		return;
+	}
+	
+	setPath( mConnectorPath.toPath() );
+	//if ( is_selected( ) )
+	//{
+	//	redraw_coners( redraw_borders );
+	//}
+}
+
+void OptimaConnector::buildPath(const OptimaCross & cross)
+{
 	Q_ASSERT(mPoints.size() >= 2);
 
 	//Здесь будут изображения стрелок начала и конца коннетора
 	QPainterPath pathArrow;
-	
+
 	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
 	QPointF startPoint = mBeginArrow.getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
 
-	mConnectorPath = OptimaPath(startPoint);
+	mConnectorPath = OptimaPath(startPoint, cross);
 
 	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
 	{
@@ -73,46 +92,31 @@ void OptimaConnector::draw()
 
 	// рисуем конец
 	const QPointF endPoint = mEndArrow.getPath( pathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
-	
+
 	mConnectorPath.lineTo(endPoint);
-	
+
 	// сохраним для отрисовки в paint()
 	mPathArrow = pathArrow;
-
-	//for ( int i = 1; i < points.size(); ++i )
-	//{
-	//	// точки пересечения с текущим отрезком храняться от начала отрезка
-	//	const QLineF originalLine(points.at( i - 1 ), points.at( i ));
-	//	mCross.draw( pathLine, originalLine,  mPoints.at(i - 1).getCrossingWithConnetorLengths(), lengthFromBegin );
-
-	//}
-	
-	setPath( mConnectorPath.toPath() );
-	
-	//if ( is_selected( ) )
-	//{
-	//	redraw_coners( redraw_borders );
-	//}
 }
 
-void OptimaConnector::intersected(const OptimaPath & connectorPath)
+void OptimaConnector::intersected(OptimaPath & connectorPath)
 {
 	mConnectorPath.intersected(connectorPath);
 }
 
-void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList)
+void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList, int start)
 {
-	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin() + start; i != itemList.constEnd(); ++i )
 	{
 		OptimaConnector* item = dynamic_cast<OptimaConnector*>(*i);
 		if (item == nullptr)
 		{
 			continue;
 		}
-		if (item == this)
-		{
-			continue;
-		}
+
+		// определим какой конннетор выше, он и будет запоминать точки
+		// так как при пересечении угла не важно какой элемент выше, то в item->mConnectorPath
+		// также могут быть добавленый точки пересечения с углами этого коннетора
 		if (zValue() > item->zValue())
 		{
 			intersected(item->mConnectorPath);
@@ -122,4 +126,9 @@ void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList)
 			item->intersected(mConnectorPath);
 		}		
 	}
+}
+
+void OptimaConnector::clearIntersection()
+{
+	mConnectorPath.clearIntersection();
 }

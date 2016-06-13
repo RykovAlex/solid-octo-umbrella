@@ -16,7 +16,7 @@ public:
 	void apply();
 
 	///Задать контуры фигуры
-	void draw();
+	void draw(bool isProcessLoading = false);
 
 protected:
 

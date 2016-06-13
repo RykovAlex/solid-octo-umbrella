@@ -22,21 +22,6 @@ int OptimaPoint::getRadius() const
 	return mRadius;
 }
 
-const OptimaPoint::OptimaLengthVector & OptimaPoint::getCrossingWithConnetorLengths() const
-{
-	return mCrossingWithConnectorLengths;
-}
-
-void OptimaPoint::addCrossingWithConnetorLength(qreal length)
-{
-	mCrossingWithConnectorLengths.push_back(length);
-}
-
-void OptimaPoint::clearCrossingWithConnetorLengths()
-{
-	mCrossingWithConnectorLengths.clear();
-}
-
 void OptimaPoint::initialize( const QString & text )
 {
 	if ( text.isEmpty( ) )

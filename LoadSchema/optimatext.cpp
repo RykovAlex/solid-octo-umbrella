@@ -31,7 +31,7 @@ void OptimaText::apply()
 	setPos(mPositionPoint);
 }
 
-void OptimaText::draw()
+void OptimaText::draw(bool isProcessLoading /*= flase*/)
 {
 	if (mHalign.isEmpty())
 	{

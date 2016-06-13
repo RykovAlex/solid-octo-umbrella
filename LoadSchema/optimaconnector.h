@@ -18,10 +18,13 @@ public:
 	void apply();
 
 	//Рисует коннетор, точнее формирует путь, которй добавляется на схему
-	void draw();
+	void draw(bool isProcessLoading = false);
 
-	void getIntersection(const QList<QGraphicsItem*> &itemList);
+	void buildPath(const OptimaCross & cross);
 
+	void getIntersection(const QList<QGraphicsItem*> &itemList, int start);
+
+	void clearIntersection();
 protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		QWidget *widget = 0);
@@ -45,7 +48,7 @@ private:
 
 	QPen mPen;
 
-	void intersected(const OptimaPath & connectorPath);
+	void intersected(OptimaPath & connectorPath);
 };
 
 

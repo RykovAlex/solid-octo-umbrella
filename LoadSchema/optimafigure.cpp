@@ -56,7 +56,7 @@ void OptimaFigure::scale()
 
 }
 
-void OptimaFigure::draw()
+void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 {
 	scale();
 	

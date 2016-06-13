@@ -17,18 +17,16 @@ void OptimaCross::apply(const QString &crossType)
 		mCrossType = connector_cross_full;
 }
 
-void OptimaCross::draw(QPainterPath &path, const QLineF & originalLine, const OptimaPoint::OptimaLengthVector & crossingLengths, const qreal lengthFromBegin)
+void OptimaCross::draw(QPainterPath &path, const QLineF & originalLine, OptimaPoint::OptimaLengthVector crossingLengths) const
 {
 	// половина ширины разрыва
 	const qreal breakLineLength = 5.;
 
-	// сортируем рассстояния до точек пересечения у текущего отрезка
-	
-	// TODO сортировать надо сразу после определения всех пересечений
-	//qSort( crossingLengths );	
-	
 	QLineF currentLine( originalLine );
 
+	// для корректного отображения пересечений длина должны быть отсортированы по возрастанию
+	qSort(crossingLengths);
+	
 	// здесь надо разорвать рисование около точки пересечения
 	qreal lastLength = 0;
 	for ( int i = 0; i < crossingLengths.count(); i++ )
@@ -45,14 +43,14 @@ void OptimaCross::draw(QPainterPath &path, const QLineF & originalLine, const Op
 		QPointF breakingPoint_p1;
 
 		// если точка разрыва меньше либо равна промежутку тогда берем за начало точку коннектора
-		if ( lastLength <= ( breakLineLength + lengthFromBegin ))
+		if ( lastLength <= breakLineLength)
 		{
 			breakingPoint_p1 = currentLine.p1();
 		} 
 		else
 		{
 			// lengthFromBegin учитывает наличие начальной стрелки
-			currentLine.setLength( lastLength - breakLineLength - lengthFromBegin);
+			currentLine.setLength( lastLength - breakLineLength);
 			breakingPoint_p1 = currentLine.p2();
 		}
 
@@ -77,7 +75,7 @@ void OptimaCross::draw(QPainterPath &path, const QLineF & originalLine, const Op
 			}			
 		}
 
-		currentLine.setLength( endCrossingLength - lengthFromBegin );
+		currentLine.setLength( endCrossingLength );
 
 		// вторая точка разрыва		
 		QPointF breakingPoint_p2( currentLine.p2() );

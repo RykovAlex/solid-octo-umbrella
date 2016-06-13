@@ -11,6 +11,13 @@ OptimaPath::OptimaPath(const QPainterPath &points)
 	initialize(points);
 }
 
+OptimaPath::OptimaPath(const QPointF &startPoint, const OptimaCross & cross) 
+	: mCurrentPosition(startPoint)
+	, mCross(cross)
+{
+
+}
+
 int OptimaPath::linesCount() const
 {
 	return mLines.count();
@@ -36,15 +43,81 @@ const QPainterPath OptimaPath::toPath() const
 {
 	QPainterPath path;
 	for (int i = 0; i < mLines.count(); ++i) {
-		mLines.at(i).toPath(path);
+		mLines.at(i).toPath(path, mCross);
 	}
 
 	return path;
 }
 
-void OptimaPath::intersected(const OptimaPath path)
+void OptimaPath::intersected(OptimaPath & path)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	bool isSelf = this == &path;
+
+	for (int i = 0; i < mLines.count() - (isSelf?1:0); ++i) {
+		QVector<qreal> lengthVector = path.intersected(mLines.at(i), (isSelf?i+1:0));
+		
+		mLines[i].addIntersectedLength(lengthVector);
+	}
+}
+
+QVector<qreal> OptimaPath::intersected(const OptimaLine & otherLine, int start)
+{
+	QVector<qreal> intersectedLength;
+
+	for ( int i = start; i < mLines.count(); ++i )
+	{
+		QPointF intersectionPoint;
+		
+		//точка пересечения линии и линии
+		if ( getIntersectionPoint(mLines.at(i), otherLine, &intersectionPoint) )
+		{
+			intersectedLength.push_back( getLineSublength(otherLine, intersectionPoint));	
+		}
+		
+		//точка пересечения угда и линии
+		if ( getIntersectionPoint(mLines.at(i).corner(), otherLine, &intersectionPoint) )
+		{
+			intersectedLength.push_back( getLineSublength(otherLine, intersectionPoint));	
+		}
+
+		//точка пересечения линии и угла
+		if ( getIntersectionPoint(otherLine.corner(), mLines.at(i), &intersectionPoint) )
+		{
+			mLines[i].addIntersectedLength( getLineSublength(mLines.at(i), intersectionPoint));	
+		}
+
+	}
+
+	return intersectedLength;
+}
+
+void OptimaPath::clearIntersection()
+{
+	for ( int i = 0; i < mLines.count(); ++i )
+	{
+		mLines[i].clearIntersectedLength();
+	}
+}
+
+template <class T>
+bool OptimaPath::getIntersectionPoint(const T & optimaObject, const OptimaLine &otherLine, QPointF *intersectionPoint) const
+{
+	if ( optimaObject.intersect( otherLine, intersectionPoint ) == QLineF::BoundedIntersection )
+	{
+		if (!otherLine.contains(*intersectionPoint))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+qreal OptimaPath::getLineSublength(const OptimaLine &line, const QPointF & point) const
+{
+	// определим расстояние до точки пересечения от начала отрезка
+	QLineF subLine( line.p1(), point  );
+	return subLine.length();
 }
 
 void OptimaPath::lineTo(const QPointF &endPoint, QLineF nextLine, qreal radius)
@@ -119,8 +192,9 @@ QDebug operator<<(QDebug s, const OptimaPath &p)
 {
 	s.nospace() << "OptimaPath: Optima line count=" << p.linesCount() << endl;
 	for (int i = 0; i < p.linesCount(); ++i) {
-		s.nospace() << " line   -> " << p.lineAt(i) << endl;
-		s.nospace() << " corner -> " << p.lineAt(i).corner() << endl;
+		s.nospace() << " line          -> " << p.lineAt(i) << endl;
+		s.nospace() << " corner        -> " << p.lineAt(i).corner() << endl;
+		s.nospace() << " intersections -> " << p.lineAt(i).getCrossingLength() << endl;
 	}
 
 	return s;
