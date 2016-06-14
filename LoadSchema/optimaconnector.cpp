@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "optimaconnector.h"
 #include "tag.h"
+#include "optimaconnectormovemarker.h"
 
 OptimaConnector::OptimaConnector(const QString &itemUuid) 
 	:OptimaElement(this, itemUuid)
@@ -8,6 +9,10 @@ OptimaConnector::OptimaConnector(const QString &itemUuid)
 	,mEndArrow(connector_arrow_no, false)
 	,mIsHighlight(false)
 {
+	//для QGraphicView любой путь, даже не замкнутый представляет собой фигуру, он его замыкает сам.
+	//у нас коннетор это набор отрезков, поэтому определение, находится ли курсор над коннектором 
+	//, будет делать в нашей OptimaView
+	setAcceptedMouseButtons(Qt::NoButton);
 }
 
 void OptimaConnector::apply()
@@ -24,6 +29,10 @@ void OptimaConnector::apply()
 	getXmlValue(tag::cross_type, mCross);
 	
 	mRadiusCorner = getXmlValue(tag::radius_corner, 0.0);
+	
+	//получаем тип коннетора
+	mIsAngledСonnector = getXmlValue(tag::type, QString("direct")) == "rect";
+
 
 	//Сохраняем текущий карандаш, так как надо отрабатывать выделение коннеторов при подводе к ним мышки
 	//Начальные настройки карандаша устанавливаюся в applyXml
@@ -35,7 +44,7 @@ void OptimaConnector::apply()
 	//нерационально
 	getXmlValue(tag::structure_dot, mPoints );
 
-	//Зная точки построим непосредственно коннектор
+	//Зная точки построим непосредственно коннектор, передав в качестве параметра класс отвечающий за рисовангия пересечений
 	buildPath(mCross);
 }
 
@@ -104,6 +113,11 @@ void OptimaConnector::intersected(OptimaPath & connectorPath)
 	mConnectorPath.intersected(connectorPath);
 }
 
+void OptimaConnector::moveLineEvent(const OptimaConnectorMoveMarker* moveMarker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
 void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList, int start)
 {
 	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin() + start; i != itemList.constEnd(); ++i )
@@ -132,3 +146,24 @@ void OptimaConnector::clearIntersection()
 {
 	mConnectorPath.clearIntersection();
 }
+
+void OptimaConnector::markerMoveEvent(const OptimaBaseMarker* marker)
+{
+	const OptimaConnectorMoveMarker* moveMarker = dynamic_cast<const OptimaConnectorMoveMarker*>(marker);
+	if (moveMarker != nullptr)
+	{
+		moveLineEvent(moveMarker);
+	}
+}
+
+void OptimaConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	//QGraphicsItem::mousePressEvent(event);
+}
+
+void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+	setCursor(QCursor( QPixmap( mIsAngledСonnector ? ":/images/resources/cursor_move_rect.png" : ":/images/resources/cursor_move_direct.png" )));
+	//setCursor(Qt::SizeAllCursor);
+}
+

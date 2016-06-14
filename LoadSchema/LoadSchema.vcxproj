@@ -100,6 +100,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="optimaconnector.cpp" />
     <ClCompile Include="optimaconnectorarrow.cpp" />
+    <ClCompile Include="optimaconnectormovemarker.cpp" />
     <ClCompile Include="optimacorner.cpp" />
     <ClCompile Include="optimaelement.cpp" />
     <ClCompile Include="optimafigure.cpp" />
@@ -136,8 +137,10 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../optimaview.h"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SVG_LIB -DQT_XMLPATTERNS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtSvg" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
     </CustomBuild>
+    <ClInclude Include="optimabasemarker.h" />
     <ClInclude Include="optimaconnector.h" />
     <ClInclude Include="optimaconnectorarrow.h" />
+    <ClInclude Include="optimaconnectormovemarker.h" />
     <ClInclude Include="optimacorner.h" />
     <ClInclude Include="optimaelement.h" />
     <ClInclude Include="optimafigure.h" />
@@ -145,6 +148,7 @@
     <ClInclude Include="optimaline.h" />
     <ClInclude Include="optimapath.h" />
     <ClInclude Include="optimapoint.h" />
+    <ClInclude Include="optimarectanglemarker.h" />
     <ClInclude Include="optimatext.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

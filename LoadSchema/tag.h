@@ -75,6 +75,7 @@ namespace tag
 	static const QString shape_end("ShapeEnd");
 	static const QString cross_type("CrossType");
 	static const QString radius_corner("RadiusCorner");
+	static const QString type("Type");
 
 	inline QString to_string( const QColor& cl )
 	{

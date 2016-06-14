@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="images">
+    <file>cursor_draw_direct.png</file>
+    <file>cursor_draw_rect.png</file>
+    <file>cursor_move_direct.png</file>
+    <file>cursor_move_figure.png</file>
+    <file>cursor_move_rect.png</file>
+    <file>cursor_move_text.png</file>
+    <file>cursor_move_all_red.png</file>
+  </qresource>
+</RCC>

@@ -5,6 +5,9 @@
 #include "optimafigure.h"
 #include "optimaconnector.h"
 #include "optimatext.h"
+#include "optimabasemarker.h"
+#include "optimarectanglemarker.h"
+#include "optimaconnectormovemarker.h"
 
 OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent)
 { 
@@ -13,12 +16,13 @@ OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent)
 
 void OptimaView::apply()
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	// переменные которые не будут изменяться пользователем
+	mAlignGridStep = getXmlValue(tag::virtual_step, 4.0);
 }
 
 void OptimaView::draw(bool isProcessLoading /*= false*/)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	//throw std::logic_error("The method or operation is not implemented.");
 }
 
 template <class T>

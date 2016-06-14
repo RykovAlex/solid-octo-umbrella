@@ -16,14 +16,18 @@ public:
 
 	virtual void draw(bool isProcessLoading = false);
 
+	virtual void markerMoveEvent(const OptimaBaseMarker* marker);
+
 protected:
 
 private:
+	OptimaPoint mPositionPoint; ///< расположение тектовой метки на схеме
 
-	OptimaPoint mPositionPoint;
-	QString mText;
-	QString mHalign;
-	qreal mTextWidth;
+	QString mText; ///< тект метки
+
+	QString mHalign; ///< выравнивание метки
+
+	qreal mTextWidth; ///< ширина тектовой метки
 };
 
 

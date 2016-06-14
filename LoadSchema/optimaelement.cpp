@@ -109,6 +109,11 @@ void OptimaElement::applyCommonProperties()
 	
 }
 
+void OptimaElement::markerMoveEvent(const OptimaBaseMarker* marker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
 const QDomElement OptimaElement::getXmlNode(const QString & name) const
 {
 	return mNodeXml.namedItem( name ).toElement();

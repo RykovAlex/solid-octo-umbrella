@@ -2,6 +2,7 @@
 #include "optimaelement.h"
 #include <QtXml/QDOMDocument>
 #include "optimapoint.h"
+#include "optimabasemarker.h"
 
 class OptimaFigure : public QGraphicsPathItem, public OptimaElement
 {
@@ -17,6 +18,9 @@ public:
 
 	///Задать контуры фигуры
 	void draw(bool isProcessLoading = false);
+
+
+	virtual void markerMoveEvent(const OptimaBaseMarker* marker);
 
 protected:
 

@@ -92,6 +92,9 @@
     <ClCompile Include="optimacorner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimaconnectormovemarker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -128,6 +131,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimaline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimabasemarker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimarectanglemarker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimaconnectormovemarker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

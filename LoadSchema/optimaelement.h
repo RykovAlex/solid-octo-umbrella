@@ -3,6 +3,7 @@
 #include "optimapoint.h"
 #include "optimaconnectorarrow.h"
 #include "OptimaCross.h"
+#include "optimabasemarker.h"
 
 class OptimaElement
 {
@@ -18,10 +19,17 @@ public:
 
 	///Изменить переменные графического элемента согласно xml - описателю
 	virtual void apply() = 0;
+	
+	///обеспечить отрисовку элемента н асхеме
 	virtual void draw(bool isProcessLoading = false) = 0;
+
+	/// эта функция вызывается когда маркер привязанный к этому элементу перемещается пользователем
+	virtual void markerMoveEvent(const OptimaBaseMarker* marker) = 0;
 
 	///Принять новый xml
 	void applyXml(const QDomNode & element);
+
+
 
 protected:	
 	///Получить тектовое представление xml

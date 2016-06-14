@@ -59,3 +59,8 @@ void OptimaText::draw(bool isProcessLoading /*= flase*/)
 		setTextWidth(mTextWidth);
 	}	
 }
+
+void OptimaText::markerMoveEvent(const OptimaBaseMarker* marker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}

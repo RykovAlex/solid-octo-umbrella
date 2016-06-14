@@ -94,6 +94,11 @@ void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 
 }
 
+void OptimaFigure::markerMoveEvent(const OptimaBaseMarker* marker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
 QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
 {
 	QLineF line( mPoints.at( iStart ), mPoints.at( iEnd ) );

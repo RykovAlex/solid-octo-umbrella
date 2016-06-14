@@ -4,6 +4,7 @@
 #include "optimapoint.h"
 #include "optimaconnectorarrow.h"
 #include "optimapath.h"
+#include "optimaconnectormovemarker.h"
 
 class OptimaConnector : public QGraphicsPathItem, public OptimaElement
 {
@@ -15,16 +16,23 @@ public:
 	}
 	
 	///Применить изенения переданне через струтуру xml
-	void apply();
+	virtual void apply();
 
-	//Рисует коннетор, точнее формирует путь, которй добавляется на схему
-	void draw(bool isProcessLoading = false);
+	///Рисует коннетор, точнее формирует путь, которй добавляется на схему
+	virtual void draw(bool isProcessLoading = false);
+
+	///Функция вызывается при перемещении маркера принадлежащего этому коннетору, перемещаемый пользователем маркер
+	///передается в функцию
+	virtual void markerMoveEvent(const OptimaBaseMarker* marker);
 
 	void buildPath(const OptimaCross & cross);
 
 	void getIntersection(const QList<QGraphicsItem*> &itemList, int start);
 
 	void clearIntersection();
+
+
+
 protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		QWidget *widget = 0);
@@ -49,6 +57,13 @@ private:
 	QPen mPen;
 
 	void intersected(OptimaPath & connectorPath);
+	
+	void moveLineEvent(const OptimaConnectorMoveMarker* moveMarker);
+
+// Reimplemented Protected Functions
+	void mousePressEvent(QGraphicsSceneMouseEvent *event);
+	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+	bool mIsAngledСonnector;
 };
 
 
