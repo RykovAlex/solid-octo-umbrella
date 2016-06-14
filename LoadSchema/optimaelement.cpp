@@ -7,6 +7,11 @@ OptimaElement::OptimaElement(QGraphicsItem *_item, const QString &itemUuid) : mI
 	mItem->setData(tag::data::uuid, itemUuid);
 }
 
+OptimaElement::OptimaElement() : mItem(nullptr)
+{
+
+}
+
 QString OptimaElement::getXmlString(const QDomNode & element) const
 {
 	QString s;
@@ -62,6 +67,12 @@ void OptimaElement::updateXml(const QDomNode &element)
 
 void OptimaElement::applyCommonProperties()
 {
+	//Если нет гравического элемнта, унаследованного от этого класса, то ничего не загружаем
+	if (mItem == nullptr)
+	{
+		return;
+	}
+
 	//Задаем порядок отображеняи на схеме
 	mItem->setZValue(getXmlValue(tag::order, 1.0));
 

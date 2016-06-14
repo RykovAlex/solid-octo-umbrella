@@ -6,13 +6,23 @@
 #include "optimaconnector.h"
 #include "optimatext.h"
 
-OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent) 
+OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent)
 { 
 	setScene( new QGraphicsScene(parent) );
 };
 
+void OptimaView::apply()
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void OptimaView::draw(bool isProcessLoading /*= false*/)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
 template <class T>
-void OptimaView::load(const QDomNodeList &elements, bool loadAllways)
+void OptimaView::loadElements(const QDomNodeList &elements, bool loadAllways)
 {
 	for ( int nn = 0; nn < elements.size( ); ++nn )
 	{
@@ -25,7 +35,7 @@ void OptimaView::load(const QDomNodeList &elements, bool loadAllways)
 				throw QString().append( tr( "У элемента не найден UUID" ) );
 			continue;
 		}
-
+		
 		//Найдем на схеме элемент с itemUuid из xml, если его нет, то создадим его
 		T *item = getItem<T>(uuid);
 
@@ -37,7 +47,6 @@ void OptimaView::load(const QDomNodeList &elements, bool loadAllways)
 		
 		item->draw(true);
 	}
-
 }
 
 QGraphicsItem *OptimaView::findItem(const QString &itemUuid)
@@ -114,10 +123,23 @@ void OptimaView::buildIntersectionConnectors()
 
 }
 
+void OptimaView::loadWorkspace(const QDomNodeList &workspace)
+{
+	for ( int nn = 0; nn < workspace.size( ); ++nn )
+	{
+		const QDomNode &element = workspace.at( nn );
+
+		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
+		//к графическому элементу, после этого он отрисуется на схеме
+		applyXml(element);
+
+		draw(true);
+	}
+
+}
+
 QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 {
-	//setScene( new QGraphicsScene );
-	
 	beforeExecute1CCall();
 	
 	try
@@ -141,10 +163,13 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 		//		m_workspace.m_no_user_property = dn_up.toElement( ).text( );
 		//	}
 		//}
-		//load_workspace_from_xml( doc_el.namedItem( tag::workspace ) );
-		load<OptimaFigure>( docElement.elementsByTagName( tag::figure ), load_allways );
-		load<OptimaConnector>( docElement.elementsByTagName( tag::line ), load_allways );
-		load<OptimaText>( docElement.elementsByTagName( tag::text_label ), load_allways );
+		//Загружаем рабочее пространство
+		loadWorkspace(docElement.elementsByTagName( tag::workspace ));
+		
+		//Загружаем элементы схемы
+		loadElements<OptimaFigure>( docElement.elementsByTagName( tag::figure ), load_allways );
+		loadElements<OptimaConnector>( docElement.elementsByTagName( tag::line ), load_allways );
+		loadElements<OptimaText>( docElement.elementsByTagName( tag::text_label ), load_allways );
 
 		buildIntersectionConnectors();
 	}

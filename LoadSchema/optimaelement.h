@@ -7,6 +7,8 @@
 class OptimaElement
 {
 public:
+	OptimaElement();
+
 	OptimaElement(QGraphicsItem *_item, const QString &itemUuid);
 	
 
@@ -28,6 +30,7 @@ protected:
 	///Получить из xml - описателя поле
 	const QDomElement getXmlNode(const QString & name) const;
 
+	///Получить из xml -описателя различные значения
 	qreal getXmlValue(const QString & name, const qreal defaultValue) const;
 	void getXmlValue(const QString & name, OptimaPointVector &optimaPoints) const;
 	void getXmlValue(const QString & name, OptimaPoint &optimaPoint) const;
