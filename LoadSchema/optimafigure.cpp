@@ -5,6 +5,8 @@
 
 OptimaFigure::OptimaFigure(const QString &itemUuid, OptimaView *view) : OptimaElement(this, itemUuid, view)
 {
+	setFlag(ItemIsSelectable);
+	setFlag(ItemIsMovable);
 }
 
 void OptimaFigure::apply()
@@ -88,25 +90,6 @@ void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 	path.closeSubpath();
 
 	setPath(path);
-
-	setFlag(ItemIsSelectable);
-	setFlag(ItemIsMovable);
-
-}
-
-void OptimaFigure::onMarkerMove(const OptimaBaseMarker* marker)
-{
-	throw std::logic_error("The method or operation is not implemented.");
-}
-
-void OptimaFigure::onHoverEnter(QGraphicsSceneHoverEvent *event)
-{
-	throw std::logic_error("The method or operation is not implemented.");
-}
-
-void OptimaFigure::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
-{
-	throw std::logic_error("The method or operation is not implemented.");
 }
 
 QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
@@ -125,3 +108,9 @@ QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
 
 	return line;
 }
+
+void OptimaFigure::onMarkerMove(const OptimaBaseMarker* marker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+

@@ -23,11 +23,6 @@ public:
 	virtual void onMarkerMove(const OptimaBaseMarker* marker);
 
 
-	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event);
-
-
-	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
-
 protected:
 
 private:

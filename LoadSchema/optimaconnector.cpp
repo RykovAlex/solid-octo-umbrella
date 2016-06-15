@@ -13,7 +13,11 @@ OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view)
 	//у нас коннетор это набор отрезков, поэтому определение, находится ли курсор над коннектором 
 	//, будет делать в нашей OptimaView
 	
-	setAcceptedMouseButtons(Qt::NoButton);
+	//setAcceptedMouseButtons(Qt::NoButton);
+	setAcceptHoverEvents(true);
+
+	setFlag(ItemIsSelectable);
+	setFlag(ItemIsMovable);
 }
 
 void OptimaConnector::apply()
@@ -67,7 +71,7 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 	//QGraphicsPathItem::paint(painter, option, widget);
 	
 	painter->setPen(localPen);
-	painter->drawPath(path());
+	painter->drawPath(mPathConnector);
 
 	painter->setBrush(this->pen().color());
 	painter->drawPath(mPathArrow);
@@ -81,8 +85,12 @@ void OptimaConnector::draw(bool isProcessLoading /*= false*/)
 	{
 		return;
 	}
-	
-	setPath( mConnectorPath.toPath() );
+
+	// сохраним для отрисовки в paint()
+	mPathConnector = mConnectorPath.toPath();
+
+	// обозначим пространство, в котором будем рисовать коннетор
+	setPath( mSensitiveArea.toPath() );
 	
 	//if ( is_selected( ) )
 	//{
@@ -101,16 +109,19 @@ void OptimaConnector::buildPath(const OptimaCross & cross)
 	QPointF startPoint = mBeginArrow.getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
 
 	mConnectorPath = OptimaPath(startPoint, cross);
+	mSensitiveArea = OptimaPath(mPoints.first());
 
 	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
 	{
 		mConnectorPath.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i )), mRadiusCorner);
+		mSensitiveArea.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i )), mRadiusCorner);
 	}
 
 	// рисуем конец
 	const QPointF endPoint = mEndArrow.getPath( pathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
 
 	mConnectorPath.lineTo(endPoint);
+	mSensitiveArea.lineTo(mPoints.last());
 
 	// сохраним для отрисовки в paint()
 	mPathArrow = pathArrow;
@@ -119,11 +130,6 @@ void OptimaConnector::buildPath(const OptimaCross & cross)
 void OptimaConnector::intersected(OptimaPath & connectorPath)
 {
 	mConnectorPath.intersected(connectorPath);
-}
-
-void OptimaConnector::moveLineEvent(const OptimaConnectorMoveMarker* moveMarker)
-{
-	throw std::logic_error("The method or operation is not implemented.");
 }
 
 void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList, int start)
@@ -155,12 +161,18 @@ void OptimaConnector::clearIntersection()
 	mConnectorPath.clearIntersection();
 }
 
+void OptimaConnector::onLineMove(const OptimaConnectorMoveMarker* moveMarker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
 void OptimaConnector::onMarkerMove(const OptimaBaseMarker* marker)
 {
 	const OptimaConnectorMoveMarker* moveMarker = dynamic_cast<const OptimaConnectorMoveMarker*>(marker);
+	
 	if (moveMarker != nullptr)
 	{
-		moveLineEvent(moveMarker);
+		onLineMove(moveMarker);
 	}
 }
 
@@ -169,36 +181,57 @@ void OptimaConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	//QGraphicsItem::mousePressEvent(event);
 }
 
-void OptimaConnector::onHoverEnter(QGraphicsSceneHoverEvent *event)
+void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-	mView->setCursor(QCursor( QPixmap( mIsAngledСonnector ? ":/images/resources/cursor_move_rect.png" : ":/images/resources/cursor_move_direct.png" ), 0, 0));
+	Q_ASSERT(mView != nullptr);
+	
+	mIsHighlight = true;
+	update();
 }
 
-void OptimaConnector::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
+void OptimaConnector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-	mView->setCursor(Qt::ArrowCursor);
+	Q_ASSERT(mView != nullptr);
+
+	mIsHighlight = false;
+	update();
 }
 
-bool OptimaConnector::isIntersected( const QRectF & rect ) const
+void OptimaConnector::setSelected( bool sel )
 {
-	const QPolygonF ppRect( rect );
-
-	//для того чтобы узнать пересекается ли коннетор с квадратом, нужно пересечь 
-	//каждую грань квадрата с каждым отрезком коннектора
-	for ( int i = 0; i < mPoints.size( ) - 1; ++i )
+	if ( is_selected( ) != sel )
 	{
-		const QLineF lineConnector( mPoints.at( i ), mPoints.at( i + 1 ) );
-		
-		for ( int j = 0; j < ppRect.size( ) - 1; ++j )
+		m_is_selected = sel;
+		if ( sel )
 		{
-			const QLineF linePpRect( ppRect.at( j ), ppRect.at( j + 1 ) );
-			
-			if ( lineConnector.intersect( linePpRect, 0 ) == QLineF::BoundedIntersection )
+			redraw_coners( true );
+			// рисуем квадраты что бы тянуть
+			for ( int nn = 0; nn < m_points.size( ) - 1; ++nn )
 			{
-				return true;
+				if ( m_type == connector_direct	&& nn >= 1 )
+				{
+					//connector_move_marker * ret = new connector_move_marker( 4, this );
+					//ret->setPos( m_points.at( nn ).m_pos );
+					//ret->setRect( get_marker_rect() );
+					//ret->setZValue( 0.999998 );
+					//QPen gp( Qt::green, 1.0 );
+					//gp.setCosmetic( true );
+					//ret->setPen( gp );			
+					//ret->setBrush( Qt::green );
+					//m_scene->addItem( ret );
+					//ret->block_movement = false;
+					//m_movers.push_back( ret );
+					m_movers.push_back( create_connector_move_marker( 4, m_points.at( nn ).m_pos, Qt::green ) );
+				}
+				// это середина отрезка
+				m_movers.push_back( create_move_marker( nn ) );
 			}
 		}
+		else
+		{
+			clear_items( m_crosses );
+			clear_items( m_bor_movers );
+			clear_items( m_movers );
+		}
 	}
-
-	return false;
 }

@@ -29,13 +29,6 @@ public:
 	void applyXml(const QDomNode & element);
 
 
-	//События, реакцию на которые нужно прописать в каждом унаследованном классе
-	///Мышь попала на объект
-	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event) = 0;
-
-	///Мышь покинула объект
-	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent) = 0;
-
 	/// эта функция вызывается когда маркер привязанный к этому элементу перемещается пользователем
 	virtual void onMarkerMove(const OptimaBaseMarker* marker) = 0;
 

@@ -13,6 +13,8 @@ public:
 
 	OptimaPath(const QPointF &startPoint, const OptimaCross & cross);
 
+	OptimaPath(const QPointF &startPoint);
+
 	~OptimaPath()
 	{
 	}

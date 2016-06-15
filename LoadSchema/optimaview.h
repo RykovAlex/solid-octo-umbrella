@@ -3,6 +3,8 @@
 #include <QtXml/QDOMDocument>
 #include "OptimaElement.h"
 
+class OptimaConnector;
+
 class OptimaView : public QGraphicsView, public OptimaElement
 {
 	Q_OBJECT;
@@ -43,17 +45,11 @@ public:
 	}
 
 
-	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event);
-
-
-	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
-
 private:
-	QDomDocument doc;	
+	QDomDocument doc;///<Этот объект сохраняет всю xml-структуру 
 	
-	qreal mAlignGridStep;
+	qreal mAlignGridStep;///<Шаг виртуальной сетки
 
-	OptimaElement * mHoverItem;///<элемент над которым находится курсор
 
 	
 	virtual void apply();
@@ -81,7 +77,6 @@ private:
 	
 	void loadWorkspace(const QDomNodeList &workspace);
 
-	void mouseMoveEvent(QMouseEvent *event);
-
 	bool isConnector(const QGraphicsItem* item) const;
+	
 };

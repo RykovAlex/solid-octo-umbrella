@@ -32,13 +32,6 @@ public:
 	void clearIntersection();
 
 
-	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event);
-
-	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
-
-	bool isIntersected( const QRectF & rect ) const;
-
-
 
 protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -61,7 +54,11 @@ private:
 
 	QPainterPath mPathArrow;
 	
+	QPainterPath mPathConnector;
+
 	OptimaPath mConnectorPath;
+
+	OptimaPath mSensitiveArea;
 
 	bool mIsHighlight;
 
@@ -69,10 +66,14 @@ private:
 
 	void intersected(OptimaPath & connectorPath);
 	
-	void moveLineEvent(const OptimaConnectorMoveMarker* moveMarker);
+	void onLineMove(const OptimaConnectorMoveMarker* moveMarker);
 
 // Reimplemented Protected Functions
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+
+	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 
 };

@@ -18,6 +18,12 @@ OptimaPath::OptimaPath(const QPointF &startPoint, const OptimaCross & cross)
 
 }
 
+OptimaPath::OptimaPath(const QPointF &startPoint)
+	: mCurrentPosition(startPoint)
+{
+
+}
+
 int OptimaPath::linesCount() const
 {
 	return mLines.count();
