@@ -45,7 +45,9 @@ const QPainterPath OptimaPath::toPath() const
 	for (int i = 0; i < mLines.count(); ++i) {
 		mLines.at(i).toPath(path, mCross);
 	}
-
+	
+	path.connectPath(path.toReversed());
+	
 	return path;
 }
 

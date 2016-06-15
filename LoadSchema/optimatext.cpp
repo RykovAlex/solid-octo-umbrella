@@ -4,7 +4,7 @@
 
 
 
-OptimaText::OptimaText(const QString &itemUuid): OptimaElement(this, itemUuid)	
+OptimaText::OptimaText(const QString &itemUuid, OptimaView *view): OptimaElement(this, itemUuid, view)	
 {
 
 }
@@ -60,7 +60,17 @@ void OptimaText::draw(bool isProcessLoading /*= flase*/)
 	}	
 }
 
-void OptimaText::markerMoveEvent(const OptimaBaseMarker* marker)
+void OptimaText::onMarkerMove(const OptimaBaseMarker* marker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void OptimaText::onHoverEnter(QGraphicsSceneHoverEvent *event)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void OptimaText::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }

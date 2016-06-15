@@ -5,12 +5,14 @@
 #include "OptimaCross.h"
 #include "optimabasemarker.h"
 
+class OptimaView;
+
 class OptimaElement
 {
 public:
 	OptimaElement();
 
-	OptimaElement(QGraphicsItem *_item, const QString &itemUuid);
+	OptimaElement(QGraphicsItem *_item, const QString &itemUuid, OptimaView *view);
 	
 
 	~OptimaElement()
@@ -23,15 +25,25 @@ public:
 	///обеспечить отрисовку элемента н асхеме
 	virtual void draw(bool isProcessLoading = false) = 0;
 
-	/// эта функция вызывается когда маркер привязанный к этому элементу перемещается пользователем
-	virtual void markerMoveEvent(const OptimaBaseMarker* marker) = 0;
-
 	///Принять новый xml
 	void applyXml(const QDomNode & element);
 
 
+	//События, реакцию на которые нужно прописать в каждом унаследованном классе
+	///Мышь попала на объект
+	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event) = 0;
+
+	///Мышь покинула объект
+	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent) = 0;
+
+	/// эта функция вызывается когда маркер привязанный к этому элементу перемещается пользователем
+	virtual void onMarkerMove(const OptimaBaseMarker* marker) = 0;
+
 
 protected:	
+	OptimaView *mView;///< объект отвечающий за отображение схемы
+
+
 	///Получить тектовое представление xml
 	QString getXmlString(const QDomNode & element) const;
 

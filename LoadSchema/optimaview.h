@@ -37,16 +37,25 @@ public:
 		return QPoint( alignToGrid( pos.x() ), alignToGrid( pos.y() ) );
 	}
 
-	inline virtual void markerMoveEvent(const OptimaBaseMarker* marker)
+	inline virtual void onMarkerMove(const OptimaBaseMarker* marker)
 	{
 		Q_ASSERT(false);
 	}
+
+
+	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event);
+
+
+	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
 
 private:
 	QDomDocument doc;	
 	
 	qreal mAlignGridStep;
 
+	OptimaElement * mHoverItem;///<элемент над которым находится курсор
+
+	
 	virtual void apply();
 
 	virtual void draw(bool isProcessLoading = false);
@@ -56,9 +65,13 @@ private:
 	///Загружает файл XML - описателя сцены и создает / изменяет ее графическое отображение
 	template <class T> void loadElements(const QDomNodeList &elements, bool loadAllways);
 
+	///Найти элемент на схеме по его uuid
 	QGraphicsItem *findItem(const QString &itemUuid);
 	
-	///Найдем на схеме элемент с itemUuid из xml, если его нет, то зоздадим его
+	///Найти элемент на схеме по абсолютной координате
+	OptimaElement * findItem( const QPoint & pos );
+	
+	///Найдем на схеме элемент с itemUuid из xml, если его нет, то создать его
 	template <class T>
 	T *getItem(const QString &itemUuid);
 
@@ -67,5 +80,8 @@ private:
 	void buildIntersectionConnectors();
 	
 	void loadWorkspace(const QDomNodeList &workspace);
-	
+
+	void mouseMoveEvent(QMouseEvent *event);
+
+	bool isConnector(const QGraphicsItem* item) const;
 };

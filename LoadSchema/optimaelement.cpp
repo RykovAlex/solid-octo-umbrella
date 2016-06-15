@@ -1,13 +1,18 @@
 #include "stdafx.h"
 #include "tag.h"
 #include "optimaelement.h"
+#include "optimaview.h"
 
-OptimaElement::OptimaElement(QGraphicsItem *_item, const QString &itemUuid) : mItem(_item)
+OptimaElement::OptimaElement(QGraphicsItem *_item, const QString &itemUuid, OptimaView *view) 
+	: mItem(_item)
+	, mView(view)
 {
 	mItem->setData(tag::data::uuid, itemUuid);
 }
 
-OptimaElement::OptimaElement() : mItem(nullptr)
+OptimaElement::OptimaElement() 
+	: mItem(nullptr)
+	, mView(nullptr)
 {
 
 }
@@ -109,7 +114,7 @@ void OptimaElement::applyCommonProperties()
 	
 }
 
-void OptimaElement::markerMoveEvent(const OptimaBaseMarker* marker)
+void OptimaElement::onMarkerMove(const OptimaBaseMarker* marker)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }

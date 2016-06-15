@@ -1,5 +1,4 @@
 #pragma once
-#include "optimabasemarker.h"
 #include "optimaview.h"
 #include "QGraphicsItem"
 
@@ -50,7 +49,7 @@ public:
 		
 		Q_ASSERT(element != nullptr);
 
-		element->markerMoveEvent( this );
+		element->onMarkerMove( this );
 	}
 
 protected:

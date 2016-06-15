@@ -3,7 +3,7 @@
 #include "optimafigure.h"
 #include "optimapath.h"
 
-OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this, itemUuid)
+OptimaFigure::OptimaFigure(const QString &itemUuid, OptimaView *view) : OptimaElement(this, itemUuid, view)
 {
 }
 
@@ -94,7 +94,17 @@ void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 
 }
 
-void OptimaFigure::markerMoveEvent(const OptimaBaseMarker* marker)
+void OptimaFigure::onMarkerMove(const OptimaBaseMarker* marker)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void OptimaFigure::onHoverEnter(QGraphicsSceneHoverEvent *event)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void OptimaFigure::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }

@@ -3,8 +3,8 @@
 #include "tag.h"
 #include "optimaconnectormovemarker.h"
 
-OptimaConnector::OptimaConnector(const QString &itemUuid) 
-	:OptimaElement(this, itemUuid)
+OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view) 
+	:OptimaElement(this, itemUuid, view)
 	,mBeginArrow(connector_arrow_no, true)
 	,mEndArrow(connector_arrow_no, false)
 	,mIsHighlight(false)
@@ -12,6 +12,7 @@ OptimaConnector::OptimaConnector(const QString &itemUuid)
 	//для QGraphicView любой путь, даже не замкнутый представляет собой фигуру, он его замыкает сам.
 	//у нас коннетор это набор отрезков, поэтому определение, находится ли курсор над коннектором 
 	//, будет делать в нашей OptimaView
+	
 	setAcceptedMouseButtons(Qt::NoButton);
 }
 
@@ -32,12 +33,17 @@ void OptimaConnector::apply()
 	
 	//получаем тип коннетора
 	mIsAngledСonnector = getXmlValue(tag::type, QString("direct")) == "rect";
-
+	setCursor(QCursor( QPixmap( mIsAngledСonnector ? ":/images/resources/cursor_move_rect.png" : ":/images/resources/cursor_move_direct.png"), 0, 0));
 
 	//Сохраняем текущий карандаш, так как надо отрабатывать выделение коннеторов при подводе к ним мышки
 	//Начальные настройки карандаша устанавливаюся в applyXml
 	mPen = pen();	
 	
+	//Сделаем будто бы коннетор широкий, но на самом деле, таким его рисовать не будем
+	QPen localPen(mPen);
+	localPen.setWidth(10);
+	setPen(localPen);
+
 	//Значения этих переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
 	//Требуется изменить XML перед сохранением, длясохранения действий пользователя
 	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,
@@ -50,17 +56,18 @@ void OptimaConnector::apply()
 
 void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
 {
+	QPen localPen(mPen);
+
 	if (mIsHighlight)
 	{
-		QPen localPen(mPen);
-		localPen.setWidth(mPen.width() + 1);
-		setPen(localPen);
+		localPen.setWidth(localPen.width() + 1);
 	}
-	else
-	{
-		setPen(mPen);
-	}
-	QGraphicsPathItem::paint(painter, option, widget);
+	
+	//заблокируем стандартное рисование
+	//QGraphicsPathItem::paint(painter, option, widget);
+	
+	painter->setPen(localPen);
+	painter->drawPath(path());
 
 	painter->setBrush(this->pen().color());
 	painter->drawPath(mPathArrow);
@@ -76,6 +83,7 @@ void OptimaConnector::draw(bool isProcessLoading /*= false*/)
 	}
 	
 	setPath( mConnectorPath.toPath() );
+	
 	//if ( is_selected( ) )
 	//{
 	//	redraw_coners( redraw_borders );
@@ -147,7 +155,7 @@ void OptimaConnector::clearIntersection()
 	mConnectorPath.clearIntersection();
 }
 
-void OptimaConnector::markerMoveEvent(const OptimaBaseMarker* marker)
+void OptimaConnector::onMarkerMove(const OptimaBaseMarker* marker)
 {
 	const OptimaConnectorMoveMarker* moveMarker = dynamic_cast<const OptimaConnectorMoveMarker*>(marker);
 	if (moveMarker != nullptr)
@@ -161,9 +169,36 @@ void OptimaConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	//QGraphicsItem::mousePressEvent(event);
 }
 
-void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void OptimaConnector::onHoverEnter(QGraphicsSceneHoverEvent *event)
 {
-	setCursor(QCursor( QPixmap( mIsAngledСonnector ? ":/images/resources/cursor_move_rect.png" : ":/images/resources/cursor_move_direct.png" )));
-	//setCursor(Qt::SizeAllCursor);
+	mView->setCursor(QCursor( QPixmap( mIsAngledСonnector ? ":/images/resources/cursor_move_rect.png" : ":/images/resources/cursor_move_direct.png" ), 0, 0));
 }
 
+void OptimaConnector::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
+{
+	mView->setCursor(Qt::ArrowCursor);
+}
+
+bool OptimaConnector::isIntersected( const QRectF & rect ) const
+{
+	const QPolygonF ppRect( rect );
+
+	//для того чтобы узнать пересекается ли коннетор с квадратом, нужно пересечь 
+	//каждую грань квадрата с каждым отрезком коннектора
+	for ( int i = 0; i < mPoints.size( ) - 1; ++i )
+	{
+		const QLineF lineConnector( mPoints.at( i ), mPoints.at( i + 1 ) );
+		
+		for ( int j = 0; j < ppRect.size( ) - 1; ++j )
+		{
+			const QLineF linePpRect( ppRect.at( j ), ppRect.at( j + 1 ) );
+			
+			if ( lineConnector.intersect( linePpRect, 0 ) == QLineF::BoundedIntersection )
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}

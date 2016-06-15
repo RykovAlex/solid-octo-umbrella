@@ -1,18 +1,27 @@
 #include "stdafx.h"
 #include "tag.h"
-#include "optimaview.h"
-#include "optimaelement.h"
-#include "optimafigure.h"
 #include "optimaconnector.h"
+#include "optimaview.h"
+#include "optimafigure.h"
 #include "optimatext.h"
-#include "optimabasemarker.h"
-#include "optimarectanglemarker.h"
-#include "optimaconnectormovemarker.h"
 
-OptimaView::OptimaView(QWidget *parent) : QGraphicsView(parent)
+OptimaView::OptimaView(QWidget *parent) 
+	: QGraphicsView(parent)
+	, mHoverItem(nullptr)
 { 
 	setScene( new QGraphicsScene(parent) );
+	//setMouseTracking(false);
 };
+
+void OptimaView::onHoverEnter(QGraphicsSceneHoverEvent *event)
+{
+	Q_ASSERT(false);
+}
+
+void OptimaView::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
 
 void OptimaView::apply()
 {
@@ -83,7 +92,7 @@ T *OptimaView::getItem(const QString &itemUuid)
 		}
 	}
 	
-	T *item = new T(itemUuid);
+	T *item = new T(itemUuid, this);
 	scene()->addItem(item);			
 	
 	return item; 
@@ -197,4 +206,67 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 void OptimaView::beforeExecute1CCall()
 {
 
+}
+
+OptimaElement * OptimaView::findItem( const QPoint & pos )
+{
+	const qreal deltaSense = 5.0;
+	QGraphicsScene *scene(scene());
+
+	const QPointF scenePos(mapToScene(pos)) ;
+	const QList< QGraphicsItem* > itemsAtPos = scene->items( scenePos );
+	
+	//для коннеторов особый алгоритм, так как сцена считает их автоматически закрытыми
+	if (!itemsAtPos.isEmpty() && !isConnector(itemsAtPos.first()))
+	{
+		//элементы отсортированы по убыванию zOrder, поэтому берем первый элемент
+		return dynamic_cast<OptimaElement*>(itemsAtPos.first());
+	}
+
+	//повысим чувствительность мыши к коннеторам
+	QRectF sensitiveRect(scenePos, scenePos);
+	sensitiveRect.adjust(-deltaSense, -deltaSense, deltaSense, deltaSense);
+	
+	const QList< QGraphicsItem* > itemsAtRect = scene->items( sensitiveRect );
+	for ( int nn = 0; nn < itemsAtRect.size(); ++nn )
+	{
+		OptimaConnector *connector = dynamic_cast<OptimaConnector*>(itemsAtRect.at( nn ));
+		if (connector == nullptr)
+		{
+			continue;
+		}
+		if (connector->isIntersected(sensitiveRect))
+		{
+			return connector;
+		}		
+	}
+
+	// кликнули в пустое место
+	return nullptr;
+}
+
+void OptimaView::mouseMoveEvent(QMouseEvent *event)
+{
+	QGraphicsView::mouseMoveEvent(event);
+	return;
+
+	QGraphicsSceneHoverEvent hoverEvent;
+	OptimaElement *hoverItem = findItem(event->pos());
+
+	if (mHoverItem != hoverItem && hoverItem != nullptr )
+	{
+		hoverItem->onHoverEnter(&hoverEvent);
+	}
+	
+	if (mHoverItem != nullptr && mHoverItem != hoverItem)
+	{
+		mHoverItem->onHoverLeave(&hoverEvent);
+	} 
+
+	mHoverItem = hoverItem;	
+}
+
+bool OptimaView::isConnector(const QGraphicsItem* item) const
+{
+	return (dynamic_cast<const OptimaConnector*>(item) != nullptr);
 }

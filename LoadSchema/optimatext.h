@@ -5,7 +5,7 @@
 class OptimaText: public QGraphicsTextItem, public OptimaElement
 {
 public:
-	OptimaText(const QString &itemUuid);
+	OptimaText(const QString &itemUuid, OptimaView *view);
 
 	~OptimaText()
 	{
@@ -16,7 +16,12 @@ public:
 
 	virtual void draw(bool isProcessLoading = false);
 
-	virtual void markerMoveEvent(const OptimaBaseMarker* marker);
+	virtual void onMarkerMove(const OptimaBaseMarker* marker);
+
+	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event);
+
+
+	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
 
 protected:
 

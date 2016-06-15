@@ -9,7 +9,7 @@
 class OptimaConnector : public QGraphicsPathItem, public OptimaElement
 {
 public:
-	OptimaConnector(const QString &itemUuid);
+	OptimaConnector(const QString &itemUuid, OptimaView *view);
 
 	~OptimaConnector()
 	{
@@ -23,7 +23,7 @@ public:
 
 	///Функция вызывается при перемещении маркера принадлежащего этому коннетору, перемещаемый пользователем маркер
 	///передается в функцию
-	virtual void markerMoveEvent(const OptimaBaseMarker* marker);
+	virtual void onMarkerMove(const OptimaBaseMarker* marker);
 
 	void buildPath(const OptimaCross & cross);
 
@@ -32,10 +32,19 @@ public:
 	void clearIntersection();
 
 
+	virtual void onHoverEnter(QGraphicsSceneHoverEvent *event);
+
+	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
+
+	bool isIntersected( const QRectF & rect ) const;
+
+
 
 protected:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		QWidget *widget = 0);
+
+
 
 private:
 	OptimaPointVector mPoints;///< действительные точки фигуры, для отрисовке на сцене
@@ -48,6 +57,8 @@ private:
 	
 	qreal mRadiusCorner;///< радиус скругления углов коннетора
 	
+	bool mIsAngledСonnector;///< признак что это угловой коннетор
+
 	QPainterPath mPathArrow;
 	
 	OptimaPath mConnectorPath;
@@ -62,8 +73,8 @@ private:
 
 // Reimplemented Protected Functions
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);
-	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-	bool mIsAngledСonnector;
+
+
 };
 
 
