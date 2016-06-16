@@ -18,6 +18,7 @@ void OptimaFigure::apply()
 	getXmlValue(tag::structure_dot, mOriginalPoints );
 	mOriginalPoints << mOriginalPoints.first( );
 	
+	setCursor(QCursor( QPixmap( ":/images/resources/cursor_move_figure.png"), 0, 0));
 	//Значения этих трех переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
 	//Требуется изменить XML перед сохранением, длясохранения действий пользователя
 	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,

@@ -8,7 +8,7 @@ class OptimaConnectorMoveMarker : public OptimaRectangleMarker
 	Q_DISABLE_COPY( OptimaConnectorMoveMarker );
 
 public:
-	OptimaConnectorMoveMarker( Qt::CursorShape cursorShape );
+	OptimaConnectorMoveMarker( Qt::CursorShape cursorShape, const OptimaView *view );
 	
 	~OptimaConnectorMoveMarker()
 	{

@@ -11,9 +11,7 @@ class OptimaConnector : public QGraphicsPathItem, public OptimaElement
 public:
 	OptimaConnector(const QString &itemUuid, OptimaView *view);
 
-	~OptimaConnector()
-	{
-	}
+	~OptimaConnector();
 	
 	///ѕрименить изенени€ переданне через струтуру xml
 	virtual void apply();
@@ -31,11 +29,13 @@ public:
 
 	void clearIntersection();
 
-
+	virtual QPainterPath shape() const;
 
 protected:
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		QWidget *widget = 0);
+
+	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 
 
@@ -58,12 +58,6 @@ private:
 
 	OptimaPath mConnectorPath;
 
-	OptimaPath mSensitiveArea;
-
-	bool mIsHighlight;
-
-	QPen mPen;
-
 	void intersected(OptimaPath & connectorPath);
 	
 	void onLineMove(const OptimaConnectorMoveMarker* moveMarker);
@@ -76,6 +70,8 @@ private:
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 
+	void createMarkers();
+	void destroyMarkers();
 };
 
 

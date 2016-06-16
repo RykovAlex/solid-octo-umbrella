@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "optimaconnectormovemarker.h"
 
-OptimaConnectorMoveMarker::OptimaConnectorMoveMarker(Qt::CursorShape cursorShape) 
-	: OptimaRectangleMarker(cursorShape)
+OptimaConnectorMoveMarker::OptimaConnectorMoveMarker(Qt::CursorShape cursorShape, const OptimaView *view) 
+	: OptimaRectangleMarker(cursorShape, view)
 {
 }
 

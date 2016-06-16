@@ -52,8 +52,6 @@ const QPainterPath OptimaPath::toPath() const
 		mLines.at(i).toPath(path, mCross);
 	}
 	
-	path.connectPath(path.toReversed());
-	
 	return path;
 }
 

@@ -19,6 +19,8 @@ void OptimaText::apply()
 	setDefaultTextColor(getXmlValue(tag::text_color, QColor(Qt::black)));	
 	setRotation(getXmlValue(tag::angle, 0.0));
 
+	setCursor(QCursor( QPixmap(":/images/resources/cursor_move_text.png"), 0, 0));
+
 	//Значения этих переменных вынесены в переменные, потому что они интерактивно изменяются пользователем,
 	//Требуется изменить XML перед сохранением, для сохранения действий пользователя
 	//Непосредственное испрользование из XML требует затрат процессора на постоянное извлечение и перезапись,

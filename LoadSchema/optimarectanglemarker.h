@@ -8,23 +8,10 @@ class OptimaRectangleMarker : public QGraphicsRectItem, public OptimaBaseMarker
 	Q_DISABLE_COPY( OptimaRectangleMarker )
 
 public:
-	OptimaRectangleMarker( Qt::CursorShape cursorShape )
+	OptimaRectangleMarker( Qt::CursorShape cursorShape, const OptimaView *view )
 		: OptimaBaseMarker( cursorShape )
-		, mView(nullptr)
+		, mView(view)
 	{
-		//получим указатель на объект обеспечивающий отображение схемы
-		QList<QGraphicsView*> views(this->scene()->views());
-		for (int i = 0; i < views.count(); ++i)
-		{
-			mView = dynamic_cast<OptimaView*>(this->scene()->views().at(i));
-
-			if (mView != nullptr)
-			{
-				break;
-			}
-		}
-
-		setZValue( 0.999999 );
 	}
 
 	~OptimaRectangleMarker()
@@ -54,7 +41,7 @@ public:
 
 protected:
 	/// указатель на объект, обеспечивающий отрисовку схемы
-	OptimaView* mView;
+	const OptimaView* mView;
 
 
 private:
