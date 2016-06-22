@@ -7,10 +7,77 @@
 
 OptimaView::OptimaView(QWidget *parent) 
 	: QGraphicsView(parent)
+	, mMode(MoveItem)
+	, newConnector(nullptr)
 { 
 	setScene( new QGraphicsScene(parent) );
-	//setMouseTracking(false);
+	//scene()->setSceneRect(QRectF(0.0, 0.0, 3000.0,3000.0));
+	//setMouseTracking(true);
 };
+
+void OptimaView::setMode(Mode mode)
+{
+	mMode = mode;
+}
+
+void OptimaView::createNewConnector(QMouseEvent * mouseEvent)
+{
+	if (newConnector)
+	{
+		delete newConnector;
+	}
+	newConnector = new QGraphicsLineItem(QLineF( mapToScene(mouseEvent->pos()), mapToScene(mouseEvent->pos())));
+	//QGraphicsLineItem *newConnector = new QGraphicsLineItem(QLineF( mouseEvent->pos(), mouseEvent->pos()));
+
+	newConnector->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
+	scene()->addItem(newConnector);
+}
+
+void OptimaView::mousePressEvent(QMouseEvent *mouseEvent)
+{
+	if (mouseEvent->button() != Qt::LeftButton)
+		return;
+
+	switch(mMode)
+	{
+	case InsertItem:
+		break;
+	case InsertLine:
+		createNewConnector(mouseEvent);
+		break;
+	case InsertText:
+		break;
+	case MoveItem:
+		break;
+	default:
+		break;
+	}
+	QGraphicsView::mousePressEvent(mouseEvent);
+}
+
+void OptimaView::mouseReleaseEvent(QMouseEvent *mouseEvent)
+{
+	if (newConnector != nullptr)
+	{
+		delete newConnector;
+		newConnector = nullptr;
+	}
+	QGraphicsView::mouseReleaseEvent(mouseEvent);
+}
+
+void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
+{
+	if (newConnector != nullptr )
+	{
+		QLineF newLine(newConnector->line().p1(), mapToScene(mouseEvent->pos()));
+		newConnector->setLine(newLine);
+	} 
+	else
+	{
+		QGraphicsView::mouseMoveEvent(mouseEvent);
+	}
+	
+}
 
 void OptimaView::apply()
 {

@@ -17,6 +17,8 @@ Q_SIGNALS:
 		void ErrorOccur( const QString & text );
 
 public:
+	enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
+
 	OptimaView(QWidget *parent = 0);
 
 	inline int getEntireCellsQnt( qreal coordinate ) const
@@ -44,13 +46,30 @@ public:
 		Q_ASSERT(false);
 	}
 
+	void setMode(Mode mode);
+
+protected:
+
+	virtual void mousePressEvent(QMouseEvent *mouseEvent);
+
+	void createNewConnector(QMouseEvent * mouseEvent);
+
+
+	virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
+
+
+	virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
+
+
 
 private:
 	QDomDocument doc;///<Этот объект сохраняет всю xml-структуру 
 	
 	qreal mAlignGridStep;///<Шаг виртуальной сетки
 
-
+	Mode mMode;///<текущее активное действие сцены (создаем коннектор, фигуру, что-нибудь передвигаем)
+	
+	QGraphicsLineItem *newConnector;///<отображение для коннетора который только еще создается
 	
 	virtual void apply();
 

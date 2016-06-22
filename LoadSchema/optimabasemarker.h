@@ -11,6 +11,7 @@ public:
 		: mCursor( cursorShape )
 		, isMovementBlocked( true )
 		, linked( false )
+		, baseWidth(1 * 6.0)
 	{
 	}
 
@@ -45,7 +46,9 @@ public:
 	/// сообщаем текущую позицию итема
 	virtual QPointF markerPos( ) = 0;
 
-	
+	/// размер маркера
+	const qreal baseWidth;
+
 	/// блокировать ли сигнализация что маркер двинулся
 	bool isMovementBlocked;
 	
@@ -56,6 +59,8 @@ public:
 	bool linked;
 
 protected:
+	
+	QPointF deltaPos; ///<хранит промежуточную разницу передвижения маркера
 
 private:
 

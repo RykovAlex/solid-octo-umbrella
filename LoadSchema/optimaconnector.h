@@ -6,6 +6,8 @@
 #include "optimapath.h"
 #include "optimaconnectormovemarker.h"
 
+class OptimaConnectorMoveMarker;
+
 class OptimaConnector : public QGraphicsPathItem, public OptimaElement
 {
 public:
@@ -40,7 +42,7 @@ protected:
 
 
 private:
-	OptimaPointVector mPoints;///< действительные точки фигуры, для отрисовке на сцене
+	OptimaPointVector mPoints;///< действительные точки коннетора, хранимые в xml
 
 	OptimaConnectorArrow mBeginArrow;///< стрелка в начале коннектора
 
@@ -54,8 +56,6 @@ private:
 
 	QPainterPath mPathArrow;
 	
-	QPainterPath mPathConnector;
-
 	OptimaPath mConnectorPath;
 
 	void intersected(OptimaPath & connectorPath);

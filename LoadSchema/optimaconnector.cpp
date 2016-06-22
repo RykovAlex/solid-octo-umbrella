@@ -160,11 +160,7 @@ void OptimaConnector::draw(bool isProcessLoading /*= false*/)
 		return;
 	}
 
-	// сохраним для отрисовки в paint()
-	mPathConnector = mConnectorPath.toPath();
-
 	// обозначим пространство, в котором будем рисовать коннетор
-	//setPath( mSensitiveArea.toPath() );
 	setPath( mConnectorPath.toPath() );
 	
 	//if ( is_selected( ) )
@@ -266,6 +262,10 @@ void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
 	Q_ASSERT(mView != nullptr);
 	
+	//QRectF r(event->pos() - QPointF(5.0,5.0),event->pos() + QPointF(5.0,5.0));
+	//if (!shape().intersects(r))
+	//	return;
+
 	QPen newPen(pen());
 	newPen.setWidth(newPen.width() + 1);
 	setPen(newPen) ;
@@ -277,32 +277,38 @@ void OptimaConnector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 	QPen newPen(pen());
 	newPen.setWidth(newPen.width() - 1);
+	//newPen.setWidth(1);
 	setPen(newPen) ;
 }
 
 void OptimaConnector::createMarkers()
 {
-	OptimaConnectorMoveMarker *ret = new OptimaConnectorMoveMarker( Qt::SizeVerCursor, mView );
-	ret->setParentItem(this);
-	ret->setPos( mapToScene(pos()) );
-	//QPointF p(pos());
-	//const static qreal base_move_point_width = 2.;
-	const static qreal base_move_point_width = 12.0;
-	qreal border_marker_width = base_move_point_width/** (3.  / m_workspace.m_scale)*/;
-
-	ret->setRect( QRectF( -border_marker_width / 2, -border_marker_width / 2, border_marker_width, border_marker_width ) );
-	
-	//ret->setZValue( 0.999998 );
-	QPen gp( Qt::green, 1.0 );
-	gp.setCosmetic( true );
-	ret->setPen( gp );			
-
-	ret->setBrush( Qt::white );
-	ret->isMovementBlocked = false;
-
-	//m_scene->addItem( ret );
-	
-
+	// создадим маркеры посередине и на углах неуглового коннетора
+	// эти марверы по умолчанию представляют из субя булые квалраты с 
+	// зеленой окантовкой
+	for ( int i = 0; i < mPoints.size() - 1; ++i )
+	{
+		Qt::CursorShape сursorShape(Qt::SizeAllCursor);
+		
+		if ( mIsAngledСonnector )
+		{
+			// выясним поведение будушего маркера для углового коннектора
+			const int r1 = mView->getEntireCellsQnt( mPoints.at( i ).x( ));
+			const int r2 = mView->getEntireCellsQnt( mPoints.at( i + 1 ).x( ));
+			сursorShape = r1 == r2 ? Qt::SizeHorCursor : Qt::SizeVerCursor;
+		}
+		else
+		{
+			// у прямого коннетора поведение маркеров одинаково что посередине, что на точках
+			if ( i > 0 )
+			{
+				new OptimaConnectorMoveMarker( this, mPoints.at(i), сursorShape);
+			}
+		}
+		
+		// это середина отрезка
+		new OptimaConnectorMoveMarker( this, (mPoints.at(i) + mPoints.at(i+1)) / 2, сursorShape);
+	}
 }
 
 void OptimaConnector::destroyMarkers()
@@ -313,6 +319,16 @@ void OptimaConnector::destroyMarkers()
 		delete items.takeFirst();
 	}
 }
+
+//connector_move_marker * connector_controller::create_move_marker( int index_point )
+//{
+//	const int r1 = m_workspace.round_val( m_points.at( index_point ).m_pos.x( ) );
+//	const int r2 = m_workspace.round_val( m_points.at( index_point + 1 ).m_pos.x( ) );
+//	bool eq_by_x = ( r1 == r2 );
+//	const int directrion = ( m_type == connector_direct ? 4 : ( eq_by_x ? 0 : 1 ) );
+//
+//	return create_connector_move_marker( directrion, ( m_points.at( index_point ).m_pos + m_points.at( index_point + 1 ).m_pos ) / 2, Qt::green );
+//}
 
 //void OptimaConnector::create_connector_move_marker( int direction, const QPointF &pos, const QColor border_color )
 //{

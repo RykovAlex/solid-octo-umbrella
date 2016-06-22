@@ -8,9 +8,11 @@ class OptimaRectangleMarker : public QGraphicsRectItem, public OptimaBaseMarker
 	Q_DISABLE_COPY( OptimaRectangleMarker )
 
 public:
-	OptimaRectangleMarker( Qt::CursorShape cursorShape, const OptimaView *view )
+	OptimaRectangleMarker( QGraphicsItem *parent, Qt::CursorShape cursorShape, const OptimaView *view )
 		: OptimaBaseMarker( cursorShape )
+		, QGraphicsRectItem(parent)
 		, mView(view)
+		
 	{
 	}
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "optimarectanglemarker.h"
-#include "optimaview.h"
+#include "optimaconnector.h"
 
 /// маркер между точками коннектора
 class OptimaConnectorMoveMarker : public OptimaRectangleMarker
@@ -8,7 +8,7 @@ class OptimaConnectorMoveMarker : public OptimaRectangleMarker
 	Q_DISABLE_COPY( OptimaConnectorMoveMarker );
 
 public:
-	OptimaConnectorMoveMarker( Qt::CursorShape cursorShape, const OptimaView *view );
+	OptimaConnectorMoveMarker( OptimaConnector *parent, const QPointF & pos, Qt::CursorShape cursorShape);
 	
 	~OptimaConnectorMoveMarker()
 	{
@@ -18,6 +18,13 @@ public:
 	
 
 protected:
+
+
+	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
 

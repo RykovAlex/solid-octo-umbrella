@@ -2,19 +2,28 @@
 #include "tag.h"
 #include "optimapoint.h"
 
-OptimaPoint::OptimaPoint()
+OptimaPoint::OptimaPoint() 
+	: mUuid(QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" ))
 {
-
 }
 
-OptimaPoint::OptimaPoint(qreal xpos, qreal ypos, int radius) : QPointF(xpos, ypos), mRadius(radius)
+OptimaPoint::OptimaPoint(QDomNode nodeDot)
 {
-
+	apply(nodeDot);
 }
 
-OptimaPoint::OptimaPoint(const QPointF &point, int radius) : QPointF(point), mRadius(radius)
+OptimaPoint::OptimaPoint(qreal xpos, qreal ypos, int radius) 
+	: QPointF(xpos, ypos)
+	, mRadius(radius)
+	, mUuid(QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" ))
 {
+}
 
+OptimaPoint::OptimaPoint(const QPointF &point, int radius) 
+	: QPointF(point)
+	, mRadius(radius)
+	, mUuid(QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" ))
+{
 }
 
 int OptimaPoint::getRadius() const
@@ -48,6 +57,7 @@ void OptimaPoint::initialize( const QString & text )
 void OptimaPoint::apply(const QDomNode & nodeDot)
 {
 	QDomNode nodeCoordinate = nodeDot.namedItem(tag::coordinate);
+	
 	//Проверим в каком формате передана структура точки
 	if (nodeCoordinate.isNull())
 	{
@@ -58,11 +68,11 @@ void OptimaPoint::apply(const QDomNode & nodeDot)
 	{
 		//Это структура коннектора
 		initialize(nodeCoordinate.toElement( ).text( ));
+		QDomNode nodeId = nodeDot.namedItem(tag::id);
+		if (!nodeId.isNull())
+		{
+			setUuid(nodeId.toElement( ).text( ));
+		}
 	}
-}
-
-OptimaPoint::OptimaPoint(QDomNode nodeDot)
-{
-	apply(nodeDot);
 }
 

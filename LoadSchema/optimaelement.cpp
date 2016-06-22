@@ -3,6 +3,8 @@
 #include "optimaelement.h"
 #include "optimaview.h"
 
+#define Z_ORDER_DELIMITER 10000.0
+
 OptimaElement::OptimaElement(QGraphicsItem *_item, const QString &itemUuid, OptimaView *view) 
 	: mItem(_item)
 	, mView(view)
@@ -79,7 +81,8 @@ void OptimaElement::applyCommonProperties()
 	}
 
 	//Задаем порядок отображеняи на схеме
-	mItem->setZValue(getXmlValue(tag::order, 1.0));
+	qreal zOrder = getXmlValue(tag::order, 1.0);
+	mItem->setZValue( ( zOrder >= 0.0 && zOrder <= Z_ORDER_DELIMITER ) ? zOrder / Z_ORDER_DELIMITER : 1.0 );
 
 	//Задаем отбрасывание тени
 	if ( getXmlValue(tag::drop_shadow, 0.0) != 0 )

@@ -14,9 +14,12 @@ public:
 
 public slots:
 	void loadXml();
+	void pointerGroupClicked(int id);
 
 private:
 	Ui::LoadSchemaClass ui;
+	QButtonGroup* pointerTypeGroup;
+	QToolBar * pointerToolbar;
 };
 
 #endif // LOADSCHEMA_H

@@ -18,6 +18,9 @@ public:
 	///getter для радиуса скругления
 	int getRadius() const;
 
+	QString uuid() const { return mUuid; }
+
+	void setUuid(QString val) { mUuid = val; }
 
 protected:
 
@@ -28,6 +31,8 @@ private:
 	///Получить из строки вида x:y[:radius] точку и радиус скругления, и проинициализировать ими объект
 	void initialize( const QString & text );
 
+private:
+	QString mUuid;
 };
 
 typedef QVector<OptimaPoint> OptimaPointVector;

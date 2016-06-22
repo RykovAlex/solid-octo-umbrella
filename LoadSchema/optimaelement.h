@@ -32,10 +32,13 @@ public:
 	/// эта функция вызывается когда маркер привязанный к этому элементу перемещается пользователем
 	virtual void onMarkerMove(const OptimaBaseMarker* marker) = 0;
 
+	inline const OptimaView * view()
+	{
+		return mView;
+	}
 
 protected:	
 	OptimaView *mView;///< объект отвечающий за отображение схемы
-
 
 	///Получить тектовое представление xml
 	QString getXmlString(const QDomNode & element) const;

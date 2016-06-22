@@ -1,52 +1,153 @@
 #include "stdafx.h"
 #include "optimaconnectormovemarker.h"
 
-OptimaConnectorMoveMarker::OptimaConnectorMoveMarker(Qt::CursorShape cursorShape, const OptimaView *view) 
-	: OptimaRectangleMarker(cursorShape, view)
+OptimaConnectorMoveMarker::OptimaConnectorMoveMarker(OptimaConnector *parentConnector, const QPointF & pos, Qt::CursorShape cursorShape) 
+	//: OptimaRectangleMarker(parentConnector, cursorShape, parentConnector->view())
+	: OptimaRectangleMarker(parentConnector, cursorShape, parentConnector->view())
 {
+	qreal borderMarkerWidth = baseWidth/** (3.  / m_workspace.m_scale)*/;
+
+	setRect( QRectF( -borderMarkerWidth / 2, -borderMarkerWidth / 2, borderMarkerWidth, borderMarkerWidth ) );
+	
+	QPen pen( Qt::green, 1.0 );
+	pen.setCosmetic( true );
+	setPen( pen );			
+
+	setBrush( Qt::white );
+	isMovementBlocked = false;
+
+	setPos(pos);
+	deltaPos = pos;
+	setCursor(cursorShape);
+
+
+	setAcceptHoverEvents(true);
+	//setFlag(ItemIsSelectable);
+	setFlag(ItemIsMovable);
+	//parentConnector->view()->scene()->addItem(this);			
+	//setParentItem(nullptr);
+	//setZValue(0.999998);
 }
 
-bool OptimaConnectorMoveMarker::isPosChanged(QPointF & newPos)
+bool OptimaConnectorMoveMarker::isPosChanged(QPointF & pos)
 {
-	Q_ASSERT(mView != nullptr);
+	return true;
+}
 
-	if ( isMovementBlocked )
+QVariant OptimaConnectorMoveMarker::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+	switch (change)
 	{
-		return false;
+	case ItemPositionChange:
+		{
+			return value;
+		}
+		break;
+	case ItemMatrixChange:
+		break;
+	case ItemVisibleChange:
+		break;
+	case ItemEnabledChange:
+		break;
+	case ItemSelectedChange:
+		break;
+	case ItemParentChange:
+		break;
+	case ItemChildAddedChange:
+		break;
+	case ItemChildRemovedChange:
+		break;
+	case ItemTransformChange:
+		break;
+	case ItemPositionHasChanged:
+		break;
+	case ItemTransformHasChanged:
+		break;
+	case ItemSceneChange:
+		break;
+	case ItemVisibleHasChanged:
+		break;
+	case ItemEnabledHasChanged:
+		break;
+	case ItemSelectedHasChanged:
+		break;
+	case ItemParentHasChanged:
+		break;
+	case ItemSceneHasChanged:
+		break;
+	case ItemCursorChange:
+		break;
+	case ItemCursorHasChanged:
+		break;
+	case ItemToolTipChange:
+		break;
+	case ItemToolTipHasChanged:
+		break;
+	case ItemFlagsChange:
+		break;
+	case ItemFlagsHaveChanged:
+		break;
+	case ItemZValueChange:
+		break;
+	case ItemZValueHasChanged:
+		break;
+	case ItemOpacityChange:
+		break;
+	case ItemOpacityHasChanged:
+		break;
+	case ItemScenePositionHasChanged:
+		break;
+	case ItemRotationChange:
+		break;
+	case ItemRotationHasChanged:
+		break;
+	case ItemScaleChange:
+		break;
+	case ItemScaleHasChanged:
+		break;
+	case ItemTransformOriginPointChange:
+		break;
+	case ItemTransformOriginPointHasChanged:
+		break;
+	default:
+		break;
 	}
 
-	//маркер передвигается только по виртуальной сетке
-	const QPointF currentPos = this->pos();
-	const QPoint currrentAlignedPos(mView->alignToGrid(currentPos).toPoint());
-	const QPoint newAlignedPos(mView->alignToGrid( newPos ).toPoint());
+	return value;
+}
 
-	QPointF resultPos( currentPos );
+void OptimaConnectorMoveMarker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+	//маркер передвигается выровненным по сетке
+	deltaPos += event->scenePos() - event->lastScenePos();
+	QPointF alignedDeltaPos = mView->alignToGrid(deltaPos);
 
 	//определим как двигается маркер
 	switch(mCursor.shape())
 	{
 	case Qt::SizeHorCursor:
-		resultPos.setX( newAlignedPos.x( ) );
+		alignedDeltaPos.setY( 0.0 );
 		break;
 	case Qt::SizeVerCursor:
-		resultPos.setY( newAlignedPos.y( ) );
+		alignedDeltaPos.setX( 0.0 );
 		break;
 	case Qt::SizeAllCursor:
-		resultPos.setX( newAlignedPos.x( ) );
-		resultPos.setY( newAlignedPos.y( ) );
 		break;
 	default:
 		Q_ASSERT( false );
 	}
 
-	//проверим произошло ли передвижение маркера с точки зрения виртуальной сетки
-	const QPoint resultAlignedPos(mView->alignToGrid(resultPos).toPoint());
-	if ( resultAlignedPos == currrentAlignedPos )
+	if (alignedDeltaPos.isNull())
 	{
-		return false;
+		return;
 	}
 
-	newPos = resultPos;
+	deltaPos -= alignedDeltaPos;
+	QPointF newPos(itemChange(ItemPositionChange, pos() + alignedDeltaPos).toPointF() );
+	setPos( newPos );
+}
 
-	return true;
+void OptimaConnectorMoveMarker::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	deltaPos = QPointF();
 }

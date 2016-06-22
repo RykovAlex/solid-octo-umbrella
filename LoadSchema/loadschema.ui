@@ -88,5 +88,6 @@
  </connections>
  <slots>
   <slot>loadXml()</slot>
+  <slot>pointerGroupClicked(int)</slot>
  </slots>
 </ui>
