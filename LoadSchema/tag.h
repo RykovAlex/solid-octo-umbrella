@@ -7,6 +7,7 @@ namespace tag
 		enum {
 			uuid = 0
 			,uuidOwner
+			,linkable
 		};
 	}
 	

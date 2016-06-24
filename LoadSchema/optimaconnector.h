@@ -13,6 +13,8 @@ class OptimaConnector : public QGraphicsPathItem, public OptimaElement
 public:
 	OptimaConnector(const QString &itemUuid, OptimaView *view);
 
+	OptimaConnector(OptimaView *view, const OptimaPointVector & points);
+
 	~OptimaConnector();
 	
 	///ѕрименить изенени€ переданне через струтуру xml
@@ -25,13 +27,19 @@ public:
 	///передаетс€ в функцию
 	virtual void onMarkerMove(const OptimaBaseMarker* marker);
 
-	void buildPath(const OptimaCross & cross);
+	void buildPath();
 
 	void getIntersection(const QList<QGraphicsItem*> &itemList, int start);
 
 	void clearIntersection();
 
-	virtual QPainterPath shape() const;
+	OptimaPointVector points() const { return mPoints; }
+
+	void setPoints(const OptimaPointVector & val);
+
+	OptimaPoint first() const { return mPoints.first(); }
+	
+	OptimaPoint last() const { return mPoints.last(); }
 
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -39,7 +47,7 @@ protected:
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-
+	virtual QPainterPath shape() const;
 
 private:
 	OptimaPointVector mPoints;///< действительные точки коннетора, хранимые в xml

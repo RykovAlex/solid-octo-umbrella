@@ -2,15 +2,20 @@
 #include <QPointF>
 #include <QtXml/QDOMDocument>
 
+class OptimaPoint;
+typedef QVector<qreal> OptimaLengthVector;
+
+typedef QVector<OptimaPoint> OptimaPointVector;
+
 class OptimaPoint : public QPointF
 {
 public:
-	typedef QVector<qreal> OptimaLengthVector;
-	
+
 	OptimaPoint();
 	OptimaPoint(qreal xpos, qreal ypos, int radius);
 	OptimaPoint(const QPointF &point, int radius);
 	OptimaPoint(QDomNode nodeDot);
+	OptimaPoint(const QPointF &point);
 
 	///принять изменения из переданного узла XML 
 	void apply(const QDomNode &nodeDot);
@@ -22,6 +27,7 @@ public:
 
 	void setUuid(QString val) { mUuid = val; }
 
+	static const OptimaPointVector createVector(QPointF p1, QPointF p2);
 protected:
 
 
@@ -35,5 +41,5 @@ private:
 	QString mUuid;
 };
 
-typedef QVector<OptimaPoint> OptimaPointVector;
+
 

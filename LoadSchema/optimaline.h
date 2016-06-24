@@ -2,6 +2,9 @@
 #include "QtCore\QLine"
 #include "optimacorner.h"
 #include "OptimaCross.h"
+#include "optimapoint.h"
+
+class OptimaCross;
 
 class OptimaLine : public QLineF
 {
@@ -40,7 +43,7 @@ protected:
 private:
 	OptimaCorner mOptimaCorner; ///<Угол до следующей линии
 
-	QVector<qreal> mCrossingWithConnectorLengths;///<Массив расстояний от первой точки отрезка, до точек пересечения с другими коннекторами
+	OptimaLengthVector mCrossingWithConnectorLengths;///<Массив расстояний от первой точки отрезка, до точек пересечения с другими коннекторами
 
 };
 

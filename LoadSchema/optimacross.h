@@ -15,7 +15,7 @@ public:
 
 	void apply(const QString &crossType);
 
-	void draw(QPainterPath &path, const QLineF & originalLine, OptimaPoint::OptimaLengthVector crossingLengths) const;
+	void draw(QPainterPath &path, const QLineF & originalLine, OptimaLengthVector crossingLengths) const;
 
 protected:
 

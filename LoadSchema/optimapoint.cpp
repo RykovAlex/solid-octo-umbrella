@@ -26,9 +26,25 @@ OptimaPoint::OptimaPoint(const QPointF &point, int radius)
 {
 }
 
+OptimaPoint::OptimaPoint(const QPointF &point) 
+	: QPointF(point)
+	, mRadius(0)
+	, mUuid(QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" ))
+{
+}
+
 int OptimaPoint::getRadius() const
 {
 	return mRadius;
+}
+
+const OptimaPointVector OptimaPoint::createVector(QPointF p1, QPointF p2)
+{
+	OptimaPointVector result;
+
+	result << p1 << p2;
+
+	return result;
 }
 
 void OptimaPoint::initialize( const QString & text )

@@ -8,6 +8,7 @@ OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view)
 	,mBeginArrow(connector_arrow_no, true)
 	,mEndArrow(connector_arrow_no, false)
 {
+	setData(tag::data::linkable, true);
 	//для QGraphicView любой путь, даже не замкнутый представляет собой фигуру, он его замыкает сам.
 	//у нас коннетор это набор отрезков, поэтому определение, находится ли курсор над коннектором 
 	//, будет делать в нашей OptimaView
@@ -17,6 +18,23 @@ OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view)
 
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
+}
+
+OptimaConnector::OptimaConnector(OptimaView *view, const OptimaPointVector & points) 
+	:OptimaElement(this, "", view)
+	,mBeginArrow(connector_arrow_no, true)
+	,mEndArrow(connector_arrow_filled, false)
+{
+	setData(tag::data::linkable, false);
+	
+	setAcceptedMouseButtons(Qt::NoButton);
+	setAcceptHoverEvents(false);
+	//setFlag(ItemIsSelectable);
+	//setFlag(ItemIsMovable);
+
+	setPen(QPen(Qt::black, 1, Qt::DashDotLine));
+	
+	setPoints(points);
 }
 
 OptimaConnector::~OptimaConnector()
@@ -50,7 +68,7 @@ void OptimaConnector::apply()
 	getXmlValue(tag::structure_dot, mPoints );
 
 	//Зная точки построим непосредственно коннектор, передав в качестве параметра класс отвечающий за рисовангия пересечений
-	buildPath(mCross);
+	buildPath();
 }
 
 void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
@@ -169,25 +187,26 @@ void OptimaConnector::draw(bool isProcessLoading /*= false*/)
 	//}
 }
 
-void OptimaConnector::buildPath(const OptimaCross & cross)
+void OptimaConnector::buildPath()
 {
-	Q_ASSERT(mPoints.size() >= 2);
+	Q_ASSERT(points().size() >= 2);
+	const OptimaCross & cross = mCross;
 
 	//Здесь будут изображения стрелок начала и конца коннетора
 	QPainterPath pathArrow;
 
 	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
-	QPointF startPoint = mBeginArrow.getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
+	QPointF startPoint = mBeginArrow.getPath(pathArrow, points().at( 0 ), points().at( 1 ));
 
 	mConnectorPath = OptimaPath(startPoint, cross);
 
-	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
+	for ( int i = 1; i < points().size( ) - 1; ++i )
 	{
-		mConnectorPath.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i )), mRadiusCorner);
+		mConnectorPath.lineTo(points().at( i ), QLineF(points().at( i + 1), points().at( i )), mRadiusCorner);
 	}
 
 	// рисуем конец
-	const QPointF endPoint = mEndArrow.getPath( pathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
+	const QPointF endPoint = mEndArrow.getPath( pathArrow, points().at( points().size() - 1 ), points().at( points().size() - 2 ));
 
 	mConnectorPath.lineTo(endPoint);
 
@@ -227,6 +246,15 @@ void OptimaConnector::getIntersection(const QList<QGraphicsItem*> &itemList, int
 void OptimaConnector::clearIntersection()
 {
 	mConnectorPath.clearIntersection();
+}
+
+void OptimaConnector::setPoints(const OptimaPointVector & val)
+{
+	mPoints = val; 	
+	
+	buildPath(); 
+	
+	draw();
 }
 
 QPainterPath OptimaConnector::shape() const
@@ -286,15 +314,15 @@ void OptimaConnector::createMarkers()
 	// создадим маркеры посередине и на углах неуглового коннетора
 	// эти марверы по умолчанию представляют из субя булые квалраты с 
 	// зеленой окантовкой
-	for ( int i = 0; i < mPoints.size() - 1; ++i )
+	for ( int i = 0; i < points().size() - 1; ++i )
 	{
 		Qt::CursorShape сursorShape(Qt::SizeAllCursor);
 		
 		if ( mIsAngledСonnector )
 		{
 			// выясним поведение будушего маркера для углового коннектора
-			const int r1 = mView->getEntireCellsQnt( mPoints.at( i ).x( ));
-			const int r2 = mView->getEntireCellsQnt( mPoints.at( i + 1 ).x( ));
+			const int r1 = mView->getEntireCellsQnt( points().at( i ).x( ));
+			const int r2 = mView->getEntireCellsQnt( points().at( i + 1 ).x( ));
 			сursorShape = r1 == r2 ? Qt::SizeHorCursor : Qt::SizeVerCursor;
 		}
 		else
@@ -302,12 +330,12 @@ void OptimaConnector::createMarkers()
 			// у прямого коннетора поведение маркеров одинаково что посередине, что на точках
 			if ( i > 0 )
 			{
-				new OptimaConnectorMoveMarker( this, mPoints.at(i), сursorShape);
+				new OptimaConnectorMoveMarker( this, points().at(i), сursorShape);
 			}
 		}
 		
 		// это середина отрезка
-		new OptimaConnectorMoveMarker( this, (mPoints.at(i) + mPoints.at(i+1)) / 2, сursorShape);
+		new OptimaConnectorMoveMarker( this, (points().at(i) + points().at(i+1)) / 2, сursorShape);
 	}
 }
 

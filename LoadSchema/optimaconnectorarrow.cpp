@@ -6,6 +6,7 @@ OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape, QCh
 	, mMod( _mod )
 	, mSide( _side )
 	, mIsBegining(false)
+	, mSize(10.0)
 {
 }
 
@@ -14,6 +15,7 @@ OptimaConnectorArrow::OptimaConnectorArrow(const QString &_shape, QChar _mod, QC
 	, mMod( _mod )
 	, mSide( _side )
 	, mIsBegining(false)
+	, mSize(10.0)
 {
 }
 
@@ -22,6 +24,7 @@ OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape)
 	, mMod( '\0' )
 	, mSide( '\0' )
 	, mIsBegining(false)
+	, mSize(10.0)
 {
 }
 
@@ -30,6 +33,7 @@ OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape, boo
 	, mMod( '\0' )
 	, mSide( '\0' )
 	, mIsBegining(isBegining)
+	, mSize(10.0)
 {
 }
 

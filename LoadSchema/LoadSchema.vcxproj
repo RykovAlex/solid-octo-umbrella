@@ -101,6 +101,7 @@
     <ClCompile Include="optimaconnector.cpp" />
     <ClCompile Include="optimaconnectorarrow.cpp" />
     <ClCompile Include="optimaconnectormovemarker.cpp" />
+    <ClCompile Include="optimaconnectorpathfinder.cpp" />
     <ClCompile Include="optimacorner.cpp" />
     <ClCompile Include="optimaelement.cpp" />
     <ClCompile Include="optimafigure.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="optimaconnector.h" />
     <ClInclude Include="optimaconnectorarrow.h" />
     <ClInclude Include="optimaconnectormovemarker.h" />
+    <ClInclude Include="optimaconnectorpathfinder.h" />
     <ClInclude Include="optimacorner.h" />
     <ClInclude Include="optimaelement.h" />
     <ClInclude Include="optimafigure.h" />
@@ -149,6 +151,7 @@
     <ClInclude Include="optimapath.h" />
     <ClInclude Include="optimapoint.h" />
     <ClInclude Include="optimarectanglemarker.h" />
+    <ClInclude Include="optimatemporaryconnector.h" />
     <ClInclude Include="optimatext.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

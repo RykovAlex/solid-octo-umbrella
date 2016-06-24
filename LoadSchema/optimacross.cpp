@@ -17,7 +17,7 @@ void OptimaCross::apply(const QString &crossType)
 		mCrossType = connector_cross_full;
 }
 
-void OptimaCross::draw(QPainterPath &path, const QLineF & originalLine, OptimaPoint::OptimaLengthVector crossingLengths) const
+void OptimaCross::draw(QPainterPath &path, const QLineF & originalLine, OptimaLengthVector crossingLengths) const
 {
 	// половина ширины разрыва
 	const qreal breakLineLength = 5.;

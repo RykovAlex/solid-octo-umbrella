@@ -95,6 +95,9 @@
     <ClCompile Include="optimaconnectormovemarker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimaconnectorpathfinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -140,6 +143,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimaconnectormovemarker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimaconnectorpathfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimatemporaryconnector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

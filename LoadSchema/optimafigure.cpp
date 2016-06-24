@@ -5,6 +5,7 @@
 
 OptimaFigure::OptimaFigure(const QString &itemUuid, OptimaView *view) : OptimaElement(this, itemUuid, view)
 {
+	setData(tag::data::linkable, true);
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
 }
@@ -91,6 +92,31 @@ void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 	path.closeSubpath();
 
 	setPath(path);
+	
+	splitOnPieces();
+}
+
+void OptimaFigure::splitOnPieces()
+{
+	shapePieces.clear();
+	//QRectF itemSceneRect(mapRectToScene(boundingRect()));
+	QRectF itemSceneRect((boundingRect()));
+
+	QPointF centerPoint( QLineF(itemSceneRect.topLeft(), itemSceneRect.bottomRight()).pointAt(0.5));
+	
+	addShapePieces(centerPoint, QLineF(itemSceneRect.topLeft(), itemSceneRect.topRight()));
+	addShapePieces(centerPoint, QLineF(itemSceneRect.topRight(), itemSceneRect.bottomRight()));
+	addShapePieces(centerPoint, QLineF(itemSceneRect.bottomRight(), itemSceneRect.bottomLeft()));
+	addShapePieces(centerPoint, QLineF(itemSceneRect.bottomLeft(), itemSceneRect.topLeft()));
+}
+
+void OptimaFigure::addShapePieces(const QPointF centerPoint, const QLineF &rectSegment)
+{
+	QPolygonF p;
+	
+	p << centerPoint << rectSegment.p1() << rectSegment.p2();
+	
+	shapePieces << p;
 }
 
 QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
@@ -113,5 +139,48 @@ QLineF OptimaFigure::createLineToCurve(int iStart, int iEnd) const
 void OptimaFigure::onMarkerMove(const OptimaBaseMarker* marker)
 {
 	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void OptimaFigure::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
+{
+	painter->setPen(pen());
+	painter->setBrush(brush());
+	painter->drawPath(path());
+	if (mIndexShapePieces >= 0)
+	{
+		painter->setOpacity(0.25);
+		painter->setPen(Qt::red);
+		painter->drawRect(boundingRect());
+
+		painter->setPen(Qt::NoPen);
+		painter->setBrush(QBrush(Qt::gray));
+		painter->setOpacity(0.25);
+		//painter->setClipPath(path());
+		painter->drawPolygon(shapePieces.at(mIndexShapePieces));
+	}
+
+}
+
+void OptimaFigure::setHighlightShapePieces(const QPointF & scenePos, bool enabled)
+{
+	
+	if (enabled)
+	{
+		QPointF itemPos = mapFromScene(scenePos);
+		mIndexShapePieces = 0;
+		foreach(const QPolygonF &p, shapePieces)
+		{
+			if (p.containsPoint(itemPos, Qt::OddEvenFill))
+			{
+				break;
+			}
+			++mIndexShapePieces;
+		}
+	}
+	else
+	{
+		mIndexShapePieces = -1;
+	}
+	update();
 }
 

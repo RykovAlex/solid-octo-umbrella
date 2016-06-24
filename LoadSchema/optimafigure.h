@@ -19,10 +19,16 @@ public:
 	///Задать контуры фигуры
 	void draw(bool isProcessLoading = false);
 
+	void splitOnPieces();
+
+	void addShapePieces(const QPointF centerPoint, const QLineF &rectSegment);
+
 
 	virtual void onMarkerMove(const OptimaBaseMarker* marker);
 
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
+	void setHighlightShapePieces(const QPointF & scenePos, bool enabled);
 protected:
 
 private:
@@ -37,11 +43,16 @@ private:
 
 	qreal mScaleY;///< коэффициент масштабирования по оси Y
 
+	QVector<QPolygonF> shapePieces;///<будем хранить элементы boundingRect для определения области присоединения коннектора
+	
+
 	///Создает отрезок фигуры за минусом радиуса скругления
 	QLineF createLineToCurve(int iStart, int iEnd) const;
 
 	///Обеспечим масштабирование фигуры согласно коэффицентам по вертикали <kx> и горизонтали <ky>
 	void scale();
+
+	int mIndexShapePieces;
 };
 
 

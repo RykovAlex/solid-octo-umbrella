@@ -19,6 +19,84 @@
     <DrawingConnector>no</DrawingConnector>
     <CrossLineEnable>0</CrossLineEnable>
   </Workspace>
+  <Figure>
+    <ID>f51137af-0a13-404f-a257-8a1400d4aa26</ID>
+    <PaintLine>c0c0c0ff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>f4ecc5ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>36</Order>
+    <PosCoordinate>1500:1000</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>0</PictureHeight>
+    <PictureWidth>0</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>0</DropShadow>
+    <Picture></Picture>
+    <PictureCoordinate>0:0</PictureCoordinate>
+    <ScalePicToOwner>0</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>0</BiDirectResize>
+    <StructureDot>
+      <dot>0:50:5</dot>
+      <dot>70:0:5</dot>
+      <dot>140:25:5</dot>
+      <dot>70:100:5</dot>
+    </StructureDot>
+    <StructureGroup>f51137af-0a13-404f-a257-8a1400d4aa26,db987a4f-02f6-4339-860b-2500ae71bf7a</StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:87716c626dc866d811e47d90dc14ac75}
+}
+}
+}</UserProperties>
+  </Figure>
+  <Figure>
+    <ID>f51137af-0a13-404f-a257-8a1400d4aa27</ID>
+    <PaintLine>c0c0c0ff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>f4ecc5ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>37</Order>
+    <PosCoordinate>1450:950</PosCoordinate>
+    <KX>1</KX>
+    <KY>1</KY>
+    <Transparent>100</Transparent>
+    <PictureHeight>0</PictureHeight>
+    <PictureWidth>0</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>0</DropShadow>
+    <Picture></Picture>
+    <PictureCoordinate>0:0</PictureCoordinate>
+    <ScalePicToOwner>0</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>0</BiDirectResize>
+    <StructureDot>
+      <dot>0:50:5</dot>
+      <dot>70:0:5</dot>
+      <dot>140:25:5</dot>
+      <dot>70:100:5</dot>
+    </StructureDot>
+    <StructureGroup>f51137af-0a13-404f-a257-8a1400d4aa26,db987a4f-02f6-4339-860b-2500ae71bf7a</StructureGroup>
+    <UserProperties>{"#",4238019d-7e49-4fc9-91db-b6b951d5cf8e,
+{1,
+{
+{"S","HyperLink"},
+{"#",3724a2d5-c331-4cfc-baa7-e2358e317248,9:87716c626dc866d811e47d90dc14ac75}
+}
+}
+}</UserProperties>
+  </Figure>
   <Line>
     <ID>11d1ab79-228f-4fa2-9633-5500d3f0561f</ID>
     <PaintLine>000000ff</PaintLine>

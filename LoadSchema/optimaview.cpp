@@ -2,17 +2,19 @@
 #include "tag.h"
 #include "optimaconnector.h"
 #include "optimaview.h"
-#include "optimafigure.h"
 #include "optimatext.h"
+#include "optimaconnectorpathfinder.h"
+#include "optimatemporaryconnector.h"
 
 OptimaView::OptimaView(QWidget *parent) 
 	: QGraphicsView(parent)
 	, mMode(MoveItem)
 	, newConnector(nullptr)
+	, linkedFigure(nullptr)
 { 
 	setScene( new QGraphicsScene(parent) );
 	//scene()->setSceneRect(QRectF(0.0, 0.0, 3000.0,3000.0));
-	//setMouseTracking(true);
+	setMouseTracking(true);
 };
 
 void OptimaView::setMode(Mode mode)
@@ -26,10 +28,15 @@ void OptimaView::createNewConnector(QMouseEvent * mouseEvent)
 	{
 		delete newConnector;
 	}
-	newConnector = new QGraphicsLineItem(QLineF( mapToScene(mouseEvent->pos()), mapToScene(mouseEvent->pos())));
-	//QGraphicsLineItem *newConnector = new QGraphicsLineItem(QLineF( mouseEvent->pos(), mouseEvent->pos()));
+	
+	QPointF scenePos = mapToScene(mouseEvent->pos());
 
-	newConnector->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
+	newConnector = new OptimaConnector(this, OptimaPoint::createVector(scenePos, scenePos));	
+	QGraphicsRectItem *beginBorder = new QGraphicsRectItem(QRectF( scenePos - QPointF(3.0,3.0), scenePos + QPointF(3.0,3.0)), newConnector);
+	beginBorder->setPen(QPen( isLinkedAt(scenePos) ? Qt::red : Qt::green, 1, Qt::SolidLine));
+
+	QGraphicsRectItem *endBorder = new QGraphicsRectItem(QRectF( scenePos - QPointF(3.0,3.0), scenePos + QPointF(3.0,3.0)), newConnector);
+	endBorder->setPen(QPen( isLinkedAt(scenePos) ? Qt::red : Qt::green, 1, Qt::SolidLine));
 	scene()->addItem(newConnector);
 }
 
@@ -37,6 +44,7 @@ void OptimaView::mousePressEvent(QMouseEvent *mouseEvent)
 {
 	if (mouseEvent->button() != Qt::LeftButton)
 		return;
+	OptimaTemporaryConnector tempConnector(this, (mouseEvent->pos()));
 
 	switch(mMode)
 	{
@@ -55,6 +63,51 @@ void OptimaView::mousePressEvent(QMouseEvent *mouseEvent)
 	QGraphicsView::mousePressEvent(mouseEvent);
 }
 
+void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
+{
+	QPoint eventPos = mouseEvent->pos();
+
+	QPointF scenePos = mapToScene(eventPos);
+
+	//подсветка областей к которым будем коннектиться
+	if (mMode == InsertLine)
+	{
+		updateHighlightLinkedFigure(scenePos);
+	}
+
+	if (newConnector != nullptr )
+	{
+		Q_ASSERT(newConnector->childItems().count() >= 2);
+		OptimaPointVector newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Free( newConnector->first(), scenePos );
+
+		newConnector->setPoints(newPoints);
+
+		QGraphicsRectItem * borderEnd = dynamic_cast<QGraphicsRectItem *>(newConnector->childItems().at(1));
+		borderEnd->setPen(QPen( isLinkedAt(scenePos) ? Qt::red : Qt::green, 1, Qt::SolidLine));
+		borderEnd->setPos( newConnector->last() - newConnector->first() );
+	} 
+	else
+	{
+		QGraphicsView::mouseMoveEvent(mouseEvent);
+	}
+
+}
+
+void OptimaView::updateHighlightLinkedFigure(QPointF scenePos)
+{
+	if (linkedFigure != nullptr)
+	{
+		linkedFigure->setHighlightShapePieces(scenePos, false);
+	}
+
+	linkedFigure = getLinkedFigure(scenePos);
+
+	if (linkedFigure != nullptr)
+	{
+		linkedFigure->setHighlightShapePieces(scenePos, true);
+	}
+}
+
 void OptimaView::mouseReleaseEvent(QMouseEvent *mouseEvent)
 {
 	if (newConnector != nullptr)
@@ -63,20 +116,6 @@ void OptimaView::mouseReleaseEvent(QMouseEvent *mouseEvent)
 		newConnector = nullptr;
 	}
 	QGraphicsView::mouseReleaseEvent(mouseEvent);
-}
-
-void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
-{
-	if (newConnector != nullptr )
-	{
-		QLineF newLine(newConnector->line().p1(), mapToScene(mouseEvent->pos()));
-		newConnector->setLine(newLine);
-	} 
-	else
-	{
-		QGraphicsView::mouseMoveEvent(mouseEvent);
-	}
-	
 }
 
 void OptimaView::apply()
@@ -267,4 +306,48 @@ void OptimaView::beforeExecute1CCall()
 bool OptimaView::isConnector(const QGraphicsItem* item) const
 {
 	return (dynamic_cast<const OptimaConnector*>(item) != nullptr);
+}
+
+bool OptimaView::isFigure(const QGraphicsItem* item) const
+{
+	return (dynamic_cast<const OptimaFigure*>(item) != nullptr);
+}
+
+QGraphicsItem * OptimaView::findLinkedItem(const QPointF &scenePos) const
+{
+	QGraphicsItem *item = scene()->itemAt(scenePos);
+	if (item)
+	{
+		//учитаваем только фигуры и коннекторы, у них стоит признак что к ним можно прилинковываться		
+		if( item->data(tag::data::linkable).toBool() )
+		{
+			return item;
+		}		
+	}
+
+	foreach(QGraphicsItem *item, items())
+	{
+		if( !item->data(tag::data::linkable).toBool() )
+		{
+			continue;
+		}		
+		if (isFigure(item))
+		{
+			QRectF itemRect = item->mapRectToScene(item->boundingRect());
+			if (itemRect.contains(scenePos))
+				return item;
+		}
+	}
+
+	return nullptr;
+}
+
+bool OptimaView::isLinkedAt(const QPointF & scenePos) const
+{
+	return findLinkedItem(scenePos) != nullptr;
+}
+
+OptimaFigure * OptimaView::getLinkedFigure(const QPointF & scenePos) const
+{
+	return dynamic_cast<OptimaFigure*>(findLinkedItem(scenePos));
 }

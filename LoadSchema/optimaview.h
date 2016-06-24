@@ -2,6 +2,7 @@
 #include <QtGui/QGraphicsView>
 #include <QtXml/QDOMDocument>
 #include "OptimaElement.h"
+#include "optimafigure.h"
 
 class OptimaConnector;
 
@@ -60,6 +61,8 @@ protected:
 
 	virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
 
+	void updateHighlightLinkedFigure(QPointF scenePos);
+
 
 
 private:
@@ -69,8 +72,10 @@ private:
 
 	Mode mMode;///<текущее активное действие сцены (создаем коннектор, фигуру, что-нибудь передвигаем)
 	
-	QGraphicsLineItem *newConnector;///<отображение для коннетора который только еще создается
+	OptimaConnector *newConnector;///<отображение для коннетора который только еще создается
 	
+	OptimaFigure *linkedFigure;///<хранит указатель на фигуру, которую подсветили для присоединения коннектора
+
 	virtual void apply();
 
 	virtual void draw(bool isProcessLoading = false);
@@ -96,6 +101,13 @@ private:
 	
 	void loadWorkspace(const QDomNodeList &workspace);
 
-	bool isConnector(const QGraphicsItem* item) const;
+	QGraphicsItem *findLinkedItem(const QPointF &scenePos) const;
+
+	inline bool isConnector(const QGraphicsItem* item) const;
 	
+	inline bool isFigure(const QGraphicsItem* item) const;
+	
+	inline bool isLinkedAt(const QPointF & scenePos) const;
+
+	inline  OptimaFigure *getLinkedFigure(const QPointF & scenePos) const;
 };
