@@ -5,36 +5,39 @@
 
 OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view) 
 	:OptimaElement(this, itemUuid, view)
-	,mBeginArrow(connector_arrow_no, true)
-	,mEndArrow(connector_arrow_no, false)
+	,OptimaTemporaryConnector()
+{
+	initialize();
+}
+
+OptimaConnector::OptimaConnector(const OptimaTemporaryConnector *tempConnector, OptimaView *view)
+	:OptimaElement(this, (QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" )), view)
+	,OptimaTemporaryConnector(tempConnector)
+{
+	initialize();
+
+	buildPath(); 
+
+	draw();
+}
+
+void OptimaConnector::initialize()
 {
 	setData(tag::data::linkable, true);
-	//для QGraphicView любой путь, даже не замкнутый представляет собой фигуру, он его замыкает сам.
-	//у нас коннетор это набор отрезков, поэтому определение, находится ли курсор над коннектором 
-	//, будет делать в нашей OptimaView
-	
-	//setAcceptedMouseButtons(Qt::NoButton);
+
+	qDebug() << data(tag::data::linkable).toBool();
+
+	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 	setAcceptHoverEvents(true);
 
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
-}
 
-OptimaConnector::OptimaConnector(OptimaView *view, const OptimaPointVector & points) 
-	:OptimaElement(this, "", view)
-	,mBeginArrow(connector_arrow_no, true)
-	,mEndArrow(connector_arrow_filled, false)
-{
-	setData(tag::data::linkable, false);
-	
-	setAcceptedMouseButtons(Qt::NoButton);
-	setAcceptHoverEvents(false);
-	//setFlag(ItemIsSelectable);
-	//setFlag(ItemIsMovable);
+	setPen(QPen(Qt::black, 1, Qt::SolidLine));
 
-	setPen(QPen(Qt::black, 1, Qt::DashDotLine));
-	
-	setPoints(points);
+	mIsAngledСonnector = true;
+	setCursor(QCursor( QPixmap( ":/images/resources/cursor_move_rect.png"), 0, 0));
+
 }
 
 OptimaConnector::~OptimaConnector()
@@ -71,29 +74,24 @@ void OptimaConnector::apply()
 	buildPath();
 }
 
-void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
+void OptimaConnector::draw(bool isProcessLoading /*= false*/)
 {
-	//заблокируем стандартное рисование
-	//QGraphicsPathItem::paint(painter, option, widget);
-	painter->setPen(pen());
-	painter->drawPath(path());
-	
-	painter->setBrush(this->pen().color());
-	painter->drawPath(mPathArrow);
+	//нет смысла рисовать коннетор до загрузки всех коннеткоров и определения точек их пересечения
+	//для коннекторов будет вызвана draw еще раз, после определения точек пересечения с другими коннеторами
+	if (isProcessLoading)
+	{
+		return;
+	}
+
+	// обозначим пространство, в котором будем рисовать коннетор
+	// setPath( mConnectorPath.toPath() );
+	OptimaTemporaryConnector::draw();
 }
 
 QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &value)
 {
 	switch (change)
 	{
-	case ItemPositionChange:
-		break;
-	case ItemMatrixChange:
-		break;
-	case ItemVisibleChange:
-		break;
-	case ItemEnabledChange:
-		break;
 	case ItemSelectedChange:
 		if (value == true)
 		{
@@ -104,64 +102,6 @@ QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &
 			destroyMarkers();
 		}
 		break;
-	case ItemParentChange:
-		break;
-	case ItemChildAddedChange:
-		break;
-	case ItemChildRemovedChange:
-		break;
-	case ItemTransformChange:
-		break;
-	case ItemPositionHasChanged:
-		break;
-	case ItemTransformHasChanged:
-		break;
-	case ItemSceneChange:
-		break;
-	case ItemVisibleHasChanged:
-		break;
-	case ItemEnabledHasChanged:
-		break;
-	case ItemSelectedHasChanged:
-		break;
-	case ItemParentHasChanged:
-		break;
-	case ItemSceneHasChanged:
-		break;
-	case ItemCursorChange:
-		break;
-	case ItemCursorHasChanged:
-		break;
-	case ItemToolTipChange:
-		break;
-	case ItemToolTipHasChanged:
-		break;
-	case ItemFlagsChange:
-		break;
-	case ItemFlagsHaveChanged:
-		break;
-	case ItemZValueChange:
-		break;
-	case ItemZValueHasChanged:
-		break;
-	case ItemOpacityChange:
-		break;
-	case ItemOpacityHasChanged:
-		break;
-	case ItemScenePositionHasChanged:
-		break;
-	case ItemRotationChange:
-		break;
-	case ItemRotationHasChanged:
-		break;
-	case ItemScaleChange:
-		break;
-	case ItemScaleHasChanged:
-		break;
-	case ItemTransformOriginPointChange:
-		break;
-	case ItemTransformOriginPointHasChanged:
-		break;
 	default:
 		break;
 	}
@@ -169,50 +109,6 @@ QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &
 	return value;
 }
 
-void OptimaConnector::draw(bool isProcessLoading /*= false*/)
-{	
-	//нет смысла рисовать коннетор до загрузки всех коннеткоров и определения точек их пересечения
-	//для коннекторов будет вызвана draw еще раз, после определения точек пересечения с другими коннеторами
-	if (isProcessLoading)
-	{
-		return;
-	}
-
-	// обозначим пространство, в котором будем рисовать коннетор
-	setPath( mConnectorPath.toPath() );
-	
-	//if ( is_selected( ) )
-	//{
-	//	redraw_coners( redraw_borders );
-	//}
-}
-
-void OptimaConnector::buildPath()
-{
-	Q_ASSERT(points().size() >= 2);
-	const OptimaCross & cross = mCross;
-
-	//Здесь будут изображения стрелок начала и конца коннетора
-	QPainterPath pathArrow;
-
-	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
-	QPointF startPoint = mBeginArrow.getPath(pathArrow, points().at( 0 ), points().at( 1 ));
-
-	mConnectorPath = OptimaPath(startPoint, cross);
-
-	for ( int i = 1; i < points().size( ) - 1; ++i )
-	{
-		mConnectorPath.lineTo(points().at( i ), QLineF(points().at( i + 1), points().at( i )), mRadiusCorner);
-	}
-
-	// рисуем конец
-	const QPointF endPoint = mEndArrow.getPath( pathArrow, points().at( points().size() - 1 ), points().at( points().size() - 2 ));
-
-	mConnectorPath.lineTo(endPoint);
-
-	// сохраним для отрисовки в paint()
-	mPathArrow = pathArrow;
-}
 
 void OptimaConnector::intersected(OptimaPath & connectorPath)
 {
@@ -248,23 +144,86 @@ void OptimaConnector::clearIntersection()
 	mConnectorPath.clearIntersection();
 }
 
-void OptimaConnector::setPoints(const OptimaPointVector & val)
+int OptimaConnector::type() const
 {
-	mPoints = val; 	
-	
-	buildPath(); 
-	
-	draw();
+	return Type;
 }
 
-QPainterPath OptimaConnector::shape() const
+void OptimaConnector::setLinkedHighlight(bool enabled, const QPointF & scenePos /*= QPointF()*/)
 {
-	QPainterPath path(this->path());
+	if (enabled)
+	{
+		checkLinkedHighlight(scenePos, mIndexLinkedLine);
+	}
+	else
+	{
+		mIndexLinkedLine = -1;
+	}
+
+
+	setData(tag::data::linkingParameter, mIndexLinkedLine);
+	
+	update();
+}
+
+bool OptimaConnector::checkLinkedHighlight(const QPointF & scenePos, int &indexLinkedLine)
+{
+	indexLinkedLine = -1;
+	for (int i = 0; i < (mPoints.size() - 1); ++i)
+	{
+		QLineF line(getPathLine(i));
+		QPainterPath strokeLinePath(getStrokeLinePath(line));
+		if (strokeLinePath.contains(scenePos))
+		{
+			indexLinkedLine = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool OptimaConnector::checkLinkedHighlight(const QPointF & scenePos)
+{
+	int indexLinkedLine;
+
+	return checkLinkedHighlight(scenePos, indexLinkedLine);
+}
+
+QPainterPath OptimaConnector::getStrokeLinePath(const QLineF &line) const
+{
+	QPainterPath linePath(line.p1());
+	linePath.lineTo(line.p2());
+
 	QPainterPathStroker pathStrocke;
-	pathStrocke.setWidth(20);
+	pathStrocke.setWidth(margin);
 
-	return pathStrocke.createStroke(path);
+	return pathStrocke.createStroke(linePath);
 }
+
+void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
+{
+	OptimaTemporaryConnector::paint(painter, option);
+	if (mIndexLinkedLine >= 0)
+	{
+		painter->setOpacity(0.25);
+		painter->setPen(Qt::red);
+		//painter->drawRect(boundingRect());
+		//painter->setPen(Qt::NoPen);
+
+		painter->setBrush(QBrush(Qt::gray));
+		painter->setOpacity(0.25);
+		painter->drawPath(getStrokeLinePath(getPathLine(mIndexLinkedLine)));
+
+		//{
+		//	QPainterPath path(this->path());
+		//	QPainterPathStroker pathStrocke;
+		//	pathStrocke.setWidth(margin);
+		//	painter->drawPath(pathStrocke.createStroke(path));
+
+		//}
+	}
+}		
 
 void OptimaConnector::onLineMove(const OptimaConnectorMoveMarker* moveMarker)
 {

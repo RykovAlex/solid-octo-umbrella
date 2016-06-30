@@ -5,15 +5,19 @@
 #include "optimaconnectorarrow.h"
 #include "optimapath.h"
 #include "optimaconnectormovemarker.h"
+#include "optimatemporaryconnector.h"
 
 class OptimaConnectorMoveMarker;
 
-class OptimaConnector : public QGraphicsPathItem, public OptimaElement
+class OptimaConnector : public OptimaTemporaryConnector, public OptimaElement
 {
 public:
+	enum { Type = UserType + tag::element::connector };
 	OptimaConnector(const QString &itemUuid, OptimaView *view);
 
-	OptimaConnector(OptimaView *view, const OptimaPointVector & points);
+	OptimaConnector(const OptimaTemporaryConnector *tempConnector, OptimaView *view);
+
+	void initialize();
 
 	~OptimaConnector();
 	
@@ -27,44 +31,36 @@ public:
 	///передается в функцию
 	virtual void onMarkerMove(const OptimaBaseMarker* marker);
 
-	void buildPath();
-
 	void getIntersection(const QList<QGraphicsItem*> &itemList, int start);
 
 	void clearIntersection();
 
-	OptimaPointVector points() const { return mPoints; }
+	virtual int type() const;
 
-	void setPoints(const OptimaPointVector & val);
+	virtual void setLinkedHighlight(bool enabled, const QPointF & scenePos = QPointF());
 
-	OptimaPoint first() const { return mPoints.first(); }
-	
-	OptimaPoint last() const { return mPoints.last(); }
+	virtual bool checkLinkedHighlight(const QPointF & scenePos);
+
+	bool checkLinkedHighlight(const QPointF & scenePos, int &indexLinkedLine);
+
+	QPainterPath getStrokeLinePath(const QLineF &line) const;
+
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+
+	inline OptimaLine linkedLine() const
+	{
+		Q_ASSERT(mIndexLinkedLine >= 0 && mIndexLinkedLine < (mPoints.size() - 1));
+
+		return OptimaLine(getPathLine(mIndexLinkedLine), getUuidsLine(mIndexLinkedLine));
+	}
 
 protected:
-	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-		QWidget *widget = 0);
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-	virtual QPainterPath shape() const;
-
 private:
-	OptimaPointVector mPoints;///< действительные точки коннетора, хранимые в xml
 
-	OptimaConnectorArrow mBeginArrow;///< стрелка в начале коннектора
-
-	OptimaConnectorArrow mEndArrow;///< стрелка в конце коннектора
-
-	OptimaCross mCross;///< класс отвечает за отрисовку пересечений с другими коннеторами
-	
-	qreal mRadiusCorner;///< радиус скругления углов коннетора
-	
 	bool mIsAngledСonnector;///< признак что это угловой коннетор
-
-	QPainterPath mPathArrow;
-	
-	OptimaPath mConnectorPath;
 
 	void intersected(OptimaPath & connectorPath);
 	
@@ -77,9 +73,31 @@ private:
 
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
-
 	void createMarkers();
+
 	void destroyMarkers();
+	
+	inline QLineF getPathLine(int indexLine) const
+	{
+		return mConnectorPath.lineAt(indexLine);
+		//return QLineF(mPoints.at(indexLine), mPoints.at(indexLine + 1));
+	}
+	int mIndexLinkedLine;
+	
+	inline QVector<QString> getUuidsLine(int indexLine) const
+	{
+		Q_ASSERT(indexLine >= 0 && indexLine < (mPoints.size() - 1));
+
+		QVector<QString> res;
+		res << mPoints.at(mIndexLinkedLine).uuid() << mPoints.at(mIndexLinkedLine + 1).uuid();
+
+		return res;
+	}
 };
+
+inline bool isConnector(const QGraphicsItem* item)
+{
+	return (qgraphicsitem_cast<const OptimaConnector*>(item) != nullptr);
+}
 
 

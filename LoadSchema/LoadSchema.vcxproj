@@ -109,6 +109,7 @@
     <ClCompile Include="optimaline.cpp" />
     <ClCompile Include="optimapath.cpp" />
     <ClCompile Include="optimapoint.cpp" />
+    <ClCompile Include="optimatemporaryconnector.cpp" />
     <ClCompile Include="optimatext.cpp" />
     <ClCompile Include="optimaview.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -118,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_loadschema.h" />
+    <ClInclude Include="tag.h" />
     <CustomBuild Include="loadschema.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing loadschema.h...</Message>

@@ -60,6 +60,25 @@ void OptimaFigure::scale()
 
 }
 
+QLineF OptimaFigure::getEdgeLine(const QRectF & sceneBoundingRect,  OptimaLinkedRect::rectSide rectSide)
+{
+	switch (rectSide)
+	{
+	case OptimaLinkedRect::top:
+		return QLineF(sceneBoundingRect.topLeft(), sceneBoundingRect.topRight());
+	case OptimaLinkedRect::right:
+		return QLineF(sceneBoundingRect.topRight(), sceneBoundingRect.bottomRight());
+	case OptimaLinkedRect::bottom:
+		return QLineF(sceneBoundingRect.bottomRight(), sceneBoundingRect.bottomLeft());
+	case OptimaLinkedRect::left:
+		return QLineF(sceneBoundingRect.bottomLeft(), sceneBoundingRect.topLeft());
+	default:
+		Q_ASSERT(false);
+	}
+
+	return QLineF();
+}
+
 void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 {
 	scale();
@@ -99,15 +118,14 @@ void OptimaFigure::draw(bool isProcessLoading /*= flase*/)
 void OptimaFigure::splitOnPieces()
 {
 	shapePieces.clear();
-	//QRectF itemSceneRect(mapRectToScene(boundingRect()));
-	QRectF itemSceneRect((boundingRect()));
+	QRectF itemRect((boundingRect()));
 
-	QPointF centerPoint( QLineF(itemSceneRect.topLeft(), itemSceneRect.bottomRight()).pointAt(0.5));
+	QPointF centerPoint( QLineF(itemRect.topLeft(), itemRect.bottomRight()).pointAt(0.5));
 	
-	addShapePieces(centerPoint, QLineF(itemSceneRect.topLeft(), itemSceneRect.topRight()));
-	addShapePieces(centerPoint, QLineF(itemSceneRect.topRight(), itemSceneRect.bottomRight()));
-	addShapePieces(centerPoint, QLineF(itemSceneRect.bottomRight(), itemSceneRect.bottomLeft()));
-	addShapePieces(centerPoint, QLineF(itemSceneRect.bottomLeft(), itemSceneRect.topLeft()));
+	addShapePieces(centerPoint, getEdgeLine(itemRect, OptimaLinkedRect::top));
+	addShapePieces(centerPoint, getEdgeLine(itemRect, OptimaLinkedRect::right));
+	addShapePieces(centerPoint, getEdgeLine(itemRect, OptimaLinkedRect::bottom));
+	addShapePieces(centerPoint, getEdgeLine(itemRect, OptimaLinkedRect::left));
 }
 
 void OptimaFigure::addShapePieces(const QPointF centerPoint, const QLineF &rectSegment)
@@ -161,26 +179,60 @@ void OptimaFigure::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 }
 
-void OptimaFigure::setHighlightShapePieces(const QPointF & scenePos, bool enabled)
+void OptimaFigure::setLinkedHighlight(bool enabled, const QPointF & scenePos /*= QPointF()*/)
 {
 	
 	if (enabled)
 	{
-		QPointF itemPos = mapFromScene(scenePos);
-		mIndexShapePieces = 0;
-		foreach(const QPolygonF &p, shapePieces)
-		{
-			if (p.containsPoint(itemPos, Qt::OddEvenFill))
-			{
-				break;
-			}
-			++mIndexShapePieces;
-		}
+		checkLinkedHighlight(scenePos, mIndexShapePieces);
 	}
 	else
 	{
 		mIndexShapePieces = -1;
 	}
+	
+	setData(tag::data::linkingParameter, mIndexShapePieces);
+	
 	update();
 }
 
+bool OptimaFigure::checkLinkedHighlight(const QPointF & scenePos, int & indexShapePieces)
+{
+	QPointF itemPos = mapFromScene(scenePos);
+	indexShapePieces = 0;
+	foreach(const QPolygonF &p, shapePieces)
+	{
+		if (p.containsPoint(itemPos, Qt::OddEvenFill))
+		{
+			return true;
+		}
+		indexShapePieces++;
+	}
+	
+	indexShapePieces = -1;
+
+	return false;
+}
+
+bool OptimaFigure::checkLinkedHighlight(const QPointF & scenePos)
+{
+	int indexShapePieces;
+
+	return checkLinkedHighlight(scenePos, indexShapePieces);
+}
+
+int OptimaFigure::type() const
+{
+	return Type;
+}
+
+OptimaLinkedRect::OptimaLinkedRect(const QRectF &rect, const rectSide side) : QRectF(rect)
+	, mSide(side)
+{
+
+}
+
+OptimaLinkedRect::rectSide OptimaLinkedRect::side() const
+{
+	return mSide;
+}

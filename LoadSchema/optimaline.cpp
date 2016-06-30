@@ -7,6 +7,13 @@ QLineF(pt1, pt2)
 
 }
 
+OptimaLine::OptimaLine(const QLineF line, const QVector<QString> uuids) 
+	: QLineF(line)
+	, mUuids(uuids)
+{
+	Q_ASSERT(mUuids.size() == 2);
+}
+
 OptimaLine::OptimaLine()
 {
 
@@ -72,3 +79,14 @@ QVector<qreal> OptimaLine::getCrossingLength() const
 {
 	return mCrossingWithConnectorLengths;
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug s, const OptimaLine &p)
+{
+	s.nospace() << "OptimaLine:" << endl;
+	s.nospace() << "    " << QLineF(p) << endl;
+	s.nospace() << "    uuids( " << p.uuid1() << ", " << p.uuid2() << " )" << endl;
+
+	return s;
+}
+#endif

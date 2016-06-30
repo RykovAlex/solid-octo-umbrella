@@ -1,10 +1,13 @@
 #pragma once
 #include "OptimaElement.h"
 #include "QGraphicsItem"
+#include "tag.h"
 
 class OptimaText: public QGraphicsTextItem, public OptimaElement
 {
 public:
+	enum{ Type = UserType + tag::element::text };
+
 	OptimaText(const QString &itemUuid, OptimaView *view);
 
 	~OptimaText()
@@ -22,6 +25,15 @@ public:
 
 
 	virtual void onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent);
+
+
+	virtual int type() const;
+
+
+	virtual void setLinkedHighlight(bool enabled, const QPointF & scenePos = QPointF());
+
+
+	virtual bool checkLinkedHighlight(const QPointF & scenePos);
 
 protected:
 

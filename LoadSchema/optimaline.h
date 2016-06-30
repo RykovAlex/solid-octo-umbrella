@@ -9,9 +9,11 @@ class OptimaCross;
 class OptimaLine : public QLineF
 {
 public:
+	OptimaLine();
+
 	OptimaLine(const QPointF &pt1, const QPointF &pt2);
 	
-	OptimaLine();
+	OptimaLine(const QLineF line, const QVector<QString> uuids);
 
 	~OptimaLine()
 	{
@@ -37,14 +39,27 @@ public:
 
 	void sortLengths();
 
+	QString uuid1() const
+	{
+		return mUuids.at(0);
+	}
+
+	QString uuid2() const
+	{
+		return mUuids.at(1);
+	}
 
 protected:
 
 private:
+	QVector<QString> mUuids; ///<»ды точек концов отрезка
+	
 	OptimaCorner mOptimaCorner; ///<”гол до следующей линии
 
 	OptimaLengthVector mCrossingWithConnectorLengths;///<ћассив рассто€ний от первой точки отрезка, до точек пересечени€ с другими коннекторами
-
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug, const OptimaLine &);
+#endif
 

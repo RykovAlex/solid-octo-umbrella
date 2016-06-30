@@ -8,9 +8,21 @@ namespace tag
 			uuid = 0
 			,uuidOwner
 			,linkable
+			,linkingElement		///< определяет к какому элементу прицеплен бордер коннектора
+			,linkingParameter   ///< определяет некоторый параметр зацепления (у фигуры это номер стороны см OptimaFigure::edgeType)
 		};
 	}
 	
+	namespace element 
+	{
+		enum {
+			free		= 0x00
+			,figure		= 0x01
+			,connector	= 0x02
+			,text		= 0x04
+		};
+	}
+
 	static const QString back_color( "BackColor" );
 	static const QString gradient_color( "GradientColor" );
 	static const QString gradient_type( "GradientType" );
@@ -78,6 +90,9 @@ namespace tag
 	static const QString radius_corner("RadiusCorner");
 	static const QString type("Type");
 
+	static const QColor markerLinkColor(Qt::red);
+	static const QColor markerFreeColor(Qt::green);
+		
 	inline QString to_string( const QColor& cl )
 	{
 		const QString cl_name = cl.name( );

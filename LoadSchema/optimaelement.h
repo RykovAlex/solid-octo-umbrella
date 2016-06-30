@@ -37,6 +37,10 @@ public:
 		return mView;
 	}
 
+	virtual void setLinkedHighlight(bool enabled, const QPointF & scenePos = QPointF()) = 0;
+
+	virtual bool checkLinkedHighlight(const QPointF & scenePos) = 0;
+
 protected:	
 	OptimaView *mView;///< объект отвечающий за отображение схемы
 

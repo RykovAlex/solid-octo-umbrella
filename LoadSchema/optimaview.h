@@ -3,9 +3,11 @@
 #include <QtXml/QDOMDocument>
 #include "OptimaElement.h"
 #include "optimafigure.h"
+#include "optimatemporaryconnector.h"
+#include "optimaconnectorpathfinder.h"
 
 class OptimaConnector;
-
+class OptimaTemporaryConnector;
 class OptimaView : public QGraphicsView, public OptimaElement
 {
 	Q_OBJECT;
@@ -49,21 +51,29 @@ public:
 
 	void setMode(Mode mode);
 
+
+
+	virtual void setLinkedHighlight(bool enabled, const QPointF & scenePos = QPointF() );
+
+
+	virtual bool checkLinkedHighlight(const QPointF & scenePos);
+
 protected:
 
 	virtual void mousePressEvent(QMouseEvent *mouseEvent);
 
-	void createNewConnector(QMouseEvent * mouseEvent);
-
+	void addConnector(QMouseEvent * mouseEvent);
 
 	virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
 
-
 	virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
 
-	void updateHighlightLinkedFigure(QPointF scenePos);
+	void setMarkerPen(QGraphicsRectItem * borderEnd, QPointF scenePos);
 
+	void updateHighlightLinkedElement(QPointF scenePos);
 
+	void updateHighlightStartLinkedElement();
+	virtual void keyPressEvent(QKeyEvent *keyEvent);
 
 private:
 	QDomDocument doc;///<Этот объект сохраняет всю xml-структуру 
@@ -72,9 +82,11 @@ private:
 
 	Mode mMode;///<текущее активное действие сцены (создаем коннектор, фигуру, что-нибудь передвигаем)
 	
-	OptimaConnector *newConnector;///<отображение для коннетора который только еще создается
+	OptimaTemporaryConnector *newConnector;///<отображение для коннетора который только еще создается
 	
-	OptimaFigure *linkedFigure;///<хранит указатель на фигуру, которую подсветили для присоединения коннектора
+	OptimaElement *linkedStartElement;///<хранит указатель на фигуру, котороую подсветили при начале движения коннеткора
+	
+	OptimaElement *linkedElement;///<хранит указатель на фигуру, которую подсветили для присоединения коннектора
 
 	virtual void apply();
 
@@ -101,13 +113,9 @@ private:
 	
 	void loadWorkspace(const QDomNodeList &workspace);
 
-	QGraphicsItem *findLinkedItem(const QPointF &scenePos) const;
+	inline OptimaElement * getLinkedElement(const QPointF & scenePos)
+	{
+		return dynamic_cast<OptimaElement*>(OptimaConnectorPathFinder::findLinkedItem(scene(), scenePos));
+	}
 
-	inline bool isConnector(const QGraphicsItem* item) const;
-	
-	inline bool isFigure(const QGraphicsItem* item) const;
-	
-	inline bool isLinkedAt(const QPointF & scenePos) const;
-
-	inline  OptimaFigure *getLinkedFigure(const QPointF & scenePos) const;
 };

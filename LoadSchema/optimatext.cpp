@@ -76,3 +76,19 @@ void OptimaText::onHoverLeave(QGraphicsSceneHoverEvent* hoverEvent)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }
+
+int OptimaText::type() const
+{
+	return Type;
+}
+
+void OptimaText::setLinkedHighlight(bool enabled, const QPointF & scenePos)
+{
+	//пустая функция, этот элемент не имеет такой способности
+	return;
+}
+
+bool OptimaText::checkLinkedHighlight(const QPointF & scenePos)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
