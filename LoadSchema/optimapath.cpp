@@ -105,6 +105,15 @@ void OptimaPath::clearIntersection()
 	}
 }
 
+void OptimaPath::translate(const QPointF & offset)
+{
+	for(int i = 0; i < mLines.size(); ++i)
+	{
+		mLines[i].translate(offset); 
+	}
+
+}
+
 template <class T>
 bool OptimaPath::getIntersectionPoint(const T & optimaObject, const OptimaLine &otherLine, QPointF *intersectionPoint) const
 {

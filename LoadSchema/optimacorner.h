@@ -14,6 +14,9 @@ public:
 	{
 	}
 
+	///передвинуть eугол на нлвле место
+	void translate(const QPointF & offset);
+
 	QLineF::IntersectType  intersect ( const QLineF & line, QPointF * intersectionPoint ) const;
 
 protected:

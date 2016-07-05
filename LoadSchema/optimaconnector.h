@@ -58,6 +58,9 @@ protected:
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
+
+	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
 private:
 
 	bool mIsAngled—onnector;///< ÔËÁÌ‡Í ˜ÚÓ ˝ÚÓ Û„ÎÓ‚ÓÈ ÍÓÌÌÂÚÓ
@@ -80,8 +83,8 @@ private:
 	inline QLineF getPathLine(int indexLine) const
 	{
 		return mConnectorPath.lineAt(indexLine);
-		//return QLineF(mPoints.at(indexLine), mPoints.at(indexLine + 1));
 	}
+
 	int mIndexLinkedLine;
 	
 	inline QVector<QString> getUuidsLine(int indexLine) const
@@ -93,6 +96,7 @@ private:
 
 		return res;
 	}
+	void onConnectorMove(QPointF deltaPoint);
 };
 
 inline bool isConnector(const QGraphicsItem* item)

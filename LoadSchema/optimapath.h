@@ -39,6 +39,7 @@ public:
 
 	void clearIntersection();
 
+	void translate(const QPointF & offset);
 protected:
 
 

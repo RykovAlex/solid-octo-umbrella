@@ -21,17 +21,17 @@ OptimaLine::OptimaLine()
 
 void OptimaLine::setCorner(const QPointF &beginPoint, const QPointF &cornerPoint, const QPointF &endPoint)
 {
-	mOptimaCorner = OptimaCorner(beginPoint, cornerPoint, endPoint);
+	mCorner = OptimaCorner(beginPoint, cornerPoint, endPoint);
 }
 
 void OptimaLine::setCorner(const OptimaCorner &corner)
 {
-	mOptimaCorner = corner;
+	mCorner = corner;
 }
 
 const OptimaCorner & OptimaLine::corner() const
 {
-	return mOptimaCorner; 
+	return mCorner; 
 }
 
 void OptimaLine::toPath(QPainterPath &path, const OptimaCross & cross) const
@@ -45,14 +45,14 @@ void OptimaLine::toPath(QPainterPath &path, const OptimaCross & cross) const
 	
 	path.lineTo(p2());
 
-	if (mOptimaCorner.isEmpty())
+	if (mCorner.isEmpty())
 	{
 		return;
 	}
 
-	Q_ASSERT(mOptimaCorner.count() == 3);
+	Q_ASSERT(mCorner.count() == 3);
 
-	path.quadTo(mOptimaCorner.at(1), mOptimaCorner.at(2));
+	path.quadTo(mCorner.at(1), mCorner.at(2));
 }
 
 void OptimaLine::addIntersectedLength(const QVector<qreal> & intersectedLengths)
@@ -78,6 +78,13 @@ bool OptimaLine::contains(const QPointF & intersectionPoint) const
 QVector<qreal> OptimaLine::getCrossingLength() const
 {
 	return mCrossingWithConnectorLengths;
+}
+
+void OptimaLine::translate(const QPointF & offset)
+{
+	QLineF::translate(offset);
+
+	mCorner.translate(offset);
 }
 
 #ifndef QT_NO_DEBUG_STREAM

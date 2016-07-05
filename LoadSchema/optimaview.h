@@ -55,8 +55,9 @@ public:
 
 	virtual void setLinkedHighlight(bool enabled, const QPointF & scenePos = QPointF() );
 
-
 	virtual bool checkLinkedHighlight(const QPointF & scenePos);
+
+	void buildIntersectionConnectors();
 
 protected:
 
@@ -73,6 +74,7 @@ protected:
 	void updateHighlightLinkedElement(QPointF scenePos);
 
 	void updateHighlightStartLinkedElement();
+	
 	virtual void keyPressEvent(QKeyEvent *keyEvent);
 
 private:
@@ -108,8 +110,6 @@ private:
 	T *getItem(const QString &itemUuid);
 
 	QString getUuid(QGraphicsItem* item);
-	
-	void buildIntersectionConnectors();
 	
 	void loadWorkspace(const QDomNodeList &workspace);
 

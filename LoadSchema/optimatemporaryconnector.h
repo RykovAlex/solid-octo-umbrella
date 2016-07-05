@@ -71,7 +71,8 @@ public:
 			); 
 	}
 
-
+	QPointF startPoint() const { return mStartPoint; }
+	
 protected:
 
 	static const int margin = 20;
@@ -91,6 +92,8 @@ protected:
 private:
 
 	QPainterPath mPathArrow;///< путь для отрисовки стрелок коннектора
+
+	QPointF mStartPoint;///< точка от которой мы начинали строить коннектор
 
 	inline QRectF getMarkerRect(QPointF scenePos) const 
 	{

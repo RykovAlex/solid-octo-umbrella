@@ -192,14 +192,14 @@ void OptimaView::setMarkerPen(QGraphicsRectItem * borderEnd, QPointF scenePos)
 
 void OptimaView::updateHighlightLinkedElement(QPointF scenePos)
 {
-	if (linkedElement != nullptr)
+	if (linkedElement != nullptr && linkedElement != linkedStartElement )
 	{
 		linkedElement->setLinkedHighlight(false);
 	}
 
 	linkedElement = getLinkedElement(scenePos);
 
-	if (linkedElement != nullptr)
+	if (linkedElement != nullptr && linkedElement != linkedStartElement)
 	{
 		linkedElement->setLinkedHighlight(true, scenePos);
 	}
@@ -217,7 +217,7 @@ void OptimaView::updateHighlightStartLinkedElement()
 	{
 		Q_ASSERT(newConnector->points().count() >= 2);
 
-		QPointF scenePos = newConnector->points().first();
+		QPointF scenePos = newConnector->startPoint();
 
 		linkedStartElement = getLinkedElement(scenePos);
 

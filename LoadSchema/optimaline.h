@@ -49,12 +49,15 @@ public:
 		return mUuids.at(1);
 	}
 
+	///передвинуть eугол на нлвле место
+	void translate(const QPointF & offset);
+
 protected:
 
 private:
 	QVector<QString> mUuids; ///<Иды точек концов отрезка
 	
-	OptimaCorner mOptimaCorner; ///<Угол до следующей линии
+	OptimaCorner mCorner; ///<Угол до следующей линии
 
 	OptimaLengthVector mCrossingWithConnectorLengths;///<Массив расстояний от первой точки отрезка, до точек пересечения с другими коннекторами
 };

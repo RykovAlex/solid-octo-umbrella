@@ -16,6 +16,17 @@ OptimaCorner::OptimaCorner()
 
 }
 
+void OptimaCorner::translate(const QPointF & offset)
+{
+	for (int i = 0; i < size(); ++i)
+	{
+		(*this)[i] += offset;
+	}
+
+	line1.translate(offset);
+	line2.translate(offset);
+}
+
 QLineF::IntersectType OptimaCorner::intersect(const QLineF & line, QPointF * intersectionPoint) const
 {
 	return intersectApproximately( line, intersectionPoint, 0., 1. );

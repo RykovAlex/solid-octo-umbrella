@@ -2,10 +2,9 @@
 #include "optimaconnectormovemarker.h"
 
 OptimaConnectorMoveMarker::OptimaConnectorMoveMarker(OptimaConnector *parentConnector, const QPointF & pos, Qt::CursorShape cursorShape) 
-	//: OptimaRectangleMarker(parentConnector, cursorShape, parentConnector->view())
 	: OptimaRectangleMarker(parentConnector, cursorShape, parentConnector->view())
 {
-	qreal borderMarkerWidth = baseWidth/** (3.  / m_workspace.m_scale)*/;
+	qreal borderMarkerWidth = baseWidth/* * (3.  / m_workspace.m_scale)*/;
 
 	setRect( QRectF( -borderMarkerWidth / 2, -borderMarkerWidth / 2, borderMarkerWidth, borderMarkerWidth ) );
 	

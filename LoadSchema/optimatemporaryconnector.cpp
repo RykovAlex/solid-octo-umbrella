@@ -7,6 +7,7 @@ OptimaTemporaryConnector::OptimaTemporaryConnector(QGraphicsScene *scene, const 
 	: mBeginArrow(connector_arrow_no, true)
 	, mEndArrow(connector_arrow_filled, false)
 	, mPoints(points)
+	, mStartPoint(points.first())
 {
 	initialize();
 	scene->addItem(this);
@@ -18,6 +19,7 @@ OptimaTemporaryConnector::OptimaTemporaryConnector(QGraphicsScene *scene, const 
 
 OptimaTemporaryConnector::OptimaTemporaryConnector() : mBeginArrow(connector_arrow_no, true)
 	, mEndArrow(connector_arrow_filled, false)
+	, mStartPoint(QPointF(0.0,0.0))
 {
 	initialize();
 }
@@ -26,6 +28,7 @@ OptimaTemporaryConnector::OptimaTemporaryConnector(const OptimaTemporaryConnecto
 	: mBeginArrow(connector_arrow_no, true)
 	, mEndArrow(connector_arrow_filled, false)
 	, mPoints(tempConnector->points())
+	, mStartPoint(tempConnector->startPoint())
 {
 	initialize();
 }
@@ -142,6 +145,7 @@ OptimaPointVector OptimaTemporaryConnector::points() const
 
 void OptimaTemporaryConnector::draw()
 {
+	setPos(0.0, 0.0);
 	setPath( mConnectorPath.toPath() );
 }
 

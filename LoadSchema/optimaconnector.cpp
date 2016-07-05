@@ -32,6 +32,7 @@ void OptimaConnector::initialize()
 
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
+	setFlag(ItemSendsGeometryChanges);
 
 	setPen(QPen(Qt::black, 1, Qt::SolidLine));
 
@@ -92,6 +93,11 @@ QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &
 {
 	switch (change)
 	{
+	case ItemPositionHasChanged:
+		break;
+	case ItemPositionChange:
+
+		break;
 	case ItemSelectedChange:
 		if (value == true)
 		{
@@ -105,10 +111,30 @@ QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &
 	default:
 		break;
 	}
-	//throw std::logic_error("The method or operation is not implemented.");
+
 	return value;
 }
 
+
+void OptimaConnector::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+	if (!pos().isNull())
+	{
+		setFlag(ItemSendsGeometryChanges, false);
+		onConnectorMove(pos());
+
+		buildPath();
+		
+		//getIntersection(scene()->items(), 0);
+		
+		//draw();
+		mView->buildIntersectionConnectors();
+
+		setFlag(ItemSendsGeometryChanges, true);
+	}
+	
+	QGraphicsItem::mouseReleaseEvent(event);
+}
 
 void OptimaConnector::intersected(OptimaPath & connectorPath)
 {
@@ -172,6 +198,8 @@ bool OptimaConnector::checkLinkedHighlight(const QPointF & scenePos, int &indexL
 	for (int i = 0; i < (mPoints.size() - 1); ++i)
 	{
 		QLineF line(getPathLine(i));
+		line.translate(pos());
+
 		QPainterPath strokeLinePath(getStrokeLinePath(line));
 		if (strokeLinePath.contains(scenePos))
 		{
@@ -305,6 +333,16 @@ void OptimaConnector::destroyMarkers()
 	{
 		delete items.takeFirst();
 	}
+}
+
+void OptimaConnector::onConnectorMove(QPointF deltaPoint)
+{
+	for (int i=0; i < mPoints.size(); ++i)
+	{
+		mPoints[i] += deltaPoint;
+	}
+	destroyMarkers();
+	createMarkers();
 }
 
 //connector_move_marker * connector_controller::create_move_marker( int index_point )
