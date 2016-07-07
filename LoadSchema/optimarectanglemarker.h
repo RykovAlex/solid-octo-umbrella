@@ -8,13 +8,7 @@ class OptimaRectangleMarker : public QGraphicsRectItem, public OptimaBaseMarker
 	Q_DISABLE_COPY( OptimaRectangleMarker )
 
 public:
-	OptimaRectangleMarker( QGraphicsItem *parent, Qt::CursorShape cursorShape, const OptimaView *view )
-		: OptimaBaseMarker( cursorShape )
-		, QGraphicsRectItem(parent)
-		, mView(view)
-		
-	{
-	}
+	OptimaRectangleMarker( QGraphicsItem *parent, QPointF pos, Qt::CursorShape cursorShape, const OptimaView *view );
 
 	~OptimaRectangleMarker()
 	{
@@ -41,10 +35,23 @@ public:
 		element->onMarkerMove( this );
 	}
 
+
+	virtual bool isPosChanged(QPointF & pos)
+	{
+		throw std::logic_error("The method or operation is not implemented.");
+	}
+
+	void setLinked(bool val);
 protected:
 	/// указатель на объект, обеспечивающий отрисовку схемы
 	const OptimaView* mView;
 
+
+
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+
+	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
 private:
 

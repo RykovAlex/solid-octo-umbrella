@@ -13,6 +13,7 @@ class OptimaConnector : public OptimaTemporaryConnector, public OptimaElement
 {
 public:
 	enum { Type = UserType + tag::element::connector };
+
 	OptimaConnector(const QString &itemUuid, OptimaView *view);
 
 	OptimaConnector(const OptimaTemporaryConnector *tempConnector, OptimaView *view);
@@ -54,6 +55,10 @@ public:
 		return OptimaLine(getPathLine(mIndexLinkedLine), getUuidsLine(mIndexLinkedLine));
 	}
 
+	bool isRebuild() const { return mRebuild; }
+	
+	void setRebuild(bool val);
+
 protected:
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -85,7 +90,9 @@ private:
 		return mConnectorPath.lineAt(indexLine);
 	}
 
-	int mIndexLinkedLine;
+	int mIndexLinkedLine;///< индекс отрезка к которому прилинковывается другой коннектор
+
+	bool mRebuild;///< признак, что этот коннектор подвергается перестройке
 	
 	inline QVector<QString> getUuidsLine(int indexLine) const
 	{

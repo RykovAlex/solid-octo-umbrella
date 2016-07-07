@@ -9,7 +9,7 @@
 OptimaView::OptimaView(QWidget *parent) 
 	: QGraphicsView(parent)
 	, mMode(MoveItem)
-	, newConnector(nullptr)
+	, mNewConnector(nullptr)
 	, linkedElement(nullptr)
 	, linkedStartElement(nullptr)
 { 
@@ -35,16 +35,21 @@ bool OptimaView::checkLinkedHighlight(const QPointF & scenePos)
 
 void OptimaView::addConnector(QMouseEvent * mouseEvent)
 {
-	Q_ASSERT (newConnector == nullptr);
+	Q_ASSERT (mNewConnector == nullptr);
 	
 	QPointF scenePos = mapToScene(mouseEvent->pos());
 
-	newConnector = new OptimaTemporaryConnector(scene(), OptimaPoint::createVector(scenePos, scenePos));	
-	
-	//scene()->addItem(newConnector);
+	mNewConnector = new OptimaTemporaryConnector(scene(), OptimaPoint::createVector(scenePos, scenePos));	
+}
 
-	//newConnector = new OptimaTemporaryConnector();
-	//newConnector->setPoints(OptimaPoint::createVector(scenePos, scenePos));
+void OptimaView::addConnector(OptimaConnector * oldConnector)
+{
+	Q_ASSERT (mNewConnector == nullptr);
+
+	mMode = InsertLine;
+	mOldConnector = oldConnector;
+	mNewConnector = new OptimaTemporaryConnector(scene(), oldConnector->points());	
+	qDebug()<< "add "<< oldConnector->points();
 }
 
 void OptimaView::mousePressEvent(QMouseEvent *mouseEvent)
@@ -81,89 +86,91 @@ void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
 		updateHighlightLinkedElement(scenePos);
 		updateHighlightStartLinkedElement();	
 
-		if (newConnector != nullptr )
+		if (mNewConnector != nullptr )
 		{
-			Q_ASSERT(newConnector->childItems().count() >= 2);
+			Q_ASSERT(mNewConnector->childItems().count() >= 2);
 
 			//известим коннектор о передвижении его финальной точки
-			newConnector->onEndBorderMove(scenePos);
+			mNewConnector->onEndBorderMove(scenePos);
 			
 			OptimaPointVector newPoints;
 
 			//теперь можно узнать какую функцию надо вызвать для оперделения пути коннектора от
 			//начальной к конечной точке
-			switch(newConnector->getRelationship())
+			switch(mNewConnector->getRelationship())
 			{
 			case OptimaTemporaryConnector::free_free:
-				newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Free( newConnector->first(), scenePos );
+				newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Free( mNewConnector->first(), scenePos );
 				break;
 			case OptimaTemporaryConnector::free_figure:
 				{
 					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(scenePos));
 					
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Figure( newConnector->first(), endFigure->linkedRect());
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Figure( mNewConnector->first(), endFigure->linkedRect());
 				}
 				break;
 			case OptimaTemporaryConnector::free_connector:
 				{
 					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(scenePos));
 
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Connector(newConnector->first(), endConnector->linkedLine(), scenePos);
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Connector(mNewConnector->first(), endConnector->linkedLine(), scenePos);
 				}
 				break;
 			case OptimaTemporaryConnector::connector_free:
 				{
-					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(newConnector->first()));
-
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Free(beginConnector->linkedLine(), newConnector->first(), scenePos );
+					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(mNewConnector->first()));
+					
+					qDebug()<< "connector_free" << scenePos;
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Free(beginConnector->linkedLine(), mNewConnector->first(), scenePos );
 				}
 				break;
 			case OptimaTemporaryConnector::connector_connector:
 				{
-					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(newConnector->first()));
+					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(mNewConnector->first()));
 					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(scenePos));
-
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Connector(beginConnector->linkedLine(), newConnector->first(), endConnector->linkedLine(), scenePos );
+					
+					qDebug()<< "connector_connector" << scenePos;
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Connector(beginConnector->linkedLine(), mNewConnector->first(), endConnector->linkedLine(), scenePos );
 				}
 				break;
 			case OptimaTemporaryConnector::connector_figure:
 				{
-					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(newConnector->first()));
+					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(mNewConnector->first()));
 					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(scenePos));
 
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Figure(beginConnector->linkedLine(), newConnector->first(), endFigure->linkedRect());
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Figure(beginConnector->linkedLine(), mNewConnector->first(), endFigure->linkedRect());
 				}
 				break;
 			case OptimaTemporaryConnector::figure_free:
 				{
-					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(newConnector->first()));
+					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(mNewConnector->first()));
 
 					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Free( beginFigure->linkedRect(), scenePos );
 					
-					if (newPoints.first() != newConnector->points().first())
+					if (newPoints.first() != mNewConnector->points().first())
 					{
-						newConnector->onBeginBorderMove(newPoints.first());
+						mNewConnector->onBeginBorderMove(newPoints.first());
 					}
 					
 				}
 				break;
 			case OptimaTemporaryConnector::figure_figure:
 				{
-					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(newConnector->first()));
+					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(mNewConnector->first()));
 					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(scenePos));
 
 					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Figure( beginFigure->linkedRect(), endFigure->linkedRect() );
 
-					if (newPoints.first() != newConnector->points().first())
+					if (newPoints.first() != mNewConnector->points().first())
 					{
-						newConnector->onBeginBorderMove(newPoints.first());
+						mNewConnector->onBeginBorderMove(newPoints.first());
 					}
 
 				}
 				break;
 			case OptimaTemporaryConnector::figure_connector:
 				{
-					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(newConnector->first()));
+					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(mNewConnector->first()));
 					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(scenePos));
 
 					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Connector( beginFigure->linkedRect(), endConnector->linkedLine(), scenePos );
@@ -174,7 +181,7 @@ void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 			}
 
-			newConnector->setPoints(newPoints);
+			mNewConnector->setPoints(newPoints);
 
 		} 
 	}
@@ -213,11 +220,11 @@ void OptimaView::updateHighlightStartLinkedElement()
 		linkedStartElement = nullptr;
 	}
 
-	if (newConnector != nullptr)
+	if (mNewConnector != nullptr)
 	{
-		Q_ASSERT(newConnector->points().count() >= 2);
+		Q_ASSERT(mNewConnector->points().count() >= 2);
 
-		QPointF scenePos = newConnector->startPoint();
+		QPointF scenePos = mNewConnector->startPoint();
 
 		linkedStartElement = getLinkedElement(scenePos);
 
@@ -230,15 +237,15 @@ void OptimaView::updateHighlightStartLinkedElement()
 
 void OptimaView::keyPressEvent(QKeyEvent *keyEvent)
 {
-	if (newConnector != nullptr)
+	if (mNewConnector != nullptr)
 	{
 		switch(keyEvent->key())
 		{
 		case Qt::Key_Escape:
 			//QCursor::setPos(QPoint(1300,1300));
 
-			delete newConnector;
-			newConnector = nullptr;
+			delete mNewConnector;
+			mNewConnector = nullptr;
 			
 			break;
 		}
@@ -247,17 +254,23 @@ void OptimaView::keyPressEvent(QKeyEvent *keyEvent)
 
 void OptimaView::mouseReleaseEvent(QMouseEvent *mouseEvent)
 {
-	if (newConnector != nullptr)
+	if (mNewConnector != nullptr)
 	{
-		if (newConnector->first() != newConnector->last())
+		if (mNewConnector->first() != mNewConnector->last())
 		{
-			scene()->addItem(new OptimaConnector(newConnector, this));	
+			scene()->addItem(new OptimaConnector(mNewConnector, this));	
 		}
 
-		delete newConnector;
-		newConnector = nullptr;
+		delete mNewConnector;
+		mNewConnector = nullptr;
 
 		updateHighlightStartLinkedElement();	
+
+		if (mOldConnector != nullptr)
+		{
+			mMode = MoveItem;
+			mOldConnector = nullptr;
+		}
 	}
 	QGraphicsView::mouseReleaseEvent(mouseEvent);
 }

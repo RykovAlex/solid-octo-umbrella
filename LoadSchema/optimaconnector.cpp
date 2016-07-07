@@ -2,10 +2,12 @@
 #include "optimaconnector.h"
 #include "tag.h"
 #include "optimaconnectormovemarker.h"
+#include "optimaconnectorbordermarker.h"
 
 OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view) 
 	:OptimaElement(this, itemUuid, view)
 	,OptimaTemporaryConnector()
+	,mRebuild(false)
 {
 	initialize();
 }
@@ -13,6 +15,7 @@ OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view)
 OptimaConnector::OptimaConnector(const OptimaTemporaryConnector *tempConnector, OptimaView *view)
 	:OptimaElement(this, (QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" )), view)
 	,OptimaTemporaryConnector(tempConnector)
+	,mRebuild(false)
 {
 	initialize();
 
@@ -231,7 +234,13 @@ QPainterPath OptimaConnector::getStrokeLinePath(const QLineF &line) const
 
 void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /*= 0*/)
 {
+	if (mRebuild)
+	{
+		painter->setOpacity(0.25);
+	}
+
 	OptimaTemporaryConnector::paint(painter, option);
+
 	if (mIndexLinkedLine >= 0)
 	{
 		painter->setOpacity(0.25);
@@ -252,6 +261,18 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 		//}
 	}
 }		
+
+void OptimaConnector::setRebuild(bool val)
+{
+	mRebuild = val;
+	update();
+	if (val)
+	{
+		mView->addConnector(this);
+		//destroyMarkers();
+	}
+	
+}
 
 void OptimaConnector::onLineMove(const OptimaConnectorMoveMarker* moveMarker)
 {
@@ -298,18 +319,22 @@ void OptimaConnector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void OptimaConnector::createMarkers()
 {
+	// создадим маркеры начала коннетора и его окончани€
+	new OptimaConnectorBorderMarker( this, mPoints.first(), Qt::SizeAllCursor);
+	new OptimaConnectorBorderMarker( this, mPoints.last(), Qt::SizeAllCursor);
+
 	// создадим маркеры посередине и на углах неуглового коннетора
-	// эти марверы по умолчанию представл€ют из суб€ булые квалраты с 
+	// эти марверы по умолчанию представл€ют из себ€ белые квалраты с 
 	// зеленой окантовкой
-	for ( int i = 0; i < points().size() - 1; ++i )
+	for ( int i = 0; i < mPoints.size() - 1; ++i )
 	{
 		Qt::CursorShape сursorShape(Qt::SizeAllCursor);
 		
 		if ( mIsAngled—onnector )
 		{
 			// вы€сним поведение будушего маркера дл€ углового коннектора
-			const int r1 = mView->getEntireCellsQnt( points().at( i ).x( ));
-			const int r2 = mView->getEntireCellsQnt( points().at( i + 1 ).x( ));
+			const int r1 = mView->getEntireCellsQnt( mPoints.at( i ).x( ));
+			const int r2 = mView->getEntireCellsQnt( mPoints.at( i + 1 ).x( ));
 			сursorShape = r1 == r2 ? Qt::SizeHorCursor : Qt::SizeVerCursor;
 		}
 		else
@@ -317,12 +342,12 @@ void OptimaConnector::createMarkers()
 			// у пр€мого коннетора поведение маркеров одинаково что посередине, что на точках
 			if ( i > 0 )
 			{
-				new OptimaConnectorMoveMarker( this, points().at(i), сursorShape);
+				new OptimaConnectorMoveMarker( this, mPoints.at(i), сursorShape);
 			}
 		}
 		
 		// это середина отрезка
-		new OptimaConnectorMoveMarker( this, (points().at(i) + points().at(i+1)) / 2, сursorShape);
+		new OptimaConnectorMoveMarker( this, (mPoints.at(i) + mPoints.at(i+1)) / 2, сursorShape);
 	}
 }
 

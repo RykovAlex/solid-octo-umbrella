@@ -16,10 +16,12 @@ namespace tag
 	namespace element 
 	{
 		enum {
-			free		= 0x00
-			,figure		= 0x01
-			,connector	= 0x02
-			,text		= 0x04
+			free		  = 0x00
+			,figure		  = 0x01
+			,connector	  = 0x02
+			,text		  = 0x04
+			,moveMarker	  = 0x08
+			,borderMarker = 0x10
 		};
 	}
 

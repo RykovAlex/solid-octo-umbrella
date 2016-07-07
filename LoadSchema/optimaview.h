@@ -58,7 +58,8 @@ public:
 	virtual bool checkLinkedHighlight(const QPointF & scenePos);
 
 	void buildIntersectionConnectors();
-
+	
+	void addConnector(OptimaConnector * oldConnector);
 protected:
 
 	virtual void mousePressEvent(QMouseEvent *mouseEvent);
@@ -84,7 +85,9 @@ private:
 
 	Mode mMode;///<текущее активное действие сцены (создаем коннектор, фигуру, что-нибудь передвигаем)
 	
-	OptimaTemporaryConnector *newConnector;///<отображение для коннетора который только еще создается
+	OptimaTemporaryConnector *mNewConnector;///<отображение для коннетора который только еще создается
+
+	OptimaConnector *mOldConnector;///<здесь храним коннетор который изменяем
 	
 	OptimaElement *linkedStartElement;///<хранит указатель на фигуру, котороую подсветили при начале движения коннеткора
 	

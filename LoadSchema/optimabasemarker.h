@@ -10,7 +10,7 @@ public:
 	OptimaBaseMarker( const Qt::CursorShape cursorShape )
 		: mCursor( cursorShape )
 		, isMovementBlocked( true )
-		, linked( false )
+		, mLinked( false )
 		, baseWidth(1 * 6.0)
 	{
 	}
@@ -25,7 +25,7 @@ public:
 		switch(mCursor.shape())
 		{
 		case Qt::SizeAllCursor:
-			if ( linked ) 
+			if ( linked() ) 
 			{
 				return QCursor( QPixmap( ":/images/cursor_move_all_red.png" , 0, 0 ));	
 			}
@@ -55,15 +55,17 @@ public:
 	/// курсор маркера
 	const QCursor mCursor;
 	
-	/// признак того, что этот маркер отображает присоединение
-	bool linked;
-
+	bool linked() const { return mLinked; }
+	
+	void setLinked(bool val) { mLinked = val; }
 protected:
 	
 	QPointF deltaPos; ///<хранит промежуточную разницу передвижения маркера
 
 private:
 
+	/// признак того, что этот маркер отображает присоединение
+	bool mLinked;
 };
 
 

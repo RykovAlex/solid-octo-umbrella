@@ -49,7 +49,8 @@ void OptimaTemporaryConnector::initialize()
 
 void OptimaTemporaryConnector::createMarker(const QPointF & scenePos)
 {
-	QGraphicsRectItem *marker = new QGraphicsRectItem(getMarkerRect(scenePos), this);
+	QGraphicsRectItem *marker = new QGraphicsRectItem(getMarkerRect(QPointF(0.0,0.0)), this);
+	marker->setPos(scenePos);
 	setMarkerPen(marker, scenePos);
 }
 
@@ -84,10 +85,10 @@ void OptimaTemporaryConnector::onEndBorderMove(const QPointF & scenePos)
 {
 	Q_ASSERT(this->childItems().count() >=  2);
 
-	QGraphicsRectItem * borderBegin = dynamic_cast<QGraphicsRectItem *>(this->childItems().at(0));
 	QGraphicsRectItem * borderEnd = dynamic_cast<QGraphicsRectItem *>(this->childItems().at(1));
 	setMarkerPen(borderEnd, scenePos);
-	borderEnd->setPos( scenePos - mPoints.first() + borderBegin->pos() );
+
+	borderEnd->setPos( scenePos );
 }
 
 void OptimaTemporaryConnector::onBeginBorderMove(const QPointF & scenePos)
@@ -96,9 +97,7 @@ void OptimaTemporaryConnector::onBeginBorderMove(const QPointF & scenePos)
 
 	QGraphicsRectItem * borderBegin = dynamic_cast<QGraphicsRectItem *>(this->childItems().at(0));
 	setMarkerPen(borderBegin, scenePos);
-	QPointF newPos(scenePos - mPoints.first());
-	
-	borderBegin->setPos( newPos );
+	borderBegin->setPos( scenePos );
 }
 
 void OptimaTemporaryConnector::buildPath()

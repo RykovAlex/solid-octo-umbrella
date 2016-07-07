@@ -8,23 +8,18 @@ class OptimaConnectorMoveMarker : public OptimaRectangleMarker
 	Q_DISABLE_COPY( OptimaConnectorMoveMarker );
 
 public:
+	enum { Type = UserType + tag::element::moveMarker };
+
 	OptimaConnectorMoveMarker( OptimaConnector *parent, const QPointF & pos, Qt::CursorShape cursorShape);
 	
 	~OptimaConnectorMoveMarker()
 	{
 	}
 
-	virtual bool isPosChanged( QPointF & pos );
-	
+
+	virtual int type() const;
 
 protected:
-
-
-	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
-	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
 

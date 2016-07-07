@@ -101,6 +101,12 @@
     <ClCompile Include="optimatemporaryconnector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimarectanglemarker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="optimaconnectorbordermarker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -155,6 +161,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimaconnectorbordermarker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
