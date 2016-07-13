@@ -55,16 +55,8 @@ void OptimaView::addConnector(OptimaConnector * oldConnector, bool reversed)
 	OptimaConnectorArrowVector connectorArrowVector;
 	OptimaPointVector connectorPoints(oldConnector->points());
 
-	if (reversed)
-	{		
-		pointVector << connectorPoints.last() << connectorPoints.first();
-		connectorArrowVector << oldConnector->endArrow() << oldConnector->beginArrow();
-	}
-	else
-	{
-		pointVector << connectorPoints.first() << connectorPoints.last();
-		connectorArrowVector << oldConnector->beginArrow() << oldConnector->endArrow();
-	}
+	pointVector << connectorPoints.first() << connectorPoints.last();
+	connectorArrowVector << oldConnector->beginArrow() << oldConnector->endArrow();
 
 	mNewConnector = new OptimaTemporaryConnector(scene(), pointVector, connectorArrowVector, reversed);	
 }
@@ -112,8 +104,11 @@ void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
 		{
 			Q_ASSERT(mNewConnector->childItems().count() >= 2);
 
-			//известим коннектор о передвижении его финальной точки
-			mNewConnector->onEndBorderMove(scenePos);
+			QPointF beginPoint;
+			QPointF endPoint;
+			
+			//известим коннектор о передвижении его крайнего коннетора
+			mNewConnector->onEndBorderMove(scenePos, beginPoint, endPoint);
 			
 			OptimaPointVector newPoints;
 
@@ -122,80 +117,101 @@ void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
 			switch(mNewConnector->getRelationship())
 			{
 			case OptimaTemporaryConnector::free_free:
-				newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Free( mNewConnector->first(), scenePos );
+				newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Free( beginPoint, endPoint );
 				break;
 			case OptimaTemporaryConnector::free_figure:
 				{
-					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(scenePos));
+					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(endPoint));
 					
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Figure( mNewConnector->first(), endFigure->linkedRect());
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Figure( beginPoint, endFigure->linkedRect());
 				}
 				break;
 			case OptimaTemporaryConnector::free_connector:
 				{
-					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(scenePos));
+					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(endPoint));
 
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Connector(mNewConnector->first(), endConnector->linkedLine(), scenePos);
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Connector(beginPoint, endConnector->linkedLine(), endPoint);
 				}
 				break;
 			case OptimaTemporaryConnector::connector_free:
 				{
-					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(mNewConnector->first()));
+					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(beginPoint));
 					
-					qDebug()<< "connector_free" << scenePos;
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Free(beginConnector->linkedLine(), mNewConnector->first(), scenePos );
+					qDebug()<< "connector_free" << endPoint;
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Free(beginConnector->linkedLine(), beginPoint, endPoint );
 				}
 				break;
 			case OptimaTemporaryConnector::connector_connector:
 				{
-					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(mNewConnector->first()));
-					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(scenePos));
+					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(beginPoint));
+					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(endPoint));
 					
-					qDebug()<< "connector_connector" << scenePos;
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Connector(beginConnector->linkedLine(), mNewConnector->first(), endConnector->linkedLine(), scenePos );
+					qDebug()<< "connector_connector" << endPoint;
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Connector(beginConnector->linkedLine(), beginPoint, endConnector->linkedLine(), endPoint );
 				}
 				break;
 			case OptimaTemporaryConnector::connector_figure:
 				{
-					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(mNewConnector->first()));
-					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(scenePos));
+					OptimaConnector *beginConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(beginPoint));
+					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(endPoint));
 
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Figure(beginConnector->linkedLine(), mNewConnector->first(), endFigure->linkedRect());
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Figure(beginConnector->linkedLine(), beginPoint, endFigure->linkedRect());
 				}
 				break;
 			case OptimaTemporaryConnector::figure_free:
 				{
-					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(mNewConnector->first()));
+					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(beginPoint));
 
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Free( beginFigure->linkedRect(), scenePos );
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Free( beginFigure->linkedRect(), endPoint );
 					
-					if (newPoints.first() != mNewConnector->points().first())
+					//если ведем не конечный, а начальный маркер фигуры
+					if (beginPoint == scenePos)
 					{
-						mNewConnector->onBeginBorderMove(newPoints.first());
+						if (newPoints.last() != mNewConnector->last())
+						{
+							mNewConnector->onBeginBorderMove(newPoints.last());
+						}
 					}
-					
+					else
+					{
+						if (newPoints.first() != mNewConnector->first())
+						{
+							mNewConnector->onBeginBorderMove(newPoints.first());
+						}
+
+					}			
 				}
 				break;
 			case OptimaTemporaryConnector::figure_figure:
 				{
-					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(mNewConnector->first()));
-					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(scenePos));
+					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(beginPoint));
+					OptimaFigure *endFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(endPoint));
 
 					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Figure( beginFigure->linkedRect(), endFigure->linkedRect() );
 
-					if (newPoints.first() != mNewConnector->points().first())
+					if (beginPoint == scenePos)
 					{
-						mNewConnector->onBeginBorderMove(newPoints.first());
+						if (newPoints.last() != mNewConnector->last())
+						{
+							mNewConnector->onBeginBorderMove(newPoints.last());
+						}
 					}
+					else
+					{
+						if (newPoints.first() != mNewConnector->first())
+						{
+							mNewConnector->onBeginBorderMove(newPoints.first());
+						}
 
+					}
 				}
 				break;
 			case OptimaTemporaryConnector::figure_connector:
 				{
-					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(mNewConnector->first()));
-					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(scenePos));
+					OptimaFigure *beginFigure = dynamic_cast<OptimaFigure*>(getLinkedElement(beginPoint));
+					OptimaConnector *endConnector = dynamic_cast<OptimaConnector*>(getLinkedElement(endPoint));
 
-					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Connector( beginFigure->linkedRect(), endConnector->linkedLine(), scenePos );
+					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Connector( beginFigure->linkedRect(), endConnector->linkedLine(), endPoint );
 				}				
 				break;
 			default:
@@ -323,9 +339,6 @@ void OptimaView::onRebuildConnector()
 		return;
 	}
 
-	mOldConnector->setRebuild(false, false);
-	
-	mOldConnector->setPoints(mNewConnector->realPoints(mLinkedBeginElement, mLinkedEndElement));
 	if (mNewConnector->isReversed())
 	{
 		mOldConnector->setLinked( mLinkedEndElement, mLinkedBeginElement);
@@ -334,6 +347,10 @@ void OptimaView::onRebuildConnector()
 	{
 		mOldConnector->setLinked( mLinkedBeginElement, mLinkedEndElement);
 	}
+
+	mOldConnector->setRebuild(false, false);
+	
+	mOldConnector->setPoints(mNewConnector->realPoints(mLinkedBeginElement, mLinkedEndElement));
 	
 	buildIntersectionConnectors();
 }

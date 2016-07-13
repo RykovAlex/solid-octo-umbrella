@@ -10,15 +10,27 @@ OptimaTemporaryConnector::OptimaTemporaryConnector(QGraphicsScene *scene, const 
 	: mBeginArrow(arrowVector.at(0))
 	, mEndArrow(arrowVector.at(1))
 	, mPoints(points)
-	, mStartPoint(points.first())
 	, mReversed(reversed)
 {
 	initialize();
 	scene->addItem(this);
 	
-	createMarker(points.first(), QLineF(points.first(), points.last()));
+	if (reversed)
+	{
+		createMarker(points.last(), 1);
 
-	createMarker(points.last(), QLineF(points.last(), points.first()));
+		createMarker(points.first(), 0);
+
+		mStartPoint = points.last();
+	}
+	else
+	{
+		createMarker(points.first(), 0);
+
+		createMarker(points.last(), 1);
+
+		mStartPoint = points.first();
+	}
 }
 
 OptimaTemporaryConnector::OptimaTemporaryConnector() : mBeginArrow(connector_arrow_no, true)
@@ -53,10 +65,10 @@ void OptimaTemporaryConnector::initialize()
 
 }
 
-void OptimaTemporaryConnector::createMarker(const QPointF & scenePos, const QLineF & markerVector)
+void OptimaTemporaryConnector::createMarker(const QPointF & scenePos, int borderIndex)
 {
 	QGraphicsRectItem *marker = new QGraphicsRectItem(OptimaConnectorPathFinder::getMarkerRect(QPointF(0.0,0.0)), this);
-	marker->setData(tag::data::vector, markerVector);
+	marker->setData(tag::data::borderIndex, borderIndex);
 	marker->setPos(scenePos);
 	setMarkerPen(marker, scenePos);
 
@@ -89,7 +101,7 @@ void OptimaTemporaryConnector::setPoints(const OptimaPointVector & val)
 	draw();
 }
 
-void OptimaTemporaryConnector::onEndBorderMove(const QPointF & scenePos)
+void OptimaTemporaryConnector::onEndBorderMove(const QPointF & scenePos, QPointF & beginPoint, QPointF & endPoint)
 {
 	Q_ASSERT(this->childItems().count() >=  2);
 
@@ -97,6 +109,18 @@ void OptimaTemporaryConnector::onEndBorderMove(const QPointF & scenePos)
 	setMarkerPen(borderEnd, scenePos);
 
 	borderEnd->setPos( scenePos );
+
+	//если передвигаем начало коннеткора, а не конец
+	if (isReversed())
+	{
+		beginPoint = scenePos;
+		endPoint = last();
+	}
+	else
+	{
+		beginPoint = first();
+		endPoint = scenePos;
+	}
 }
 
 void OptimaTemporaryConnector::onBeginBorderMove(const QPointF & scenePos)
@@ -168,30 +192,33 @@ QPainterPath OptimaTemporaryConnector::shape() const
 OptimaPointVector OptimaTemporaryConnector::realPoints(const OptimaElement *startElement, const OptimaElement *endElement)
 {
 	OptimaPointVector points(mPoints);
+	QGraphicsRectItem * borderEnd = dynamic_cast<QGraphicsRectItem *>(this->childItems().at(1));
 
-	if (startElement != nullptr)
+	//если передвигаем начало коннеткора, а не конец
+	if ( isReversed() )
 	{
-		points.first() = startElement->getIntersectPoint(QLineF(mPoints.at(0), mPoints.at(1)));
-	}
-	if (endElement != nullptr)
-	{
-		points.last() = endElement->getIntersectPoint(QLineF(mPoints.at(mPoints.size()-1), mPoints.at(mPoints.size()-2)));
-	}
-	
-
-	if (isReversed())
-	{
-		OptimaPointVector reversedPoints;
-
-		OptimaPointVector::ConstIterator i = points.constEnd();
-		for (; i != points.constBegin();)
+		if (endElement != nullptr)
 		{
-			--i;
-			reversedPoints << *i;
+			points.first() = endElement->getIntersectPoint(QLineF(mPoints.at(0), mPoints.at(1)));
+		}
+		if ( startElement != nullptr)
+		{
+			points.last() = startElement->getIntersectPoint(QLineF(mPoints.at(mPoints.size()-1), mPoints.at(mPoints.size()-2)));
+		}
+	}
+	else
+	{
+		if (startElement != nullptr)
+		{
+			points.first() = startElement->getIntersectPoint(QLineF(mPoints.at(0), mPoints.at(1)));
+		}
+		if (endElement != nullptr)
+		{
+			points.last() = endElement->getIntersectPoint(QLineF(mPoints.at(mPoints.size()-1), mPoints.at(mPoints.size()-2)));
 		}
 
-		return reversedPoints;
 	}
+	
 	return points;
 }
 
@@ -207,4 +234,9 @@ int OptimaTemporaryConnector::getLinkingElementType(const QPointF & scenePos, in
 	linkingType = item->data(tag::data::linkingParameter).toInt();
 	
 	return item->type() - UserType;
+}
+
+bool OptimaTemporaryConnector::isReversed() const
+{
+	return mReversed;
 }

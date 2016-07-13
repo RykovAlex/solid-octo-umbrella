@@ -131,5 +131,4 @@ private:
 	void onRebuildConnector();
 
 	void onCreateConnector();
-
 };

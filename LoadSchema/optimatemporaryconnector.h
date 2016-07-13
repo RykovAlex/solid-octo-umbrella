@@ -31,7 +31,7 @@ public:
 
 	void initialize();
 
-	void createMarker(const QPointF & scenePos, const QLineF & makerVector);
+	void createMarker(const QPointF & scenePos, int borderIndex);
 
 	~OptimaTemporaryConnector();
 
@@ -39,7 +39,7 @@ public:
 
 	void setPoints(const OptimaPointVector & val);
 
-	void onEndBorderMove(const QPointF & scenePos);
+	void onEndBorderMove(const QPointF & scenePos, QPointF & beginPoint, QPointF & endPoint);
 	
 	void onBeginBorderMove(const QPointF & scenePos);
 	
@@ -66,8 +66,8 @@ public:
 	inline Relationship getRelationship() const
 	{
 		return OptimaTemporaryConnector::Relationship(
-			this->childItems().at(0)->data(tag::data::linkingElement).toInt() << 4 | 
-			this->childItems().at(1)->data(tag::data::linkingElement).toInt() 
+			this->childItems().at(this->childItems().at(0)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() << 4 | 
+			this->childItems().at(this->childItems().at(1)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() 
 			); 
 	}
 
@@ -88,8 +88,7 @@ public:
 
 	OptimaPointVector realPoints(const OptimaElement *startElement, const OptimaElement *endElement);
 
-	bool isReversed() const { return mReversed; }
-	
+	bool isReversed() const;
 protected:
 
 	static const int margin = 20;
@@ -112,8 +111,6 @@ private:
 
 	QPointF mStartPoint;///< точка от которой мы начинали строить коннектор
 
-	bool mReversed;///< признак того, что точки коннектора надо обратить 
-
 	inline bool isLinkedAt(const QPointF & scenePos )
 	{
 		return OptimaConnectorPathFinder::findLinkedItem(scene(), scenePos) != nullptr;
@@ -121,6 +118,7 @@ private:
 
 	int getLinkingElementType(const QPointF & scenePos, int & linkingType );
 
+	bool mReversed;
 };
 
 
