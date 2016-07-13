@@ -2,6 +2,7 @@
 #include "tag.h"
 #include "optimafigure.h"
 #include "optimapath.h"
+#include "optimaconnectorpathfinder.h"
 
 OptimaFigure::OptimaFigure(const QString &itemUuid, OptimaView *view) : OptimaElement(this, itemUuid, view)
 {
@@ -202,7 +203,10 @@ bool OptimaFigure::checkLinkedHighlight(const QPointF & scenePos, int & indexSha
 	indexShapePieces = 0;
 	foreach(const QPolygonF &p, shapePieces)
 	{
-		if (p.containsPoint(itemPos, Qt::OddEvenFill))
+		QPolygonF p1(OptimaConnectorPathFinder::getMarkerRect(itemPos));
+
+		//if (p.containsPoint(itemPos, Qt::OddEvenFill))
+		if (!p.intersected(p1).isEmpty())
 		{
 			return true;
 		}
@@ -219,6 +223,22 @@ bool OptimaFigure::checkLinkedHighlight(const QPointF & scenePos)
 	int indexShapePieces;
 
 	return checkLinkedHighlight(scenePos, indexShapePieces);
+}
+
+QPointF OptimaFigure::getIntersectPoint(const QLineF line) const
+{
+	for(int i = 0; i < mPoints.size() - 1; ++i)
+	{
+		QPointF intersectPoint;
+		QLineF figureLine(mapToScene(mPoints.at(i)), mapToScene(mPoints.at(i+1)));
+
+		if (figureLine.intersect(line, &intersectPoint) == QLineF::BoundedIntersection)
+		{
+			return intersectPoint;
+		}		
+	}
+
+	return line.p1();
 }
 
 int OptimaFigure::type() const

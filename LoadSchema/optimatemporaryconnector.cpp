@@ -3,23 +3,28 @@
 
 
 
-OptimaTemporaryConnector::OptimaTemporaryConnector(QGraphicsScene *scene, const OptimaPointVector & points) 
-	: mBeginArrow(connector_arrow_no, true)
-	, mEndArrow(connector_arrow_filled, false)
+OptimaTemporaryConnector::OptimaTemporaryConnector(QGraphicsScene *scene, const OptimaPointVector & points
+	, const OptimaConnectorArrowVector & arrowVector /*= OptimaConnectorArrowVector() << OptimaConnectorArrow(connector_arrow_no, true)	<< OptimaConnectorArrow(connector_arrow_filled, false)*/
+	, bool reversed
+	) 
+	: mBeginArrow(arrowVector.at(0))
+	, mEndArrow(arrowVector.at(1))
 	, mPoints(points)
 	, mStartPoint(points.first())
+	, mReversed(reversed)
 {
 	initialize();
 	scene->addItem(this);
 	
-	createMarker(points.first());
+	createMarker(points.first(), QLineF(points.first(), points.last()));
 
-	createMarker(points.last());
+	createMarker(points.last(), QLineF(points.last(), points.first()));
 }
 
 OptimaTemporaryConnector::OptimaTemporaryConnector() : mBeginArrow(connector_arrow_no, true)
 	, mEndArrow(connector_arrow_filled, false)
 	, mStartPoint(QPointF(0.0,0.0))
+	, mReversed(false)
 {
 	initialize();
 }
@@ -29,6 +34,7 @@ OptimaTemporaryConnector::OptimaTemporaryConnector(const OptimaTemporaryConnecto
 	, mEndArrow(connector_arrow_filled, false)
 	, mPoints(tempConnector->points())
 	, mStartPoint(tempConnector->startPoint())
+	, mReversed(false)
 {
 	initialize();
 }
@@ -47,11 +53,13 @@ void OptimaTemporaryConnector::initialize()
 
 }
 
-void OptimaTemporaryConnector::createMarker(const QPointF & scenePos)
+void OptimaTemporaryConnector::createMarker(const QPointF & scenePos, const QLineF & markerVector)
 {
-	QGraphicsRectItem *marker = new QGraphicsRectItem(getMarkerRect(QPointF(0.0,0.0)), this);
+	QGraphicsRectItem *marker = new QGraphicsRectItem(OptimaConnectorPathFinder::getMarkerRect(QPointF(0.0,0.0)), this);
+	marker->setData(tag::data::vector, markerVector);
 	marker->setPos(scenePos);
 	setMarkerPen(marker, scenePos);
+
 }
 
 OptimaTemporaryConnector::~OptimaTemporaryConnector()
@@ -109,7 +117,7 @@ void OptimaTemporaryConnector::buildPath()
 	QPainterPath pathArrow;
 
 	// рисуем стрелку начала, и соотвественно меняем начальную точку отрисовки коннектора
-	QPointF startPoint = mBeginArrow.getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
+	QPointF startPoint = beginArrow().getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
 
 	mConnectorPath = OptimaPath(startPoint, cross);
 
@@ -157,6 +165,36 @@ QPainterPath OptimaTemporaryConnector::shape() const
 	return pathStrocke.createStroke(path);
 }
 
+OptimaPointVector OptimaTemporaryConnector::realPoints(const OptimaElement *startElement, const OptimaElement *endElement)
+{
+	OptimaPointVector points(mPoints);
+
+	if (startElement != nullptr)
+	{
+		points.first() = startElement->getIntersectPoint(QLineF(mPoints.at(0), mPoints.at(1)));
+	}
+	if (endElement != nullptr)
+	{
+		points.last() = endElement->getIntersectPoint(QLineF(mPoints.at(mPoints.size()-1), mPoints.at(mPoints.size()-2)));
+	}
+	
+
+	if (isReversed())
+	{
+		OptimaPointVector reversedPoints;
+
+		OptimaPointVector::ConstIterator i = points.constEnd();
+		for (; i != points.constBegin();)
+		{
+			--i;
+			reversedPoints << *i;
+		}
+
+		return reversedPoints;
+	}
+	return points;
+}
+
 int OptimaTemporaryConnector::getLinkingElementType(const QPointF & scenePos, int & linkingType)
 {
 	QGraphicsItem * item = OptimaConnectorPathFinder::findLinkedItem(scene(), scenePos);
@@ -170,4 +208,3 @@ int OptimaTemporaryConnector::getLinkingElementType(const QPointF & scenePos, in
 	
 	return item->type() - UserType;
 }
-

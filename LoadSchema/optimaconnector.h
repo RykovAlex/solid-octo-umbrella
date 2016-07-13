@@ -16,8 +16,6 @@ public:
 
 	OptimaConnector(const QString &itemUuid, OptimaView *view);
 
-	OptimaConnector(const OptimaTemporaryConnector *tempConnector, OptimaView *view);
-
 	void initialize();
 
 	~OptimaConnector();
@@ -57,8 +55,15 @@ public:
 
 	bool isRebuild() const { return mRebuild; }
 	
-	void setRebuild(bool val);
+	void setRebuild(bool val, bool reversed);
 
+	void setPoints(const OptimaPointVector & val);
+
+	void rebuildMarkers();
+
+	virtual QPointF getIntersectPoint(const QLineF line) const;
+
+	void setLinked(OptimaElement * linkedBeginElement, OptimaElement * linkedEndElement);
 protected:
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -103,7 +108,12 @@ private:
 
 		return res;
 	}
+
 	void onConnectorMove(QPointF deltaPoint);
+
+	void setBorderId(const QString &nameId, const OptimaElement *element);
+
+	bool checkBorderLinking(const QString &nameId);
 };
 
 inline bool isConnector(const QGraphicsItem* item)

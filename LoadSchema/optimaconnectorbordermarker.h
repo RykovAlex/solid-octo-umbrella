@@ -8,7 +8,7 @@ class OptimaConnectorBorderMarker : public OptimaRectangleMarker
 public:
 	enum { Type = UserType + tag::element::borderMarker };
 
-	OptimaConnectorBorderMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape);
+	OptimaConnectorBorderMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape, bool reversed, bool linked);
 
 	~OptimaConnectorBorderMarker()
 	{
@@ -23,13 +23,9 @@ protected:
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 
-	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-
-
-	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
 private:
 
+	bool mReversed;
 };
 
 

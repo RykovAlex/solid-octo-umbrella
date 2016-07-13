@@ -35,6 +35,9 @@ public:
 
 	virtual bool checkLinkedHighlight(const QPointF & scenePos);
 
+
+	virtual QPointF getIntersectPoint(const QLineF line) const;
+
 protected:
 
 private:

@@ -24,13 +24,14 @@ public:
 
 	OptimaTemporaryConnector();
 
-	OptimaTemporaryConnector(QGraphicsScene *scene, const  OptimaPointVector & points);
+	OptimaTemporaryConnector(QGraphicsScene *scene, const  OptimaPointVector & points, const OptimaConnectorArrowVector & arrowVector = OptimaConnectorArrowVector() << OptimaConnectorArrow(connector_arrow_no, true)
+		<< OptimaConnectorArrow(connector_arrow_filled, false), bool reversed = false);
 
 	OptimaTemporaryConnector(const OptimaTemporaryConnector * tempConnector);
 
 	void initialize();
 
-	void createMarker(const QPointF & scenePos);
+	void createMarker(const QPointF & scenePos, const QLineF & makerVector);
 
 	~OptimaTemporaryConnector();
 
@@ -41,6 +42,7 @@ public:
 	void onEndBorderMove(const QPointF & scenePos);
 	
 	void onBeginBorderMove(const QPointF & scenePos);
+	
 	void buildPath();
 
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
@@ -49,9 +51,7 @@ public:
 
 	void draw();
 
-
 	virtual QPainterPath shape() const;
-
 
 	inline QPointF first() const
 	{
@@ -63,7 +63,7 @@ public:
 		return mPoints.last();
 	}
 
-	inline Relationship getRelationship()
+	inline Relationship getRelationship() const
 	{
 		return OptimaTemporaryConnector::Relationship(
 			this->childItems().at(0)->data(tag::data::linkingElement).toInt() << 4 | 
@@ -71,7 +71,24 @@ public:
 			); 
 	}
 
-	QPointF startPoint() const { return mStartPoint; }
+	inline QPointF startPoint() const 
+	{ 
+		return mStartPoint; 
+	}
+	
+	OptimaConnectorArrow beginArrow() const 
+	{ 
+		return mBeginArrow; 
+	}
+
+	OptimaConnectorArrow endArrow() const 
+	{ 
+		return mEndArrow; 
+	}
+
+	OptimaPointVector realPoints(const OptimaElement *startElement, const OptimaElement *endElement);
+
+	bool isReversed() const { return mReversed; }
 	
 protected:
 
@@ -95,11 +112,7 @@ private:
 
 	QPointF mStartPoint;///< точка от которой мы начинали строить коннектор
 
-	inline QRectF getMarkerRect(QPointF scenePos) const 
-	{
-		return QRectF( scenePos - QPointF(3.0,3.0), scenePos + QPointF(3.0,3.0));
-	}
-
+	bool mReversed;///< признак того, что точки коннектора надо обратить 
 
 	inline bool isLinkedAt(const QPointF & scenePos )
 	{
@@ -107,6 +120,7 @@ private:
 	}
 
 	int getLinkingElementType(const QPointF & scenePos, int & linkingType );
+
 };
 
 

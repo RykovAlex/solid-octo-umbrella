@@ -51,21 +51,21 @@ public:
 
 	void setMode(Mode mode);
 
-
-
 	virtual void setLinkedHighlight(bool enabled, const QPointF & scenePos = QPointF() );
 
 	virtual bool checkLinkedHighlight(const QPointF & scenePos);
 
 	void buildIntersectionConnectors();
 	
-	void addConnector(OptimaConnector * oldConnector);
+	void addConnector(OptimaConnector * oldConnector, bool reversed);
+
+	virtual QPointF getIntersectPoint(const QLineF line) const;
+
 protected:
 
 	virtual void mousePressEvent(QMouseEvent *mouseEvent);
 
 	void addConnector(QMouseEvent * mouseEvent);
-
 	virtual void mouseReleaseEvent(QMouseEvent *mouseEvent);
 
 	virtual void mouseMoveEvent(QMouseEvent *mouseEvent);
@@ -89,16 +89,19 @@ private:
 
 	OptimaConnector *mOldConnector;///<здесь храним коннетор который изменяем
 	
-	OptimaElement *linkedStartElement;///<хранит указатель на фигуру, котороую подсветили при начале движения коннеткора
+	OptimaElement *mLinkedBeginElement;///<хранит указатель на фигуру, котороую подсветили при начале движения коннеткора
 	
-	OptimaElement *linkedElement;///<хранит указатель на фигуру, которую подсветили для присоединения коннектора
+	OptimaElement *mLinkedEndElement;///<хранит указатель на фигуру, которую подсветили для присоединения коннектора
 
 	virtual void apply();
 
 	virtual void draw(bool isProcessLoading = false);
 
+	template <class T> void loadElement(const QDomNode &element, bool loadAllways);
+
 	void beforeExecute1CCall();
 
+	qreal findNextZOrder();
 	///Загружает файл XML - описателя сцены и создает / изменяет ее графическое отображение
 	template <class T> void loadElements(const QDomNodeList &elements, bool loadAllways);
 
@@ -120,5 +123,13 @@ private:
 	{
 		return dynamic_cast<OptimaElement*>(OptimaConnectorPathFinder::findLinkedItem(scene(), scenePos));
 	}
+	
+	QDomNode createEmptyConnectorXmlNode(OptimaTemporaryConnector *tempConnector);
+
+	void onEndDragConnector();
+
+	void onRebuildConnector();
+
+	void onCreateConnector();
 
 };

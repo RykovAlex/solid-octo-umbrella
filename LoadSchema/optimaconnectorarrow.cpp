@@ -37,6 +37,16 @@ OptimaConnectorArrow::OptimaConnectorArrow(OptimaConnectorArrowShape _shape, boo
 {
 }
 
+OptimaConnectorArrow::OptimaConnectorArrow()
+	: mShape( connector_arrow_no )
+	, mMod( '\0' )
+	, mSide( '\0' )
+	, mIsBegining(false)
+	, mSize(10.0)
+{
+
+}
+
 bool OptimaConnectorArrow::operator==(const char *_shape_as_text)
 {
 	return mShapeAsText == _shape_as_text;

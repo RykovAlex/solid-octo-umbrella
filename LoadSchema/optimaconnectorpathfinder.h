@@ -11,7 +11,9 @@ public:
 	
 	static const int margin  = 10; ///< размер отступа от  края описывающего прямоугольника
 
-	static QGraphicsItem * findLinkedItem(const QGraphicsScene * scene,  const QPointF & scenePos);
+	static QRectF getMarkerRect(QPointF scenePos);
+
+	static QGraphicsItem *findLinkedItem(const QGraphicsScene * scene, const QPointF & scenePos);
 	
 	///Свободная точка - Свободная точка 
 	static OptimaPointVector GetNewConnectorPoints_Free_Free(const OptimaPoint beginPoint, const  OptimaPoint endPoint);

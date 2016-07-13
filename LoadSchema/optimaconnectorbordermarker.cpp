@@ -3,10 +3,11 @@
 
 
 
-OptimaConnectorBorderMarker::OptimaConnectorBorderMarker(OptimaConnector* parentConnector, const OptimaPoint & pos, Qt::CursorShape cursorShape) 
-	: OptimaRectangleMarker(parentConnector, pos, cursorShape, parentConnector->view())
+OptimaConnectorBorderMarker::OptimaConnectorBorderMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape, bool reversed, bool linked)
+	: OptimaRectangleMarker(parent, pos, cursorShape, parent->view())
+	, mReversed(reversed)
 {
-
+	setLinked(linked);
 }
 
 int OptimaConnectorBorderMarker::type() const
@@ -19,19 +20,5 @@ void OptimaConnectorBorderMarker::mousePressEvent(QGraphicsSceneMouseEvent *even
 	OptimaConnector *connector = qgraphicsitem_cast<OptimaConnector*>(parentItem());
 	
 	Q_ASSERT(connector != nullptr);
-	connector->setRebuild(true);
-}
-
-void OptimaConnectorBorderMarker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-	//throw std::logic_error("The method or operation is not implemented.");
-}
-
-void OptimaConnectorBorderMarker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-	OptimaConnector *connector = qgraphicsitem_cast<OptimaConnector*>(parentItem());
-
-	Q_ASSERT(connector != nullptr);
-	connector->setRebuild(false);
-	connector->update();
+	connector->setRebuild(true, mReversed);
 }

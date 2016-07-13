@@ -10,8 +10,9 @@ OptimaView::OptimaView(QWidget *parent)
 	: QGraphicsView(parent)
 	, mMode(MoveItem)
 	, mNewConnector(nullptr)
-	, linkedElement(nullptr)
-	, linkedStartElement(nullptr)
+	, mOldConnector(nullptr)
+	, mLinkedBeginElement(nullptr)
+	, mLinkedEndElement(nullptr)
 { 
 	setScene( new QGraphicsScene(parent) );
 	//scene()->setSceneRect(QRectF(0.0, 0.0, 3000.0,3000.0));
@@ -40,16 +41,37 @@ void OptimaView::addConnector(QMouseEvent * mouseEvent)
 	QPointF scenePos = mapToScene(mouseEvent->pos());
 
 	mNewConnector = new OptimaTemporaryConnector(scene(), OptimaPoint::createVector(scenePos, scenePos));	
+	mNewConnector->setZValue(findNextZOrder());
 }
 
-void OptimaView::addConnector(OptimaConnector * oldConnector)
+void OptimaView::addConnector(OptimaConnector * oldConnector, bool reversed)
 {
 	Q_ASSERT (mNewConnector == nullptr);
 
 	mMode = InsertLine;
 	mOldConnector = oldConnector;
-	mNewConnector = new OptimaTemporaryConnector(scene(), oldConnector->points());	
-	qDebug()<< "add "<< oldConnector->points();
+
+	OptimaPointVector pointVector;
+	OptimaConnectorArrowVector connectorArrowVector;
+	OptimaPointVector connectorPoints(oldConnector->points());
+
+	if (reversed)
+	{		
+		pointVector << connectorPoints.last() << connectorPoints.first();
+		connectorArrowVector << oldConnector->endArrow() << oldConnector->beginArrow();
+	}
+	else
+	{
+		pointVector << connectorPoints.first() << connectorPoints.last();
+		connectorArrowVector << oldConnector->beginArrow() << oldConnector->endArrow();
+	}
+
+	mNewConnector = new OptimaTemporaryConnector(scene(), pointVector, connectorArrowVector, reversed);	
+}
+
+QPointF OptimaView::getIntersectPoint(const QLineF line) const
+{
+	return QPointF();
 }
 
 void OptimaView::mousePressEvent(QMouseEvent *mouseEvent)
@@ -199,25 +221,25 @@ void OptimaView::setMarkerPen(QGraphicsRectItem * borderEnd, QPointF scenePos)
 
 void OptimaView::updateHighlightLinkedElement(QPointF scenePos)
 {
-	if (linkedElement != nullptr && linkedElement != linkedStartElement )
+	if (mLinkedEndElement != nullptr && mLinkedEndElement != mLinkedBeginElement )
 	{
-		linkedElement->setLinkedHighlight(false);
+		mLinkedEndElement->setLinkedHighlight(false);
 	}
 
-	linkedElement = getLinkedElement(scenePos);
+	mLinkedEndElement = getLinkedElement(scenePos);
 
-	if (linkedElement != nullptr && linkedElement != linkedStartElement)
+	if (mLinkedEndElement != nullptr && mLinkedEndElement != mLinkedBeginElement)
 	{
-		linkedElement->setLinkedHighlight(true, scenePos);
+		mLinkedEndElement->setLinkedHighlight(true, scenePos);
 	}
 }
 
 void OptimaView::updateHighlightStartLinkedElement()
 {
-	if (linkedStartElement != nullptr)
+	if (mLinkedBeginElement != nullptr)
 	{
-		linkedStartElement->setLinkedHighlight(false);
-		linkedStartElement = nullptr;
+		mLinkedBeginElement->setLinkedHighlight(false);
+		mLinkedBeginElement = nullptr;
 	}
 
 	if (mNewConnector != nullptr)
@@ -226,11 +248,11 @@ void OptimaView::updateHighlightStartLinkedElement()
 
 		QPointF scenePos = mNewConnector->startPoint();
 
-		linkedStartElement = getLinkedElement(scenePos);
+		mLinkedBeginElement = getLinkedElement(scenePos);
 
-		if (linkedStartElement != nullptr)
+		if (mLinkedBeginElement != nullptr)
 		{
-			linkedStartElement->setLinkedHighlight(true, scenePos);
+			mLinkedBeginElement->setLinkedHighlight(true, scenePos);
 		}
 	}
 }
@@ -246,6 +268,15 @@ void OptimaView::keyPressEvent(QKeyEvent *keyEvent)
 
 			delete mNewConnector;
 			mNewConnector = nullptr;
+
+			if (mOldConnector != nullptr)
+			{
+				updateHighlightLinkedElement(QPoint());
+				updateHighlightStartLinkedElement();
+				mMode = MoveItem;
+				mOldConnector->setRebuild(false, false);
+				mOldConnector = nullptr;
+			}
 			
 			break;
 		}
@@ -256,23 +287,69 @@ void OptimaView::mouseReleaseEvent(QMouseEvent *mouseEvent)
 {
 	if (mNewConnector != nullptr)
 	{
-		if (mNewConnector->first() != mNewConnector->last())
-		{
-			scene()->addItem(new OptimaConnector(mNewConnector, this));	
-		}
-
-		delete mNewConnector;
-		mNewConnector = nullptr;
-
-		updateHighlightStartLinkedElement();	
-
-		if (mOldConnector != nullptr)
-		{
-			mMode = MoveItem;
-			mOldConnector = nullptr;
-		}
+		onEndDragConnector();
 	}
 	QGraphicsView::mouseReleaseEvent(mouseEvent);
+}
+
+void OptimaView::onEndDragConnector()
+{
+	if (mOldConnector == nullptr)
+	{
+		onCreateConnector();
+	}
+	else
+	{
+		onRebuildConnector();
+	}		
+
+	delete mNewConnector;
+	mNewConnector = nullptr;
+
+	updateHighlightLinkedElement(QPoint());
+	updateHighlightStartLinkedElement();	
+
+	if (mOldConnector != nullptr)
+	{
+		mMode = MoveItem;
+		mOldConnector = nullptr;
+	}
+}
+
+void OptimaView::onRebuildConnector()
+{
+	if (mNewConnector->first() == mOldConnector->first() && mNewConnector->last() == mOldConnector->last())
+	{
+		return;
+	}
+
+	mOldConnector->setRebuild(false, false);
+	
+	mOldConnector->setPoints(mNewConnector->realPoints(mLinkedBeginElement, mLinkedEndElement));
+	if (mNewConnector->isReversed())
+	{
+		mOldConnector->setLinked( mLinkedEndElement, mLinkedBeginElement);
+	}
+	else
+	{
+		mOldConnector->setLinked( mLinkedBeginElement, mLinkedEndElement);
+	}
+	
+	buildIntersectionConnectors();
+}
+
+void OptimaView::onCreateConnector()
+{
+	if (mNewConnector->first() == mNewConnector->last())
+	{
+		return;
+	}
+
+	QDomNode connectorNode = createEmptyConnectorXmlNode(mNewConnector);
+
+	loadElement<OptimaConnector>(connectorNode, true);
+
+	buildIntersectionConnectors();	
 }
 
 void OptimaView::apply()
@@ -287,30 +364,35 @@ void OptimaView::draw(bool isProcessLoading /*= false*/)
 }
 
 template <class T>
+void OptimaView::loadElement(const QDomNode &element, bool loadAllways)
+{
+	const QString uuid = element.namedItem( tag::id ).toElement().text();
+
+	if (uuid.isEmpty())
+	{			
+		if ( !loadAllways )
+			throw QString().append( tr( "У элемента не найден UUID" ) );
+		return;
+	}
+
+	//Найдем на схеме элемент с itemUuid из xml, если его нет, то создадим его
+	T *item = getItem<T>(uuid);
+
+	Q_ASSERT( nullptr != item );
+
+	//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
+	//к графическому элементу, после этого он отрисуется на схеме
+	item->applyXml(element);
+
+	item->draw(false);
+}
+
+template <class T>
 void OptimaView::loadElements(const QDomNodeList &elements, bool loadAllways)
 {
 	for ( int nn = 0; nn < elements.size( ); ++nn )
 	{
-		const QDomNode &element = elements.at( nn );
-		const QString uuid = element.namedItem( tag::id ).toElement().text();
-
-		if (uuid.isEmpty())
-		{			
-			if ( !loadAllways )
-				throw QString().append( tr( "У элемента не найден UUID" ) );
-			continue;
-		}
-		
-		//Найдем на схеме элемент с itemUuid из xml, если его нет, то создадим его
-		T *item = getItem<T>(uuid);
-
-		Q_ASSERT( nullptr != item );
-
-		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
-		//к графическому элементу, после этого он отрисуется на схеме
-		item->applyXml(element);
-		
-		item->draw(true);
+		loadElement<T>(elements.at( nn ), loadAllways);	
 	}
 }
 
@@ -354,7 +436,6 @@ QString OptimaView::getUuid(QGraphicsItem* item)
 {
 	return item->data(tag::data::uuid).toString();
 }
-
 
 void OptimaView::buildIntersectionConnectors()
 {
@@ -401,6 +482,50 @@ void OptimaView::loadWorkspace(const QDomNodeList &workspace)
 		draw(true);
 	}
 
+}
+
+QDomNode OptimaView::createEmptyConnectorXmlNode(OptimaTemporaryConnector *tempConnector)
+{
+	QString text = 
+	"\
+	<Line>\
+		<ID></ID>\
+		<PaintLine></PaintLine>\
+		<ThicknessLine>1</ThicknessLine>\
+		<TypeLine>line</TypeLine>\
+		<Order></Order>\
+		<IDBegin></IDBegin>\
+		<BeginConnectCenter>0</BeginConnectCenter>\
+		<IDEnd></IDEnd>\
+		<EndConnectCenter>0</EndConnectCenter>\
+		<Type>rect</Type>\
+		<CrossType>CrossBridge</CrossType>\
+		<Linkable>1</Linkable>\
+		<RadiusCorner>0</RadiusCorner>\
+		<ShapeBegin>NoArrow</ShapeBegin>\
+		<ShapeEnd>FilledArrow</ShapeEnd>\
+		<SizeShapeBegin>10</SizeShapeBegin>\
+		<SizeShapeEnd>10</SizeShapeEnd>\
+		<DropShadow>0</DropShadow>\
+		<StructureDot>\
+		</StructureDot>\
+		<StructureGroup></StructureGroup>\
+		<UserProperties></UserProperties>\
+	</Line>\
+	";
+	doc.setContent(text);
+	
+	QString uuid((QUuid::createUuid( ).toString( ).toLower( ).remove( "{" ).remove( "}" )));
+	OptimaElement::setXmlValue(doc.documentElement(), tag::id, uuid);
+
+	setXmlValue(doc.documentElement(), tag::id_begin, mLinkedBeginElement == nullptr ? "" : mLinkedBeginElement->uuid());
+	setXmlValue(doc.documentElement(), tag::id_end, mLinkedEndElement == nullptr ? "" : mLinkedEndElement->uuid());
+
+	mNewConnector->setPoints(mNewConnector->realPoints(mLinkedBeginElement, mLinkedEndElement));
+	OptimaElement::setXmlValue(doc.documentElement(), mNewConnector->points(), uuid);
+	OptimaElement::setXmlZOrder(doc.documentElement(), mNewConnector->zValue());
+
+	return doc.documentElement();
 }
 
 QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
@@ -458,4 +583,17 @@ QString OptimaView::LoadScheme(const QString &filename, bool load_allways)
 void OptimaView::beforeExecute1CCall()
 {
 
+}
+
+qreal OptimaView::findNextZOrder()
+{
+	qreal ret = 0.001;
+	QList<QGraphicsItem*> items(scene()->items());
+
+	if (!items.isEmpty())
+	{
+		ret += items.first()->zValue();
+	}
+
+	return ret; 
 }

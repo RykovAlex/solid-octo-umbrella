@@ -41,6 +41,11 @@ public:
 
 	virtual bool checkLinkedHighlight(const QPointF & scenePos) = 0;
 
+	virtual QPointF getIntersectPoint(const QLineF line) const = 0;
+
+	QString uuid() const;
+
+	static void setXmlZOrder(QDomNode & node, qreal sceneZOrder);
 protected:	
 	OptimaView *mView;///< объект отвечающий за отображение схемы
 
@@ -49,6 +54,8 @@ protected:
 
 	///Получить из xml - описателя поле
 	const QDomElement getXmlNode(const QString & name) const;
+	
+	static QDomElement getXmlNode(QDomNode node, const QString & name);
 
 	///Получить из xml -описателя различные значения
 	qreal getXmlValue(const QString & name, const qreal defaultValue) const;
@@ -61,7 +68,15 @@ protected:
 	QString getXmlValue(const QString & name, const QString &defaultString) const;
 	const QFont getXmlValue(const QString & name, const QFont &defaultFont) const;
 
-	void setXmlValue(const QString & name, const qreal value) const;
+	void setXmlValue(const QString & name, const qreal value);
+
+	void setXmlValue(const QString & name, const QString &value);
+
+	static void setXmlValue(QDomNode & node, const QString & name, const qreal value);
+
+	static void setXmlValue(QDomNode & node, const OptimaPointVector &points,const QString &ownerId);
+	
+	static void setXmlValue(QDomNode & node, const QString & name, const QString &value);
 
 private:
 	QGraphicsItem *mItem;///<Указатель на графический объект - предок

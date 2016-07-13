@@ -33,6 +33,8 @@ public:
 
 	OptimaConnectorArrow( OptimaConnectorArrowShape _shape, bool isBegining);
 
+	OptimaConnectorArrow();
+
 	bool operator ==( OptimaConnectorArrowShape _shape );
 
 	bool operator ==( const char *_shape_as_text );
@@ -99,4 +101,4 @@ private:
 	QPointF drawDiamondArrow(const QLineF &l0, QLineF &l1, QLineF &l2, QPainterPath &path);
 };
 
-
+typedef QVector<OptimaConnectorArrow> OptimaConnectorArrowVector;

@@ -15,6 +15,11 @@ OptimaConnectorPathFinder::~OptimaConnectorPathFinder()
 
 }
 
+QRectF OptimaConnectorPathFinder::getMarkerRect(QPointF scenePos)
+{
+	return QRectF( scenePos - QPointF(3.0,3.0), scenePos + QPointF(3.0,3.0));
+}
+
 QGraphicsItem * OptimaConnectorPathFinder::findLinkedItem(const QGraphicsScene * scene, const QPointF & scenePos)
 {
 	if (scene == nullptr)
@@ -256,4 +261,3 @@ OptimaPointVector OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Con
 
 	return pointVector;
 }
-

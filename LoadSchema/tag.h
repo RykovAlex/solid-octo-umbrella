@@ -1,4 +1,5 @@
 #pragma once
+#include "..\src\xml\dom\qdom.h"
 
 namespace tag
 {
@@ -10,6 +11,7 @@ namespace tag
 			,linkable
 			,linkingElement		///< определяет к какому элементу прицеплен бордер коннектора
 			,linkingParameter   ///< определяет некоторый параметр зацепления (у фигуры это номер стороны см OptimaFigure::edgeType)
+			,vector				///< для крайних маркеров коннектора хранит вектор от текущего маркера к другому
 		};
 	}
 	
@@ -34,6 +36,8 @@ namespace tag
 	static const QString virtual_step ( "VirtualStep" );
 	static const QString id( "ID" );
 	static const QString id_owner( "IDOwner" );
+	static const QString id_begin( "IDBegin" );
+	static const QString id_end( "IDEnd" );
 	static const QString link_to_owner( "LinkToOwner" );
 	static const QString italic_font( "ItalicFont" );
 	static const QString kx( "KX" );
@@ -100,4 +104,17 @@ namespace tag
 		const QString cl_name = cl.name( );
 		return QString( "%1%2" ).arg( cl_name.right( 6 ) ).arg( cl.alpha( ), 2, 16, QLatin1Char( '0' ) );
 	}
+
+	inline QDomElement createNode( QDomDocument & dd, const QString & node_name, const QString & value )
+	{
+		QDomElement de_ret = dd.createElement( node_name );
+		de_ret.appendChild( dd.createTextNode( value ) );
+		return de_ret;
+	}
+
+	inline QDomElement convertFromPoint( QDomDocument & dd, const QString & node_name, const QPointF & value )
+	{
+		return createNode( dd, node_name, QString( "%1:%2" ).arg( static_cast< int >( value.x( ) ) ).arg( static_cast< int >( value.y( ) ) ) );
+	}
+	
 }

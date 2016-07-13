@@ -127,6 +127,11 @@ const QDomElement OptimaElement::getXmlNode(const QString & name) const
 	return mNodeXml.namedItem( name ).toElement();
 }
 
+QDomElement OptimaElement::getXmlNode(QDomNode node, const QString & name)
+{
+	return node.namedItem( name ).toElement();
+}
+
 qreal OptimaElement::getXmlValue(const QString & name, const qreal defaultValue) const
 {
 	QDomNode node(mNodeXml.namedItem( name ));
@@ -246,17 +251,53 @@ const QFont OptimaElement::getXmlValue(const QString & name, const QFont &defaul
 	return font;
 }
 
-void OptimaElement::setXmlValue(const QString & name, const qreal value) const
+void OptimaElement::setXmlValue(const QString & name, const qreal value) 
 {
-	for(QDomNode n = mNodeXml.namedItem( name ).firstChild(); !n.isNull(); n = n.nextSibling())
+	OptimaElement::setXmlValue(mNodeXml, name, value);
+}
+
+void OptimaElement::setXmlValue(const QString & name, const QString &value) 
+{
+	OptimaElement::setXmlValue(mNodeXml, name, value);
+}
+
+void OptimaElement::setXmlValue(QDomNode & node, const OptimaPointVector &points, const QString &ownerId)
+{
+	QDomElement nodeElement = getXmlNode( node, tag::structure_dot );
+	while (nodeElement.childNodes().count() > 0)
 	{
-		QDomText t = n.toText();
-		if (!t.isNull())
-		{
-			t.setNodeValue(QString::number( value ));
-			break;
-		}
+		nodeElement.removeChild(nodeElement.firstChild());
 	}
+
+	const QDomNodeList dots = getXmlNode( node, tag::structure_dot ).childNodes();
+	
+	Q_ASSERT(dots.isEmpty());
+	
+	foreach( const OptimaPoint &p, points)
+	{
+		QDomDocument domDocument = node.toDocument();
+		QDomElement domElement = domDocument.createElement( "dot" );
+		nodeElement.appendChild( domElement );
+		domElement.appendChild( tag::createNode( domDocument, tag::id, p.uuid()) );
+		domElement.appendChild( tag::createNode( domDocument, tag::id_owner, ownerId ) );
+		domElement.appendChild( tag::convertFromPoint( domDocument, "Coordinate", p ) );
+	}
+}
+
+void OptimaElement::setXmlValue(QDomNode & node, const QString & name, const QString &value)
+{
+	QDomElement nodeElement = getXmlNode( node, name );
+	while (nodeElement.childNodes().count() > 0)
+	{
+		nodeElement.removeChild(nodeElement.firstChild());
+	}
+	QDomDocument domDocument = node.toDocument();
+	nodeElement.appendChild( domDocument.createTextNode( value ) );
+}
+
+void OptimaElement::setXmlValue(QDomNode & node, const QString & name, const qreal value)
+{
+	setXmlValue(node, name, QString::number(value));
 }
 
 QColor OptimaElement::getXmlValue(const QString & name, const QColor defaultColor) const
@@ -286,4 +327,16 @@ QColor OptimaElement::getXmlValue(const QString & name, const QColor defaultColo
 	}
 
 	return resultColor.isValid( ) ? resultColor : Qt::gray;
+}
+
+QString OptimaElement::uuid() const
+{
+	return mItem->data(tag::data::uuid).toString();
+}
+
+void OptimaElement::setXmlZOrder(QDomNode & node, qreal sceneZOrder)
+{
+	int xmlZOrder = static_cast< int >( qRound(sceneZOrder * Z_ORDER_DELIMITER));
+
+	setXmlValue(node, tag::order, xmlZOrder);
 }

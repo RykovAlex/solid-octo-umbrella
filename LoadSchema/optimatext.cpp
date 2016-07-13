@@ -92,3 +92,8 @@ bool OptimaText::checkLinkedHighlight(const QPointF & scenePos)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }
+
+QPointF OptimaText::getIntersectPoint(const QLineF line) const
+{
+	return QPointF();
+}
