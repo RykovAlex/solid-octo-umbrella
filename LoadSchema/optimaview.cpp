@@ -165,7 +165,7 @@ void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
 					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Free( beginFigure->linkedRect(), endPoint );
 					
 					//если ведем не конечный, а начальный маркер фигуры
-					if (beginPoint == scenePos)
+					if (mNewConnector->isReversed())
 					{
 						if (newPoints.last() != mNewConnector->last())
 						{
@@ -189,7 +189,7 @@ void OptimaView::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 					newPoints = OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Figure( beginFigure->linkedRect(), endFigure->linkedRect() );
 
-					if (beginPoint == scenePos)
+					if (mNewConnector->isReversed())
 					{
 						if (newPoints.last() != mNewConnector->last())
 						{
@@ -350,7 +350,7 @@ void OptimaView::onRebuildConnector()
 
 	mOldConnector->setRebuild(false, false);
 	
-	mOldConnector->setPoints(mNewConnector->realPoints(mLinkedBeginElement, mLinkedEndElement));
+	mOldConnector->setPoints(mNewConnector->getRealPoints(mLinkedBeginElement, mLinkedEndElement));
 	
 	buildIntersectionConnectors();
 }
@@ -538,7 +538,7 @@ QDomNode OptimaView::createEmptyConnectorXmlNode(OptimaTemporaryConnector *tempC
 	setXmlValue(doc.documentElement(), tag::id_begin, mLinkedBeginElement == nullptr ? "" : mLinkedBeginElement->uuid());
 	setXmlValue(doc.documentElement(), tag::id_end, mLinkedEndElement == nullptr ? "" : mLinkedEndElement->uuid());
 
-	mNewConnector->setPoints(mNewConnector->realPoints(mLinkedBeginElement, mLinkedEndElement));
+	mNewConnector->setPoints(mNewConnector->getRealPoints(mLinkedBeginElement, mLinkedEndElement));
 	OptimaElement::setXmlValue(doc.documentElement(), mNewConnector->points(), uuid);
 	OptimaElement::setXmlZOrder(doc.documentElement(), mNewConnector->zValue());
 

@@ -28,11 +28,12 @@ public:
 	{
 		setMarkerPos( newPos );
 
-		OptimaElement *element = dynamic_cast<OptimaElement*>(this->parentItem());
-		
-		Q_ASSERT(element != nullptr);
+		//не будем перемещать существующий маркер
+		//OptimaElement *element = dynamic_cast<OptimaElement*>(this->parentItem());
+		//
+		//Q_ASSERT(element != nullptr);
 
-		element->onMarkerMove( this );
+		//element->onMarkerMove( this );
 	}
 
 

@@ -2,7 +2,8 @@
 #include "optimarectanglemarker.h"
 #include "tag.h"
 
-OptimaRectangleMarker::OptimaRectangleMarker(QGraphicsItem *parent, QPointF pos, Qt::CursorShape cursorShape, const OptimaView *view) : OptimaBaseMarker( cursorShape )
+OptimaRectangleMarker::OptimaRectangleMarker(QGraphicsItem *parent, QPointF pos, Qt::CursorShape cursorShape, const OptimaView *view) 
+	: OptimaBaseMarker( cursorShape )
 	, QGraphicsRectItem(parent)
 	, mView(view)
 {
@@ -70,5 +71,7 @@ void OptimaRectangleMarker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 	deltaPos -= alignedDeltaPos;
 	QPointF newPos(pos() + alignedDeltaPos);
-	setPos( newPos );
+
+	markerMoveEvent(newPos);
+	//setPos( newPos );
 }

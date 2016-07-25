@@ -9,7 +9,13 @@ class OptimaCross;
 class OptimaLine : public QLineF
 {
 public:
+	enum OptimaLinePointIndex {
+		point1,
+		point2
+	} ;
 	OptimaLine();
+
+	OptimaLine(const OptimaPoint &pt1, const OptimaPoint &pt2, int indexLine);
 
 	OptimaLine(const QPointF &pt1, const QPointF &pt2);
 	
@@ -52,6 +58,11 @@ public:
 	///передвинуть eугол на нлвле место
 	void translate(const QPointF & offset);
 
+	QPointF center() const;
+
+	int getIndexLine() const;
+	
+	OptimaPoint operator[] (OptimaLine::OptimaLinePointIndex index) const;
 protected:
 
 private:
@@ -60,9 +71,16 @@ private:
 	OptimaCorner mCorner; ///<Угол до следующей линии
 
 	OptimaLengthVector mCrossingWithConnectorLengths;///<Массив расстояний от первой точки отрезка, до точек пересечения с другими коннекторами
+
+	int mIndexLine;
 };
 
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug, const OptimaLine &);
 #endif
 
+inline OptimaPointVector &operator<<(OptimaPointVector &pointVector, const OptimaLine &line)
+{
+	pointVector << line[OptimaLine::point1] << line[OptimaLine::point2];
+	return pointVector;
+}

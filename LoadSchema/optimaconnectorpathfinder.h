@@ -49,6 +49,8 @@ protected:
 private:
 
 
+public:
+	static OptimaPointVector GetLineConnectorPoints_Free_Free(const OptimaPointVector points, int indexLine, const OptimaLine line);
 };
 
 

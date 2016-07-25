@@ -6,6 +6,7 @@
 #include "optimaconnectorpathfinder.h"
 
 class OptimaPath;
+class OptimaConnector;
 class OptimaTemporaryConnector : public QGraphicsPathItem
 {
 public:
@@ -28,6 +29,8 @@ public:
 		<< OptimaConnectorArrow(connector_arrow_filled, false), bool reversed = false);
 
 	OptimaTemporaryConnector(const OptimaTemporaryConnector * tempConnector);
+
+	OptimaTemporaryConnector(OptimaConnector * rebuildingConnector );
 
 	void initialize();
 
@@ -65,10 +68,10 @@ public:
 
 	inline Relationship getRelationship() const
 	{
-		return OptimaTemporaryConnector::Relationship(
-			this->childItems().at(this->childItems().at(0)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() << 4 | 
-			this->childItems().at(this->childItems().at(1)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() 
-			); 
+		int  relationship = this->childItems().at(this->childItems().at(0)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() << 4 | 
+			this->childItems().at(this->childItems().at(1)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt();
+		qDebug() << hex << relationship;
+		return OptimaTemporaryConnector::Relationship(relationship); 
 	}
 
 	inline QPointF startPoint() const 
@@ -86,7 +89,7 @@ public:
 		return mEndArrow; 
 	}
 
-	OptimaPointVector realPoints(const OptimaElement *startElement, const OptimaElement *endElement);
+	OptimaPointVector getRealPoints(const OptimaElement *startElement, const OptimaElement *endElement);
 
 	bool isReversed() const;
 protected:
@@ -105,10 +108,12 @@ protected:
 
 	OptimaPath mConnectorPath;///< путь для отрисовки коннетора по точкам mPoints  учетом закруглений и пересечений
 
+	OptimaPath mConnectorCleanPath;///< чистый путь без пересечений но со скруглениями
 private:
 
 	QPainterPath mPathArrow;///< путь для отрисовки стрелок коннектора
 
+	
 	QPointF mStartPoint;///< точка от которой мы начинали строить коннектор
 
 	inline bool isLinkedAt(const QPointF & scenePos )
@@ -119,6 +124,8 @@ private:
 	int getLinkingElementType(const QPointF & scenePos, int & linkingType );
 
 	bool mReversed;
+
+	OptimaConnector * mRebuildingConnector;
 };
 
 

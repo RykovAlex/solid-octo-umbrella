@@ -101,6 +101,7 @@
     <ClCompile Include="optimaconnector.cpp" />
     <ClCompile Include="optimaconnectorarrow.cpp" />
     <ClCompile Include="optimaconnectorbordermarker.cpp" />
+    <ClCompile Include="optimaconnectorlinemarker.cpp" />
     <ClCompile Include="optimaconnectormovemarker.cpp" />
     <ClCompile Include="optimaconnectorpathfinder.cpp" />
     <ClCompile Include="optimacorner.cpp" />
@@ -122,6 +123,7 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_loadschema.h" />
     <ClInclude Include="optimaconnectorbordermarker.h" />
+    <ClInclude Include="optimaconnectorlinemarker.h" />
     <ClInclude Include="tag.h" />
     <CustomBuild Include="loadschema.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

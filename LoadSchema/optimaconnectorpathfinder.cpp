@@ -261,3 +261,22 @@ OptimaPointVector OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Con
 
 	return pointVector;
 }
+
+OptimaPointVector OptimaConnectorPathFinder::GetLineConnectorPoints_Free_Free(const OptimaPointVector points, int indexLine, const OptimaLine line)
+{
+	OptimaPointVector pointVector;
+
+	for (int i = 0; i < points.size() && i < indexLine; ++i)
+	{
+		pointVector << points.at(i);
+	}
+
+	pointVector << line;
+
+	for (int i = indexLine + 2; i < points.size(); ++i)
+	{
+		pointVector << points.at(i);
+	}
+
+	return pointVector;
+}

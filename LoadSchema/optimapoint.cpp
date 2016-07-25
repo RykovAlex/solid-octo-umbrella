@@ -33,6 +33,13 @@ OptimaPoint::OptimaPoint(const QPointF &point)
 {
 }
 
+OptimaPoint::OptimaPoint(const QPointF &point, const QString &uuid)
+	: QPointF(point)
+	, mRadius(0)
+	, mUuid(uuid)
+{
+}
+
 int OptimaPoint::getRadius() const
 {
 	return mRadius;

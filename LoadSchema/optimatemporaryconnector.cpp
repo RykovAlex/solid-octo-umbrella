@@ -1,7 +1,24 @@
 #include "stdafx.h"
 #include "optimatemporaryconnector.h"
+#include "optimaconnector.h"
 
+OptimaTemporaryConnector::OptimaTemporaryConnector(OptimaConnector * rebuildingConnector ) 
+	: mBeginArrow(rebuildingConnector->beginArrow())
+	, mEndArrow(rebuildingConnector->endArrow())
+	, mPoints(rebuildingConnector->points())
+	, mReversed(false)
+	, mStartPoint(QPointF())
+{
+	initialize();
+	mRebuildingConnector = rebuildingConnector;
+	mRebuildingConnector->setRebuild(true);
+	mRebuildingConnector->scene()->addItem(this);
 
+	createMarker(rebuildingConnector->points().first(), 0);
+	createMarker(rebuildingConnector->points().last(), 1);
+
+	
+}
 
 OptimaTemporaryConnector::OptimaTemporaryConnector(QGraphicsScene *scene, const OptimaPointVector & points
 	, const OptimaConnectorArrowVector & arrowVector /*= OptimaConnectorArrowVector() << OptimaConnectorArrow(connector_arrow_no, true)	<< OptimaConnectorArrow(connector_arrow_filled, false)*/
@@ -53,6 +70,7 @@ OptimaTemporaryConnector::OptimaTemporaryConnector(const OptimaTemporaryConnecto
 
 void OptimaTemporaryConnector::initialize()
 {
+	mRebuildingConnector = nullptr;
 	mRadiusCorner = 0;
 	setData(tag::data::linkable, false);
 
@@ -76,7 +94,10 @@ void OptimaTemporaryConnector::createMarker(const QPointF & scenePos, int border
 
 OptimaTemporaryConnector::~OptimaTemporaryConnector()
 {
-
+	if (mRebuildingConnector != nullptr)
+	{
+		mRebuildingConnector->setRebuild(false);
+	}
 }
 
 void OptimaTemporaryConnector::setMarkerPen(QGraphicsRectItem * marker, QPointF scenePos)
@@ -144,16 +165,19 @@ void OptimaTemporaryConnector::buildPath()
 	QPointF startPoint = beginArrow().getPath(pathArrow, mPoints.at( 0 ), mPoints.at( 1 ));
 
 	mConnectorPath = OptimaPath(startPoint, cross);
+	mConnectorCleanPath = OptimaPath(mPoints.first(), OptimaCross());
 
 	for ( int i = 1; i < mPoints.size( ) - 1; ++i )
 	{
 		mConnectorPath.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i )), mRadiusCorner);
+		mConnectorCleanPath.lineTo(mPoints.at( i ), QLineF(mPoints.at( i + 1), mPoints.at( i )), mRadiusCorner);
 	}
 
 	// рисуем конец
 	const QPointF endPoint = mEndArrow.getPath( pathArrow, mPoints.at( mPoints.size() - 1 ), mPoints.at( mPoints.size() - 2 ));
 
 	mConnectorPath.lineTo(endPoint);
+	mConnectorCleanPath.lineTo(mPoints.last());
 
 	// сохраним для отрисовки в paint()
 	mPathArrow = pathArrow;
@@ -182,14 +206,16 @@ void OptimaTemporaryConnector::draw()
 
 QPainterPath OptimaTemporaryConnector::shape() const
 {
-	QPainterPath path(this->path());
+	//QPainterPath path(this->path());
+	QPainterPath path(mConnectorCleanPath.toPath());
+
 	QPainterPathStroker pathStrocke;
 	pathStrocke.setWidth(margin);
 
 	return pathStrocke.createStroke(path);
 }
 
-OptimaPointVector OptimaTemporaryConnector::realPoints(const OptimaElement *startElement, const OptimaElement *endElement)
+OptimaPointVector OptimaTemporaryConnector::getRealPoints(const OptimaElement *startElement, const OptimaElement *endElement)
 {
 	OptimaPointVector points(mPoints);
 	QGraphicsRectItem * borderEnd = dynamic_cast<QGraphicsRectItem *>(this->childItems().at(1));
@@ -216,7 +242,6 @@ OptimaPointVector OptimaTemporaryConnector::realPoints(const OptimaElement *star
 		{
 			points.last() = endElement->getIntersectPoint(QLineF(mPoints.at(mPoints.size()-1), mPoints.at(mPoints.size()-2)));
 		}
-
 	}
 	
 	return points;

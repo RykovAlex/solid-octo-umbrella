@@ -1,3 +1,5 @@
+baseWidth
+baseWidth
 #include "stdafx.h"
 #include "optimaconnector.h"
 #include "tag.h"
@@ -23,6 +25,19 @@ bool OptimaConnector::checkBorderLinking(const QString &nameId)
 	return !getXmlValue(nameId, QString("")).isEmpty();
 }
 
+void OptimaConnector::hideMarkers(const OptimaConnectorLineMarker* lineMarker, bool hide)
+{
+	QList<QGraphicsItem *> items = childItems();
+	for (int i = 0; i < items.count(); ++i)
+	{
+		QGraphicsItem *item = items.at(i);
+		if (item != lineMarker)
+		{
+			item->setVisible(false);
+		}
+	}
+}
+
 void OptimaConnector::initialize()
 {
 	setData(tag::data::linkable, true);
@@ -40,7 +55,7 @@ void OptimaConnector::initialize()
 
 	mIsAngledСonnector = true;
 	setCursor(QCursor( QPixmap( ":/images/resources/cursor_move_rect.png"), 0, 0));
-
+	mNonSelectedZOrder = zValue();
 }
 
 OptimaConnector::~OptimaConnector()
@@ -116,7 +131,6 @@ QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &
 
 	return value;
 }
-
 
 void OptimaConnector::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -237,24 +251,30 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 
 	OptimaTemporaryConnector::paint(painter, option);
 
-	if (mIndexLinkedLine >= 0)
-	{
-		painter->setOpacity(0.25);
-		painter->setPen(Qt::red);
-		//painter->drawRect(boundingRect());
-		//painter->setPen(Qt::NoPen);
+	//if (mIndexLinkedLine >= 0)
+	//{
+	//	painter->setOpacity(0.25);
+	//	painter->setPen(Qt::red);
+	//	//painter->drawRect(boundingRect());
+	//	//painter->setPen(Qt::NoPen);
 
+	//	painter->setBrush(QBrush(Qt::gray));
+	//	painter->setOpacity(0.25);
+	//	painter->drawPath(getStrokeLinePath(getPathLine(mIndexLinkedLine)));
+	//}
+	if (isSelected())
+	{
+		painter->setPen(Qt::NoPen);
 		painter->setBrush(QBrush(Qt::gray));
 		painter->setOpacity(0.25);
-		painter->drawPath(getStrokeLinePath(getPathLine(mIndexLinkedLine)));
-
-		//{
-		//	QPainterPath path(this->path());
-		//	QPainterPathStroker pathStrocke;
-		//	pathStrocke.setWidth(margin);
-		//	painter->drawPath(pathStrocke.createStroke(path));
-
-		//}
+		//QPainterPath path(this->path());
+		QPainterPath path(mConnectorCleanPath.toPath());
+		QPainterPathStroker pathStrocke;
+		pathStrocke.setCapStyle(Qt::RoundCap);
+		pathStrocke.setJoinStyle(Qt::RoundJoin);
+		pathStrocke.setWidth(margin);
+		painter->drawPath(pathStrocke.createStroke(path));
+		
 	}
 }		
 
@@ -270,18 +290,53 @@ void OptimaConnector::setRebuild(bool val, bool reversed)
 	
 }
 
-void OptimaConnector::onLineMove(const OptimaConnectorMoveMarker* moveMarker)
+void OptimaConnector::setRebuild(bool val)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	mRebuild = val;
+	setData(tag::data::linkable, !mRebuild);
+	update();
+}
+
+void OptimaConnector::onLineMove(const OptimaConnectorLineMarker* lineMarker)
+{
+	int indexLine = lineMarker->getIndexLine();
+	
+	Q_ASSERT( indexLine >= 0 && indexLine < mPoints.size() - 1 );
+
+	acceptNewPoint(lineMarker->p2(), indexLine + 1, indexLine + 1);
+	acceptNewPoint(lineMarker->p1(), indexLine, indexLine + 1);
+
+	buildPath();
+
+	draw();
+
+	//Q_ASSERT(childItems().count() >= 2);
+	//hideMarkers(lineMarker, false);
+}
+
+void OptimaConnector::acceptNewPoint(OptimaPoint p, int indexLine, int insertPosition)
+{
+	if (mPoints.at(indexLine).uuid() == p.uuid())
+	{
+		mPoints[indexLine] = p;
+	}
+	else
+	{
+		mPoints.insert(insertPosition, p);
+	}
 }
 
 void OptimaConnector::onMarkerMove(const OptimaBaseMarker* marker)
 {
 	const OptimaConnectorMoveMarker* moveMarker = dynamic_cast<const OptimaConnectorMoveMarker*>(marker);
-	
+	const OptimaConnectorLineMarker* lineMarker = dynamic_cast<const OptimaConnectorLineMarker*>(marker);	
 	if (moveMarker != nullptr)
 	{
-		onLineMove(moveMarker);
+
+	}
+	if (lineMarker != nullptr)
+	{
+		onLineMove(lineMarker);
 	}
 }
 
@@ -294,9 +349,10 @@ void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
 	Q_ASSERT(mView != nullptr);
 	
-	//QRectF r(event->pos() - QPointF(5.0,5.0),event->pos() + QPointF(5.0,5.0));
-	//if (!shape().intersects(r))
-	//	return;
+	if (!isSelected())
+	{
+		createMarkers();
+	}
 
 	QPen newPen(pen());
 	newPen.setWidth(newPen.width() + 1);
@@ -306,15 +362,26 @@ void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void OptimaConnector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
 	Q_ASSERT(mView != nullptr);
-
+	
+	if (!isSelected())
+	{
+		destroyMarkers();
+	}
+	
+	
 	QPen newPen(pen());
 	newPen.setWidth(newPen.width() - 1);
-	//newPen.setWidth(1);
 	setPen(newPen) ;
 }
 
 void OptimaConnector::createMarkers()
 {
+	// возможно маркеры уже присутствуют
+	if (!childItems().isEmpty())
+	{
+		return;
+	}
+
 	// создадим маркеры начала коннетора и его окончания
 	new OptimaConnectorBorderMarker( this, mPoints.first(), Qt::SizeAllCursor, true, checkBorderLinking(tag::id_begin));
 	new OptimaConnectorBorderMarker( this, mPoints.last(), Qt::SizeAllCursor, false, checkBorderLinking(tag::id_end));
@@ -332,6 +399,8 @@ void OptimaConnector::createMarkers()
 			const int r1 = mView->getEntireCellsQnt( mPoints.at( i ).x( ));
 			const int r2 = mView->getEntireCellsQnt( mPoints.at( i + 1 ).x( ));
 			сursorShape = r1 == r2 ? Qt::SizeHorCursor : Qt::SizeVerCursor;
+
+			new OptimaConnectorLineMarker( this, OptimaLine(mPoints.at(i),mPoints.at(i+1), i), сursorShape);
 		}
 		else
 		{
@@ -339,21 +408,32 @@ void OptimaConnector::createMarkers()
 			if ( i > 0 )
 			{
 				new OptimaConnectorMoveMarker( this, mPoints.at(i), сursorShape);
+				// это середина отрезка прямого коннеткора
+				new OptimaConnectorMoveMarker( this, (mPoints.at(i) + mPoints.at(i+1)) / 2, сursorShape);
 			}
 		}
 		
-		// это середина отрезка
-		new OptimaConnectorMoveMarker( this, (mPoints.at(i) + mPoints.at(i+1)) / 2, сursorShape);
 	}
+	
+	mNonSelectedZOrder = zValue();
+	setZValue(100 + mNonSelectedZOrder);
 }
 
-void OptimaConnector::destroyMarkers()
+bool OptimaConnector::destroyMarkers()
 {
 	QList<QGraphicsItem *> items = childItems();
+	if (items.isEmpty())
+	{
+		return false;
+	}
 	while(!items.isEmpty())
 	{
 		delete items.takeFirst();
 	}
+
+	setZValue(mNonSelectedZOrder);
+
+	return true;
 }
 
 void OptimaConnector::onConnectorMove(QPointF deltaPoint)
@@ -362,8 +442,7 @@ void OptimaConnector::onConnectorMove(QPointF deltaPoint)
 	{
 		mPoints[i] += deltaPoint;
 	}
-	destroyMarkers();
-	createMarkers();
+	rebuildMarkers();
 }
 
 void OptimaConnector::setPoints(const OptimaPointVector & val)
@@ -374,9 +453,8 @@ void OptimaConnector::setPoints(const OptimaPointVector & val)
 
 void OptimaConnector::rebuildMarkers()
 {
-	if (isSelected())
+	if (destroyMarkers())
 	{
-		destroyMarkers();
 		createMarkers();
 	}
 }

@@ -24,6 +24,7 @@ namespace tag
 			,text		  = 0x04
 			,moveMarker	  = 0x08
 			,borderMarker = 0x10
+			,lineMarker	  = 0x20
 		};
 	}
 

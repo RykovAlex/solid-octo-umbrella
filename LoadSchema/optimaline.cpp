@@ -1,20 +1,30 @@
 #include "stdafx.h"
 #include "optimaline.h"
 
-OptimaLine::OptimaLine(const QPointF &pt1, const QPointF &pt2) :
-QLineF(pt1, pt2)
+OptimaLine::OptimaLine(const QPointF &pt1, const QPointF &pt2) 
+	: QLineF(pt1, pt2)
+	, mIndexLine(-1)
 {
 
+}
+
+OptimaLine::OptimaLine(const OptimaPoint &pt1, const OptimaPoint &pt2, int indexLine)
+	: QLineF(pt1, pt2)
+	, mIndexLine(indexLine)
+{
+	mUuids << pt1.uuid() << pt2.uuid();
 }
 
 OptimaLine::OptimaLine(const QLineF line, const QVector<QString> uuids) 
 	: QLineF(line)
 	, mUuids(uuids)
+	, mIndexLine(-1)
 {
 	Q_ASSERT(mUuids.size() == 2);
 }
 
 OptimaLine::OptimaLine()
+	: mIndexLine(-1)
 {
 
 }
@@ -85,6 +95,30 @@ void OptimaLine::translate(const QPointF & offset)
 	QLineF::translate(offset);
 
 	mCorner.translate(offset);
+}
+
+QPointF OptimaLine::center() const
+{
+	return (p1() + p2()) / 2;
+}
+
+int OptimaLine::getIndexLine() const
+{
+	return mIndexLine;
+}
+
+OptimaPoint OptimaLine::operator[](OptimaLine::OptimaLinePointIndex index) const
+{
+	switch (index)
+	{
+	case point1:
+		return OptimaPoint(p1(), uuid1());
+	case point2:
+		return OptimaPoint(p2(), uuid2());
+	default:
+		Q_ASSERT(false);
+	}
+	return OptimaPoint();
 }
 
 #ifndef QT_NO_DEBUG_STREAM

@@ -6,8 +6,10 @@
 #include "optimapath.h"
 #include "optimaconnectormovemarker.h"
 #include "optimatemporaryconnector.h"
+#include "optimaconnectorlinemarker.h"
 
 class OptimaConnectorMoveMarker;
+class OptimaConnectorLineMarker;
 
 class OptimaConnector : public OptimaTemporaryConnector, public OptimaElement
 {
@@ -56,7 +58,7 @@ public:
 	bool isRebuild() const { return mRebuild; }
 	
 	void setRebuild(bool val, bool reversed);
-
+	void setRebuild(bool val);
 	void setPoints(const OptimaPointVector & val);
 
 	void rebuildMarkers();
@@ -77,7 +79,9 @@ private:
 
 	void intersected(OptimaPath & connectorPath);
 	
-	void onLineMove(const OptimaConnectorMoveMarker* moveMarker);
+	void onLineMove(const OptimaConnectorLineMarker * moveMarker);
+
+	void acceptNewPoint(OptimaPoint p, int indexLine, int insertPosition);
 
 // Reimplemented Protected Functions
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -88,7 +92,7 @@ private:
 
 	void createMarkers();
 
-	void destroyMarkers();
+	bool destroyMarkers();
 	
 	inline QLineF getPathLine(int indexLine) const
 	{
@@ -114,6 +118,9 @@ private:
 	void setBorderId(const QString &nameId, const OptimaElement *element);
 
 	bool checkBorderLinking(const QString &nameId);
+	
+	qreal mNonSelectedZOrder;
+	void hideMarkers(const OptimaConnectorLineMarker* lineMarker, bool hide);
 };
 
 inline bool isConnector(const QGraphicsItem* item)

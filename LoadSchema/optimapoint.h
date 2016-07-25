@@ -16,6 +16,7 @@ public:
 	OptimaPoint(const QPointF &point, int radius);
 	OptimaPoint(QDomNode nodeDot);
 	OptimaPoint(const QPointF &point);
+	OptimaPoint(const QPointF &point, const QString &uuid);
 
 	///принять изменения из переданного узла XML 
 	void apply(const QDomNode &nodeDot);
