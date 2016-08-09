@@ -212,8 +212,11 @@ QString OptimaScene::LoadScheme(const QString &xml, const QString &xmlPattern, b
 		int xml_error_line;
 		QString xml_error_msg;
 
-		if ( !mPatternDoc.setContent( xmlPattern, &xml_error_msg, &xml_error_line, &xml_error_column ) )
-			throw QString().append( tr( "Ошибка при анализе xml шаблона, сообщение: %1, строка: %2, столбец: %3\n" ).arg( xml_error_msg ).arg( xml_error_line ).arg( xml_error_column ) );
+		if (!xmlPattern.isEmpty())
+		{
+			if ( !mPatternDoc.setContent( xmlPattern, &xml_error_msg, &xml_error_line, &xml_error_column ) )
+				throw QString().append( tr( "Ошибка при анализе xml шаблона, сообщение: %1, строка: %2, столбец: %3\n" ).arg( xml_error_msg ).arg( xml_error_line ).arg( xml_error_column ) );
+		}
 
 		if ( !mDoc.setContent( xml, &xml_error_msg, &xml_error_line, &xml_error_column ) )
 			throw QString().append( tr( "Ошибка при анализе xml, сообщение: %1, строка: %2, столбец: %3\n" ).arg( xml_error_msg ).arg( xml_error_line ).arg( xml_error_column ) );

@@ -57,13 +57,15 @@ void LoadSchema::loadXml()
 	QTextStream in(&file);
 
 	QString line = in.readAll();
+	QString linePattern;
 
 	QFile filePattern(fileName + QString(".pattern"));
-	if (!filePattern.open(QIODevice::ReadOnly |QIODevice::Text))
-		return;
+	if (filePattern.open(QIODevice::ReadOnly |QIODevice::Text))
+	{
+		QTextStream inPattern(&filePattern);
+		linePattern = inPattern.readAll();
+	}
 
-	QTextStream inPattern(&filePattern);
-	QString linePattern = inPattern.readAll();
 
 	ui.graphicsView->LoadScheme(line, linePattern, true);
 
