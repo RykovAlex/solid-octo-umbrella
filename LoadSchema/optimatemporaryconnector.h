@@ -26,7 +26,7 @@ public:
 	OptimaTemporaryConnector();
 
 	OptimaTemporaryConnector(QGraphicsScene *scene, const  OptimaPointVector & points, const OptimaConnectorArrowVector & arrowVector = OptimaConnectorArrowVector() << OptimaConnectorArrow(connector_arrow_no, true)
-		<< OptimaConnectorArrow(connector_arrow_filled, false), bool reversed = false);
+		<< OptimaConnectorArrow(connector_arrow_filled, false));
 
 	OptimaTemporaryConnector(const OptimaTemporaryConnector * tempConnector);
 
@@ -34,18 +34,19 @@ public:
 
 	void initialize();
 
-	void createMarker(const QPointF & scenePos, int borderIndex);
-
 	~OptimaTemporaryConnector();
 
-	void setMarkerPen(QGraphicsRectItem *marker, QPointF scenePos);
 
+	//void createMarker(const QPointF & scenePos, int borderIndex);
+
+	//void setMarkerPen(QGraphicsRectItem *marker, QPointF scenePos);
+
+	//void onEndBorderMove(const QPointF & scenePos, QPointF & beginPoint, QPointF & endPoint);
+	//
+	//void onBeginBorderMove(const QPointF & scenePos);
+	
 	void setPoints(const OptimaPointVector & val);
 
-	void onEndBorderMove(const QPointF & scenePos, QPointF & beginPoint, QPointF & endPoint);
-	
-	void onBeginBorderMove(const QPointF & scenePos);
-	
 	void buildPath();
 
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
@@ -66,18 +67,18 @@ public:
 		return mPoints.last();
 	}
 
-	inline Relationship getRelationship() const
-	{
-		int  relationship = this->childItems().at(this->childItems().at(0)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() << 4 | 
-			this->childItems().at(this->childItems().at(1)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt();
-		qDebug() << hex << relationship;
-		return OptimaTemporaryConnector::Relationship(relationship); 
-	}
+	//inline Relationship getRelationship() const
+	//{
+	//	int  relationship = this->childItems().at(this->childItems().at(0)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt() << 4 | 
+	//		this->childItems().at(this->childItems().at(1)->data(tag::data::borderIndex).toInt())->data(tag::data::linkingElement).toInt();
+	//	qDebug() << hex << relationship;
+	//	return OptimaTemporaryConnector::Relationship(relationship); 
+	//}
 
-	inline QPointF startPoint() const 
-	{ 
-		return mStartPoint; 
-	}
+	//inline QPointF startPoint() const 
+	//{ 
+	//	return mStartPoint; 
+	//}
 	
 	OptimaConnectorArrow beginArrow() const 
 	{ 
@@ -89,9 +90,6 @@ public:
 		return mEndArrow; 
 	}
 
-	OptimaPointVector getRealPoints(const OptimaElement *startElement, const OptimaElement *endElement);
-
-	bool isReversed() const;
 protected:
 
 	static const int margin = 20;
@@ -114,7 +112,7 @@ private:
 	QPainterPath mPathArrow;///< путь для отрисовки стрелок коннектора
 
 	
-	QPointF mStartPoint;///< точка от которой мы начинали строить коннектор
+	//QPointF mStartPoint;///< точка от которой мы начинали строить коннектор
 
 	inline bool isLinkedAt(const QPointF & scenePos )
 	{
@@ -123,9 +121,6 @@ private:
 
 	int getLinkingElementType(const QPointF & scenePos, int & linkingType );
 
-	bool mReversed;
-
-	OptimaConnector * mRebuildingConnector;
 };
 
 

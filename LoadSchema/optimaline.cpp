@@ -121,6 +121,23 @@ OptimaPoint OptimaLine::operator[](OptimaLine::OptimaLinePointIndex index) const
 	return OptimaPoint();
 }
 
+OptimaConnectorPathFinder::LineDirection OptimaLine::getDirection()
+{
+	if (dx() == 0)
+	{
+		return OptimaConnectorPathFinder::LineDirection_Vertical;
+	}
+	else
+		if (dy() == 0)
+		{
+			return OptimaConnectorPathFinder::LineDirection_Horizontal;
+		} 
+		else
+		{
+			return OptimaConnectorPathFinder::LineDirection_Diagonal;
+		}
+}
+
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug s, const OptimaLine &p)
 {

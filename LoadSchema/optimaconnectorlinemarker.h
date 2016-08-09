@@ -1,8 +1,8 @@
 #pragma once
-#include "optimarectanglemarker.h"
-#include "optimaconnector.h"
+#include "OptimaConnectorMarker.h"
 
-class OptimaConnectorLineMarker : public OptimaRectangleMarker
+class OptimaConnectorMarker;
+class OptimaConnectorLineMarker : public OptimaConnectorMarker
 {
 	Q_DISABLE_COPY( OptimaConnectorLineMarker );
 
@@ -21,19 +21,17 @@ public:
 
 	OptimaPoint p2() const;
 
+
 	virtual void setMarkerPos(const QPointF & pos);
 
+	void setNewConnectorPoints();
+
 protected:
-
-
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
 	OptimaLine mLine;
 
-	OptimaTemporaryConnector *mNewConnector;///<отображение для коннетора который получится в результате изменения текущего коннектора, владельца маркера
+	OptimaPointVector getNewPoints();
 };
 
 

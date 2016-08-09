@@ -1,9 +1,8 @@
 #include "stdafx.h"
-#include "optimaconnectorpathfinder.h"
 #include "tag.h"
+#include "optimaconnectorpathfinder.h"
 #include "optimafigure.h"
-
-
+#include "optimaline.h"
 
 OptimaConnectorPathFinder::OptimaConnectorPathFinder()
 {
@@ -115,7 +114,7 @@ OptimaPointVector OptimaConnectorPathFinder::GetNewConnectorPoints_Free_Figure(c
 	}
 	else
 	{
-		pointVector << beginPoint << QPointF(center.x(), beginPoint.y()) << QPointF(center.x(), finishLine.p2().y()) << finishLine.p2() << finishLine.p1();
+		pointVector << beginPoint << QPointF(center.x(), beginPoint.y()) << QPointF(center.x(), finishLine.p2().y()) << finishLine.p1();
 	}
 
 	return pointVector;
@@ -195,7 +194,7 @@ OptimaPointVector OptimaConnectorPathFinder::GetNewConnectorPoints_Figure_Figure
 	}
 	else
 	{
-		pointVector << beginPoint << QPointF(center.x(), beginPoint.y()) << QPointF(center.x(), finishLine.p2().y()) << finishLine.p2() << finishLine.p1();
+		pointVector << beginPoint << QPointF(center.x(), beginPoint.y()) << QPointF(center.x(), finishLine.p2().y()) << finishLine.p1();
 	}
 
 	return pointVector;
@@ -244,7 +243,7 @@ OptimaPointVector OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Fig
 	}
 	else
 	{
-		pointVector << beginPoint << QPointF(center.x(), beginPoint.y()) << QPointF(center.x(), finishLine.p2().y()) << finishLine.p2() << finishLine.p1();
+		pointVector << beginPoint << QPointF(center.x(), beginPoint.y()) << QPointF(center.x(), finishLine.p2().y()) << finishLine.p1();
 	}
 
 	return pointVector;
@@ -262,21 +261,74 @@ OptimaPointVector OptimaConnectorPathFinder::GetNewConnectorPoints_Connector_Con
 	return pointVector;
 }
 
-OptimaPointVector OptimaConnectorPathFinder::GetLineConnectorPoints_Free_Free(const OptimaPointVector points, int indexLine, const OptimaLine line)
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Free_Figure(OptimaPointVector points, int indexLine, QRectF boundingRect)
 {
-	OptimaPointVector pointVector;
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
 
-	for (int i = 0; i < points.size() && i < indexLine; ++i)
-	{
-		pointVector << points.at(i);
-	}
+	return points;
+}
 
-	pointVector << line;
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Free_Free(const OptimaPointVector points, int indexLine)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
 
-	for (int i = indexLine + 2; i < points.size(); ++i)
-	{
-		pointVector << points.at(i);
-	}
+	return points;
+}
 
-	return pointVector;
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Free_Connector(OptimaPointVector points, int indexLine, OptimaLine linkedLine)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
+}
+
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Connector_Free(OptimaPointVector points, int indexLine, OptimaLine linkedLine)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
+}
+
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Figure_Free(OptimaPointVector points, int indexLine, QRectF boundingRect)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
+}
+
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Figure_Connector(OptimaPointVector points, int indexLine, QRectF boundingRectBegin, OptimaLine linkedLineEnd)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
+}
+
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Connector_Connector(OptimaPointVector points, int indexLine, OptimaLine linkedLineBegin, OptimaLine linkedLineEnd)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
+}
+
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Figure_Figure(OptimaPointVector points, int indexLine, QRectF boundingRectBegin, QRectF boundingRectEnd)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
+}
+
+OptimaPointVector OptimaConnectorPathFinder::GetResizableConnectorPoints_Connector_Figure(OptimaPointVector points, int indexLine, OptimaLine linkedLineBegin, QRectF boundingRectEnd)
+{
+	OptimaLine line(points.at(indexLine), points.at(indexLine+1),indexLine);
+	LineDirection lineDirection(line.getDirection());
+
+	return points;
 }

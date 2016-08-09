@@ -2,7 +2,7 @@
 #include "optimaconnectormovemarker.h"
 
 OptimaConnectorMoveMarker::OptimaConnectorMoveMarker(OptimaConnector *parentConnector, const QPointF & pos, Qt::CursorShape cursorShape) 
-	: OptimaRectangleMarker(parentConnector, pos, cursorShape, parentConnector->view())
+	: OptimaRectangleMarker(parentConnector, pos, cursorShape, parentConnector->scene())
 {
 }
 

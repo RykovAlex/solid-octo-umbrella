@@ -8,7 +8,7 @@ class OptimaText: public QGraphicsTextItem, public OptimaElement
 public:
 	enum{ Type = UserType + tag::element::text };
 
-	OptimaText(const QString &itemUuid, OptimaView *view);
+	OptimaText(const QString &itemUuid);
 
 	~OptimaText()
 	{

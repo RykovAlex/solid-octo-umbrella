@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "loadschema.h"
+#include "optimascene.h"
 
 LoadSchema::LoadSchema(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -17,9 +18,9 @@ LoadSchema::LoadSchema(QWidget *parent, Qt::WFlags flags)
 	linePointerButton->setIcon(QIcon(":/images/resources/linepointer.png"));
 
 	pointerTypeGroup = new QButtonGroup(this);
-	pointerTypeGroup->addButton(pointerButton, int(OptimaView::MoveItem));
+	pointerTypeGroup->addButton(pointerButton, int(OptimaScene::MoveItem));
 	pointerTypeGroup->addButton(linePointerButton,
-		int(OptimaView::InsertLine));
+		int(OptimaScene::InsertLine));
 	connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
 		this, SLOT(pointerGroupClicked(int)));
 
@@ -56,11 +57,19 @@ void LoadSchema::loadXml()
 	QTextStream in(&file);
 
 	QString line = in.readAll();
-	ui.graphicsView->LoadScheme(line, true);
+
+	QFile filePattern(fileName + QString(".pattern"));
+	if (!filePattern.open(QIODevice::ReadOnly |QIODevice::Text))
+		return;
+
+	QTextStream inPattern(&filePattern);
+	QString linePattern = inPattern.readAll();
+
+	ui.graphicsView->LoadScheme(line, linePattern, true);
 
 }
 
 void LoadSchema::pointerGroupClicked(int id)
 {
-	ui.graphicsView->setMode(OptimaView::Mode(pointerTypeGroup->checkedId()));
+	ui.graphicsView->setMode(OptimaScene::Mode(pointerTypeGroup->checkedId()));
 }

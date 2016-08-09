@@ -4,7 +4,7 @@
 
 
 
-OptimaText::OptimaText(const QString &itemUuid, OptimaView *view): OptimaElement(this, itemUuid, view)	
+OptimaText::OptimaText(const QString &itemUuid): OptimaElement(this, itemUuid)	
 {
 
 }

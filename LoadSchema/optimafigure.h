@@ -27,7 +27,7 @@ class OptimaFigure : public QGraphicsPathItem, public OptimaElement
 public:
 	enum { Type = UserType + tag::element::figure };
 
-	OptimaFigure(const QString &itemUuid, OptimaView *view);
+	OptimaFigure(const QString &itemUuid);
 
 	~OptimaFigure()
 	{

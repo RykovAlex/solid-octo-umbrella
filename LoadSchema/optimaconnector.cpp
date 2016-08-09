@@ -1,13 +1,12 @@
-baseWidth
-baseWidth
 #include "stdafx.h"
-#include "optimaconnector.h"
 #include "tag.h"
-#include "optimaconnectormovemarker.h"
-#include "optimaconnectorbordermarker.h"
+#include "optimascene.h"
+#include "optimaconnector.h"
+#include "OptimaConnectorMarker.h"
+#include "optimaconnectorbordermarkerend.h"
 
-OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view) 
-	:OptimaElement(this, itemUuid, view)
+OptimaConnector::OptimaConnector(const QString &itemUuid) 
+	:OptimaElement(this, itemUuid)
 	,OptimaTemporaryConnector()
 	,mRebuild(false)
 {
@@ -16,13 +15,28 @@ OptimaConnector::OptimaConnector(const QString &itemUuid, OptimaView *view)
 
 void OptimaConnector::setBorderId(const QString &nameId, const OptimaElement *element)
 {
-
 	setXmlValue(nameId, element == nullptr ? "" : element->uuid());
 }
 
 bool OptimaConnector::checkBorderLinking(const QString &nameId)
 {
 	return !getXmlValue(nameId, QString("")).isEmpty();
+}
+
+OptimaElement *OptimaConnector::getBorderLinking(const QString &nameId)
+{
+	OptimaScene *optimaScene = dynamic_cast<OptimaScene*>(scene());
+	Q_ASSERT (NULL != optimaScene);
+
+	return optimaScene->getLinkedElement(getXmlValue(nameId, QString("")));
+}
+
+OptimaScene * OptimaConnector::scene()
+{
+	OptimaScene *optimaScene = dynamic_cast<OptimaScene *>(QGraphicsItem::scene());
+	Q_ASSERT(NULL != optimaScene);
+
+	return optimaScene;
 }
 
 void OptimaConnector::hideMarkers(const OptimaConnectorLineMarker* lineMarker, bool hide)
@@ -41,8 +55,6 @@ void OptimaConnector::hideMarkers(const OptimaConnectorLineMarker* lineMarker, b
 void OptimaConnector::initialize()
 {
 	setData(tag::data::linkable, true);
-
-	qDebug() << data(tag::data::linkable).toBool();
 
 	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 	setAcceptHoverEvents(true);
@@ -68,8 +80,8 @@ void OptimaConnector::apply()
 	//1. Заполним рабочие переменные
 	//Эти переменные выделены из XML потому что испльзуются при отрисовке
 	//Значение неизменно. не требует изменения XML при сохранении элемента
-	getXmlValue(tag::shape_begin, beginArrow());
-	beginArrow().setSize(getXmlValue(tag::size_shape_begin, 10.0));
+	getXmlValue(tag::shape_begin, mBeginArrow);
+	mBeginArrow.setSize(getXmlValue(tag::size_shape_begin, 10.0));
 
 	getXmlValue(tag::shape_end, mEndArrow);
 	mEndArrow.setSize(getXmlValue(tag::size_shape_end, 10.0));
@@ -134,6 +146,9 @@ QVariant OptimaConnector::itemChange(GraphicsItemChange change, const QVariant &
 
 void OptimaConnector::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	OptimaScene *optimaScene = dynamic_cast<OptimaScene*>(scene());
+	Q_ASSERT (NULL != optimaScene);
+
 	if (!pos().isNull())
 	{
 		setFlag(ItemSendsGeometryChanges, false);
@@ -141,7 +156,7 @@ void OptimaConnector::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 		buildPath();
 		
-		mView->buildIntersectionConnectors();
+		optimaScene->buildIntersectionConnectors();
 
 		setFlag(ItemSendsGeometryChanges, true);
 	}
@@ -205,7 +220,7 @@ void OptimaConnector::setLinkedHighlight(bool enabled, const QPointF & scenePos 
 	update();
 }
 
-bool OptimaConnector::checkLinkedHighlight(const QPointF & scenePos, int &indexLinkedLine)
+bool OptimaConnector::checkLinkedHighlight(const QPointF & scenePos, int &indexLinkedLine) const
 {
 	indexLinkedLine = -1;
 	for (int i = 0; i < (mPoints.size() - 1); ++i)
@@ -219,6 +234,19 @@ bool OptimaConnector::checkLinkedHighlight(const QPointF & scenePos, int &indexL
 			indexLinkedLine = i;
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool OptimaConnector::getLinkedLine(const QPointF & scenePos, OptimaLine &linkedLine) const
+{
+	int indexLinkedLine = -1;
+	
+	if (checkLinkedHighlight(scenePos, indexLinkedLine))
+	{
+		linkedLine = OptimaLine( mPoints.at(indexLinkedLine), mPoints.at(indexLinkedLine + 1), indexLinkedLine);
+		return true;
 	}
 
 	return false;
@@ -278,18 +306,6 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 	}
 }		
 
-void OptimaConnector::setRebuild(bool val, bool reversed)
-{
-	mRebuild = val;
-	setData(tag::data::linkable, !mRebuild);
-	update();
-	if (val)
-	{
-		mView->addConnector(this, reversed);
-	}
-	
-}
-
 void OptimaConnector::setRebuild(bool val)
 {
 	mRebuild = val;
@@ -347,8 +363,6 @@ void OptimaConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-	Q_ASSERT(mView != nullptr);
-	
 	if (!isSelected())
 	{
 		createMarkers();
@@ -361,8 +375,6 @@ void OptimaConnector::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void OptimaConnector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-	Q_ASSERT(mView != nullptr);
-	
 	if (!isSelected())
 	{
 		destroyMarkers();
@@ -376,6 +388,9 @@ void OptimaConnector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void OptimaConnector::createMarkers()
 {
+	OptimaScene *optimaScene = dynamic_cast<OptimaScene*>(scene());
+	Q_ASSERT (NULL != optimaScene);
+
 	// возможно маркеры уже присутствуют
 	if (!childItems().isEmpty())
 	{
@@ -383,8 +398,8 @@ void OptimaConnector::createMarkers()
 	}
 
 	// создадим маркеры начала коннетора и его окончания
-	new OptimaConnectorBorderMarker( this, mPoints.first(), Qt::SizeAllCursor, true, checkBorderLinking(tag::id_begin));
-	new OptimaConnectorBorderMarker( this, mPoints.last(), Qt::SizeAllCursor, false, checkBorderLinking(tag::id_end));
+	OptimaConnectorBorderMarkerEnd *markerEnd = new OptimaConnectorBorderMarkerEnd( this );
+	//new OptimaConnectorMarker( this, mPoints.last(), Qt::SizeAllCursor, false, mView->getLinkedElement(mPoints.last()) );
 
 	// создадим маркеры посередине и на углах неуглового коннетора
 	// эти марверы по умолчанию представляют из себя белые квалраты с 
@@ -396,8 +411,8 @@ void OptimaConnector::createMarkers()
 		if ( mIsAngledСonnector )
 		{
 			// выясним поведение будушего маркера для углового коннектора
-			const int r1 = mView->getEntireCellsQnt( mPoints.at( i ).x( ));
-			const int r2 = mView->getEntireCellsQnt( mPoints.at( i + 1 ).x( ));
+			const int r1 = optimaScene->getEntireCellsQnt( mPoints.at( i ).x( ));
+			const int r2 = optimaScene->getEntireCellsQnt( mPoints.at( i + 1 ).x( ));
 			сursorShape = r1 == r2 ? Qt::SizeHorCursor : Qt::SizeVerCursor;
 
 			new OptimaConnectorLineMarker( this, OptimaLine(mPoints.at(i),mPoints.at(i+1), i), сursorShape);
@@ -421,11 +436,16 @@ void OptimaConnector::createMarkers()
 
 bool OptimaConnector::destroyMarkers()
 {
+	//проверим что есть что удалять
 	QList<QGraphicsItem *> items = childItems();
 	if (items.isEmpty())
 	{
 		return false;
 	}
+	//первым маркером является маркер конца, при уничтожении 
+	//он удаляем маркер начала, поэтому нужно освежить список
+	delete items.takeFirst();
+	items = childItems();
 	while(!items.isEmpty())
 	{
 		delete items.takeFirst();
@@ -478,7 +498,6 @@ void OptimaConnector::setLinked(OptimaElement * linkedBeginElement, OptimaElemen
 {
 	setXmlValue( tag::id_begin, linkedBeginElement == nullptr ? "" : linkedBeginElement->uuid());
 	setXmlValue( tag::id_end, linkedEndElement == nullptr ? "" : linkedEndElement->uuid());
-
 }
 
 //connector_move_marker * connector_controller::create_move_marker( int index_point )

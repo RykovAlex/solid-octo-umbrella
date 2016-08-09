@@ -25,6 +25,8 @@ namespace tag
 			,moveMarker	  = 0x08
 			,borderMarker = 0x10
 			,lineMarker	  = 0x20
+			,borderMarkerBegin  = 0x40
+			,borderMarkerEnd  = 0x80
 		};
 	}
 
@@ -96,6 +98,9 @@ namespace tag
 	static const QString cross_type("CrossType");
 	static const QString radius_corner("RadiusCorner");
 	static const QString type("Type");
+	static const QString name_pattern("NamePattern");
+	static const QString name("name");
+	static const QString collection("Collection");
 
 	static const QColor markerLinkColor(Qt::red);
 	static const QColor markerFreeColor(Qt::green);

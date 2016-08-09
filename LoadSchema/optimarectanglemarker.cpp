@@ -1,17 +1,20 @@
 #include "stdafx.h"
 #include "optimarectanglemarker.h"
 #include "tag.h"
+#include "optimafigure.h"
+#include "optimaconnector.h"
+#include "OptimaConnectorMarker.h"
+#include "optimaconnectorbordermarkerbegin.h"
+#include "optimaconnectorbordermarkerend.h"
+#include "optimascene.h"
 
-OptimaRectangleMarker::OptimaRectangleMarker(QGraphicsItem *parent, QPointF pos, Qt::CursorShape cursorShape, const OptimaView *view) 
-	: OptimaBaseMarker( cursorShape )
+OptimaRectangleMarker::OptimaRectangleMarker(QGraphicsItem *parent, QPointF pos, Qt::CursorShape cursorShape, OptimaScene *optimaScene) : OptimaBaseMarker( cursorShape )
 	, QGraphicsRectItem(parent)
-	, mView(view)
+	, mOptimaScene(optimaScene)
 {
 	qreal borderMarkerWidth = baseWidth/* * (3.  / m_workspace.m_scale)*/;
 
 	setRect( QRectF( -borderMarkerWidth / 2, -borderMarkerWidth / 2, borderMarkerWidth, borderMarkerWidth ) );
-
-	setLinked(false);
 
 	setBrush( Qt::white );
 	isMovementBlocked = false;
@@ -20,22 +23,7 @@ OptimaRectangleMarker::OptimaRectangleMarker(QGraphicsItem *parent, QPointF pos,
 	deltaPos = pos;
 	setCursor(cursorShape);
 
-
-	//setAcceptHoverEvents(true);
-	//setFlag(ItemIsSelectable);
 	setFlag(ItemIsMovable);
-	//parentConnector->view()->scene()->addItem(this);			
-	//setParentItem(nullptr);
-	//setZValue(0.999998);
-}
-
-void OptimaRectangleMarker::setLinked(bool val)
-{
-	OptimaBaseMarker::setLinked(val);
-	
-	QPen pen( val ? tag::markerLinkColor : tag::markerFreeColor, 1.0 );
-	pen.setCosmetic( true );
-	setPen( pen );			
 }
 
 void OptimaRectangleMarker::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -47,7 +35,7 @@ void OptimaRectangleMarker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 	//маркер передвигается выровненным по сетке
 	deltaPos += event->scenePos() - event->lastScenePos();
-	QPointF alignedDeltaPos = mView->alignToGrid(deltaPos);
+	QPointF alignedDeltaPos = mOptimaScene->alignToGrid(deltaPos);
 
 	//определим как двигается маркер
 	switch(mCursor.shape())
@@ -72,6 +60,7 @@ void OptimaRectangleMarker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	deltaPos -= alignedDeltaPos;
 	QPointF newPos(pos() + alignedDeltaPos);
 
-	markerMoveEvent(newPos);
-	//setPos( newPos );
+	setMarkerPos( newPos );
+	//markerMoveEvent(newPos);
 }
+

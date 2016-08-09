@@ -10,7 +10,6 @@ public:
 	OptimaBaseMarker( const Qt::CursorShape cursorShape )
 		: mCursor( cursorShape )
 		, isMovementBlocked( true )
-		, mLinked( false )
 		, baseWidth(1 * 6.0)
 	{
 	}
@@ -20,27 +19,24 @@ public:
 	}
 
 	/// курсор маркера
-	QCursor getMarkerCursor() const
-	{
-		switch(mCursor.shape())
-		{
-		case Qt::SizeAllCursor:
-			if ( linked() ) 
-			{
-				return QCursor( QPixmap( ":/images/cursor_move_all_red.png" , 0, 0 ));	
-			}
-		default:
-			return mCursor;
-		}
-	}
+	//QCursor getMarkerCursor() const
+	//{
+	//	switch(mCursor.shape())
+	//	{
+	//	case Qt::SizeAllCursor:
+	//		if ( linked() ) 
+	//		{
+	//			return QCursor( QPixmap( ":/images/cursor_move_all_red.png" , 0, 0 ));	
+	//		}
+	//	default:
+	//		return mCursor;
+	//	}
+	//}
 	
 	/// определяем сменится ли позиция, и если да, то возвращает новую позицию
 	virtual bool isPosChanged( QPointF & pos ) = 0;
 	
-	/// сигнализирует что маркер подвинули
-	virtual void markerMoveEvent( const QPointF & pos ) = 0;
-	
-	/// передвигаем итем
+	/// сообщает маркеру его новую позицию
 	virtual void setMarkerPos( const QPointF & pos ) = 0;
 	
 	/// сообщаем текущую позицию итема
@@ -55,17 +51,12 @@ public:
 	/// курсор маркера
 	const QCursor mCursor;
 	
-	bool linked() const { return mLinked; }
-	
-	void setLinked(bool val) { mLinked = val; }
 protected:
 	
 	QPointF deltaPos; ///<хранит промежуточную разницу передвижения маркера
 
 private:
 
-	/// признак того, что этот маркер отображает присоединение
-	bool mLinked;
 };
 
 

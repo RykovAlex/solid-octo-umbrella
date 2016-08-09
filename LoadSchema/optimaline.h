@@ -3,6 +3,7 @@
 #include "optimacorner.h"
 #include "OptimaCross.h"
 #include "optimapoint.h"
+#include "optimaconnectorpathfinder.h"
 
 class OptimaCross;
 
@@ -73,6 +74,8 @@ private:
 	OptimaLengthVector mCrossingWithConnectorLengths;///<Массив расстояний от первой точки отрезка, до точек пересечения с другими коннекторами
 
 	int mIndexLine;
+public:
+	OptimaConnectorPathFinder::LineDirection getDirection();
 };
 
 #ifndef QT_NO_DEBUG_STREAM

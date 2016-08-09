@@ -4,9 +4,9 @@
 #include "optimapoint.h"
 #include "optimaconnectorarrow.h"
 #include "optimapath.h"
-#include "optimaconnectormovemarker.h"
 #include "optimatemporaryconnector.h"
 #include "optimaconnectorlinemarker.h"
+#include "optimaconnectormovemarker.h"
 
 class OptimaConnectorMoveMarker;
 class OptimaConnectorLineMarker;
@@ -16,7 +16,7 @@ class OptimaConnector : public OptimaTemporaryConnector, public OptimaElement
 public:
 	enum { Type = UserType + tag::element::connector };
 
-	OptimaConnector(const QString &itemUuid, OptimaView *view);
+	OptimaConnector(const QString &itemUuid);
 
 	void initialize();
 
@@ -42,8 +42,9 @@ public:
 
 	virtual bool checkLinkedHighlight(const QPointF & scenePos);
 
-	bool checkLinkedHighlight(const QPointF & scenePos, int &indexLinkedLine);
+	bool checkLinkedHighlight(const QPointF & scenePos, int &indexLinkedLine) const;
 
+	bool getLinkedLine(const QPointF & scenePos, OptimaLine &linkedLine) const;
 	QPainterPath getStrokeLinePath(const QLineF &line) const;
 
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
@@ -57,8 +58,8 @@ public:
 
 	bool isRebuild() const { return mRebuild; }
 	
-	void setRebuild(bool val, bool reversed);
 	void setRebuild(bool val);
+
 	void setPoints(const OptimaPointVector & val);
 
 	void rebuildMarkers();
@@ -66,6 +67,10 @@ public:
 	virtual QPointF getIntersectPoint(const QLineF line) const;
 
 	void setLinked(OptimaElement * linkedBeginElement, OptimaElement * linkedEndElement);
+
+	OptimaElement *getBorderLinking(const QString &nameId);
+
+	OptimaScene *scene();
 protected:
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -120,6 +125,7 @@ private:
 	bool checkBorderLinking(const QString &nameId);
 	
 	qreal mNonSelectedZOrder;
+
 	void hideMarkers(const OptimaConnectorLineMarker* lineMarker, bool hide);
 };
 

@@ -4,7 +4,7 @@
 #include "optimapath.h"
 #include "optimaconnectorpathfinder.h"
 
-OptimaFigure::OptimaFigure(const QString &itemUuid, OptimaView *view) : OptimaElement(this, itemUuid, view)
+OptimaFigure::OptimaFigure(const QString &itemUuid) : OptimaElement(this, itemUuid)
 {
 	setData(tag::data::linkable, true);
 	setFlag(ItemIsSelectable);
@@ -177,7 +177,6 @@ void OptimaFigure::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 		//painter->setClipPath(path());
 		painter->drawPolygon(shapePieces.at(mIndexShapePieces));
 	}
-
 }
 
 void OptimaFigure::setLinkedHighlight(bool enabled, const QPointF & scenePos /*= QPointF()*/)
