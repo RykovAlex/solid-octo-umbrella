@@ -33,6 +33,8 @@ public:
 	{
 	}
 
+	static QLineF getEdgeLine(const QRectF & sceneBoundingRect, OptimaLinkedRect::rectSide side);
+
 	///Применить изенения переданне через струтуру xml
 	void apply();
 
@@ -68,7 +70,11 @@ public:
 
 protected:
 
+
+	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 private:
+	int mIndexShapePieces;
 
 	OptimaPointVector mPoints;///< действительные точки фигуры, для отрисовке на сцене
 
@@ -89,9 +95,7 @@ private:
 	///Обеспечим масштабирование фигуры согласно коэффицентам по вертикали <kx> и горизонтали <ky>
 	void scale();
 
-	int mIndexShapePieces;
-public:
-	static QLineF getEdgeLine(const QRectF & sceneBoundingRect, OptimaLinkedRect::rectSide side);
+	OptimaScene * scene();
 };
 
 inline bool isFigure(const QGraphicsItem* item)

@@ -9,10 +9,14 @@ LoadSchema::LoadSchema(QWidget *parent, Qt::WFlags flags)
 
 	ui.action->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
 	ui.action_2->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
-
+	
+	
 	redoAction = ui.graphicsView->undoStack->createRedoAction(this);
 	undoAction = ui.graphicsView->undoStack->createUndoAction(this);
+	
 
+	undoAction->setFont(ui.action->font());
+	
 	ui.mainToolBar->addAction(undoAction);
 	ui.mainToolBar->addAction(redoAction);
 
@@ -48,6 +52,7 @@ void LoadSchema::createUndoView()
 {
 	undoView = new QUndoView(ui.graphicsView->undoStack);
 	undoView->setWindowTitle(tr("Command List"));
+	//undoView->setLocale(ui.mainToolBar->locale());
 	undoView->show();
 	undoView->setAttribute(Qt::WA_QuitOnClose, false);
 }

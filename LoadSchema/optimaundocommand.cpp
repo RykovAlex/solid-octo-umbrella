@@ -8,7 +8,7 @@ ChangeGeometryConnector::ChangeGeometryConnector(OptimaConnector* connector, con
 	, mOldPoint(connector->points())
 	, mChangeIndex(changeIndex)
 {
-
+	setText(QString::fromLocal8Bit("Изменение геометрии коннектора"));
 }
 
 ChangeGeometryConnector::~ChangeGeometryConnector()

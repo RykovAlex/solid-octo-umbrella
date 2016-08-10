@@ -71,6 +71,9 @@ public:
         LoadSchemaClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(LoadSchemaClass);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
+        QFont font;
+        font.setFamily(QString::fromUtf8("Arial"));
+        mainToolBar->setFont(font);
         LoadSchemaClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(LoadSchemaClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));

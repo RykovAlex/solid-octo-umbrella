@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "tag.h"
+#include "optimascene.h"
 #include "optimafigure.h"
 #include "optimapath.h"
 #include "optimaconnectorpathfinder.h"
@@ -31,6 +32,9 @@ void OptimaFigure::apply()
 
 	//3. Переестим в нужную позицию на схеме
 	setPos(mPositionPoint);
+
+	//теперь активируем возможность реагировать на перемещение мыши
+	setFlag(ItemSendsGeometryChanges);
 }
 
 void OptimaFigure::scale()
@@ -240,6 +244,91 @@ QPointF OptimaFigure::getIntersectPoint(const QLineF line) const
 	return line.p1();
 }
 
+QVariant OptimaFigure::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+	if (scene())
+	{
+		switch(change)
+		{
+		case ItemPositionChange:
+			qDebug() << scene()->selectedItems().count();
+			break;
+		case ItemMatrixChange:
+			break;
+		case ItemVisibleChange:
+			break;
+		case ItemEnabledChange:
+			break;
+		case ItemSelectedChange:
+			break;
+		case ItemParentChange:
+			break;
+		case ItemChildAddedChange:
+			break;
+		case ItemChildRemovedChange:
+			break;
+		case ItemTransformChange:
+			break;
+		case ItemPositionHasChanged:
+			break;
+		case ItemTransformHasChanged:
+			break;
+		case ItemSceneChange:
+			break;
+		case ItemVisibleHasChanged:
+			break;
+		case ItemEnabledHasChanged:
+			break;
+		case ItemSelectedHasChanged:
+			break;
+		case ItemParentHasChanged:
+			break;
+		case ItemSceneHasChanged:
+			break;
+		case ItemCursorChange:
+			break;
+		case ItemCursorHasChanged:
+			break;
+		case ItemToolTipChange:
+			break;
+		case ItemToolTipHasChanged:
+			break;
+		case ItemFlagsChange:
+			break;
+		case ItemFlagsHaveChanged:
+			break;
+		case ItemZValueChange:
+			break;
+		case ItemZValueHasChanged:
+			break;
+		case ItemOpacityChange:
+			break;
+		case ItemOpacityHasChanged:
+			break;
+		case ItemScenePositionHasChanged:
+			break;
+		case ItemRotationChange:
+			break;
+		case ItemRotationHasChanged:
+			break;
+		case ItemScaleChange:
+			break;
+		case ItemScaleHasChanged:
+			break;
+		case ItemTransformOriginPointChange:
+			break;
+		case ItemTransformOriginPointHasChanged:
+			break;
+		default:
+			break;
+
+		}
+	}
+
+
+	return QGraphicsPathItem::itemChange(change, value);
+}
+
 int OptimaFigure::type() const
 {
 	return Type;
@@ -255,3 +344,11 @@ OptimaLinkedRect::rectSide OptimaLinkedRect::side() const
 {
 	return mSide;
 }
+
+OptimaScene * OptimaFigure::scene()
+{
+	OptimaScene *optimaScene = dynamic_cast<OptimaScene *>(QGraphicsItem::scene());
+
+	return optimaScene;
+}
+
