@@ -8,6 +8,14 @@ LoadSchema::LoadSchema(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
 
 	ui.action->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+	ui.action_2->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
+
+	redoAction = ui.graphicsView->undoStack->createRedoAction(this);
+	undoAction = ui.graphicsView->undoStack->createUndoAction(this);
+
+	ui.mainToolBar->addAction(undoAction);
+	ui.mainToolBar->addAction(redoAction);
+
 
 	QToolButton *pointerButton = new QToolButton;
 	pointerButton->setCheckable(true);
@@ -28,11 +36,20 @@ LoadSchema::LoadSchema(QWidget *parent, Qt::WFlags flags)
 	pointerToolbar->addWidget(pointerButton);
 	pointerToolbar->addWidget(linePointerButton);
 
+	createUndoView();
 }
 
 LoadSchema::~LoadSchema()
 {
 
+}
+
+void LoadSchema::createUndoView()
+{
+	undoView = new QUndoView(ui.graphicsView->undoStack);
+	undoView->setWindowTitle(tr("Command List"));
+	undoView->show();
+	undoView->setAttribute(Qt::WA_QuitOnClose, false);
 }
 
 void LoadSchema::loadXml()
@@ -68,6 +85,35 @@ void LoadSchema::loadXml()
 
 
 	ui.graphicsView->LoadScheme(line, linePattern, true);
+
+}
+
+void LoadSchema::saveXml()
+{
+	QFileDialog::Options options;
+	options |=QFileDialog::DontUseNativeDialog;
+	QString selectedFilter;
+
+	QString fileName =QFileDialog::getSaveFileName(this,
+		tr("QFileDialog::getSaveFileName()"),
+		tr(""),
+		tr("XML files (*.xml)"),&selectedFilter,
+		options);
+
+	if (fileName.isEmpty())
+		return;
+
+	QString line;
+
+	ui.graphicsView->SaveScheme(line);
+
+	QFile file(fileName);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		return;
+
+	QTextStream out(&file);
+
+	out << line;
 
 }
 

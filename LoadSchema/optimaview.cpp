@@ -18,7 +18,9 @@ QString OptimaView::LoadScheme(const QString &xml, const QString &xmlPattern, bo
 OptimaView::OptimaView(QWidget *parent) 
 	: QGraphicsView(parent)
 { 
-	OptimaScene *optimaScene = new OptimaScene();
+	undoStack = new QUndoStack(this);
+
+	OptimaScene *optimaScene = new OptimaScene( undoStack );
 	setScene( optimaScene );
 	//scene()->setSceneRect(QRectF(0.0, 0.0, 3000.0,3000.0));
 	setMouseTracking(false);
@@ -35,5 +37,10 @@ OptimaScene *OptimaView::scene()
 void OptimaView::setMode(OptimaScene::Mode mode)
 {
 	scene()->setMode(mode);
+}
+
+void OptimaView::SaveScheme(QString &line)
+{
+	line = scene()->SaveScheme();
 }
 

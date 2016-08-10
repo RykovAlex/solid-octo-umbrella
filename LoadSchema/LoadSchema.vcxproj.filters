@@ -128,6 +128,12 @@
     <ClCompile Include="optimaxml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="optimanoworkspace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="optimaundocommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -197,6 +203,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="optimaxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimanoworkspace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="optimaundocommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

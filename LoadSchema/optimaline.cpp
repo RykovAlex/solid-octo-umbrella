@@ -102,7 +102,7 @@ QPointF OptimaLine::center() const
 	return (p1() + p2()) / 2;
 }
 
-int OptimaLine::getIndexLine() const
+int OptimaLine::getLineIndex() const
 {
 	return mIndexLine;
 }

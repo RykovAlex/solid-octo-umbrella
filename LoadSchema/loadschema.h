@@ -12,14 +12,19 @@ public:
 	LoadSchema(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~LoadSchema();
 
-public slots:
+	void createUndoView();
+	public slots:
 	void loadXml();
+	void saveXml();
 	void pointerGroupClicked(int id);
 
 private:
 	Ui::LoadSchemaClass ui;
 	QButtonGroup* pointerTypeGroup;
 	QToolBar * pointerToolbar;
+	QUndoView* undoView;
+	QAction * redoAction;
+	QAction * undoAction;
 };
 
 #endif // LOADSCHEMA_H

@@ -42,6 +42,11 @@ void OptimaXml::setXmlValue(QDomNode & node, const OptimaPointVector &points, co
 	}
 }
 
+void OptimaXml::setXmlValue(const OptimaPointVector &points, const QString &ownerId)
+{
+	setXmlValue(mNodeXml, points, ownerId);
+}
+
 void OptimaXml::setXmlValue(QDomNode & node, const QString & name, const QString &value)
 {
 	QDomElement nodeElement = nodeXml( node, name );
@@ -281,5 +286,10 @@ QString OptimaXml::getXmlString(const QDomNode & element)
 	element.save(figureText, 4);
 
 	return s;
+}
+
+QString OptimaXml::getXmlString()
+{
+	return getXmlString(mNodeXml);
 }
 

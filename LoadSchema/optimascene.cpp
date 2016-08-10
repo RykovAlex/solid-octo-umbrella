@@ -6,11 +6,12 @@
 #include "optimatext.h"
 #include "optimaconnectorbordermarkerend.h"
 
-OptimaScene::OptimaScene() 
+OptimaScene::OptimaScene(QUndoStack *stack) 
 	:QGraphicsScene()
 	, mNewConnectorEndMarker(nullptr)
 	, mMode(MoveItem)
 	, mHoverElement(nullptr)
+	, mStack(stack)
 {
 
 }
@@ -107,6 +108,18 @@ void OptimaScene::loadWorkspace(const QDomNodeList &workspace)
 		applyXml(element, QDomNode());
 
 		//draw(true);
+	}
+}
+
+void OptimaScene::loadNoWorkspace(const QDomNodeList & noWorkspace)
+{
+	for ( int nn = 0; nn < noWorkspace.size( ); ++nn )
+	{
+		const QDomNode &element = noWorkspace.at( nn );
+
+		//Запомним переданный или изменим текущий xml элемента и применим результирующий xml 
+		//к графическому элементу, после этого он отрисуется на схеме
+		mNoWorkspace.applyXml(element, QDomNode());
 	}
 }
 
@@ -233,8 +246,10 @@ QString OptimaScene::LoadScheme(const QString &xml, const QString &xmlPattern, b
 		//		m_workspace.m_no_user_property = dn_up.toElement( ).text( );
 		//	}
 		//}
+		//Загружаем нерабочее пространство
+		loadNoWorkspace(docElement.elementsByTagName( tag::no_workspace ));
 		//Загружаем рабочее пространство
-		loadWorkspace(docElement.elementsByTagName( tag::workspace ));
+		loadWorkspace(docElement.elementsByTagName( tag::noWorkspace ));
 
 		//Загружаем элементы схемы
 		loadElements<OptimaFigure>( docElement.elementsByTagName( tag::figure ), load_allways );
@@ -270,6 +285,36 @@ qreal OptimaScene::findNextZOrder() const
 	}
 
 	return ret;
+}
+
+QString OptimaScene::SaveScheme()
+{
+	QString xmlSchema("<Schema>\r\n");
+	const QList<QGraphicsItem*> itemList = items();
+	
+	xmlSchema += mNoWorkspace.getXmlString();
+	xmlSchema += getXmlString();
+	
+	//очистку приходится делать отдельно, так как пересечения с углами не подчиняется правилу zOrder
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		OptimaElement* element = dynamic_cast<OptimaElement*>(*i);
+		if (element == nullptr)
+		{
+			continue;
+		}
+
+		xmlSchema += element->getXmlString();
+	}
+	xmlSchema += QString("</Schema>");
+	qDebug() << xmlSchema;
+	
+	return xmlSchema;
+}
+
+void OptimaScene::pushUndoCommand(QUndoCommand *undoCommand)
+{
+	mStack->push(undoCommand);
 }
 
 void OptimaScene::keyPressEvent(QKeyEvent *event)
@@ -404,4 +449,33 @@ void OptimaScene::loadElement(const QDomNode &element, bool loadAllways)
 	item->applyXml(element, getPatternNode(name_pattern));
 
 	item->draw(false);
+}
+
+template <class T>
+void OptimaScene::loadElements(const QDomNodeList &elements, bool loadAllways)
+{
+	for ( int nn = 0; nn < elements.size( ); ++nn )
+	{
+		loadElement<T>(elements.at( nn ), loadAllways);	
+	}
+}
+
+template <class T>
+T * OptimaScene::getItem(const QString &itemUuid)
+{
+	const QList<QGraphicsItem*> itemList = items();
+	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
+	{
+		QGraphicsItem* item = *i;
+		QString uuid = getUuid(item);
+		if (itemUuid == uuid)
+		{
+			return dynamic_cast<T*>(item);
+		}
+	}
+
+	T *item = new T(itemUuid);
+	addItem(item);			
+
+	return item;
 }

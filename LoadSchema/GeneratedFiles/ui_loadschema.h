@@ -28,6 +28,7 @@ class Ui_LoadSchemaClass
 {
 public:
     QAction *action;
+    QAction *action_2;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     OptimaView *graphicsView;
@@ -50,6 +51,8 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(""), QSize(), QIcon::Normal, QIcon::Off);
         action->setIcon(icon);
+        action_2 = new QAction(LoadSchemaClass);
+        action_2->setObjectName(QString::fromUtf8("action_2"));
         centralWidget = new QWidget(LoadSchemaClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -74,9 +77,11 @@ public:
         LoadSchemaClass->setStatusBar(statusBar);
 
         mainToolBar->addAction(action);
+        mainToolBar->addAction(action_2);
 
         retranslateUi(LoadSchemaClass);
         QObject::connect(action, SIGNAL(triggered()), LoadSchemaClass, SLOT(loadXml()));
+        QObject::connect(action_2, SIGNAL(triggered()), LoadSchemaClass, SLOT(saveXml()));
 
         QMetaObject::connectSlotsByName(LoadSchemaClass);
     } // setupUi
@@ -85,6 +90,7 @@ public:
     {
         LoadSchemaClass->setWindowTitle(QApplication::translate("LoadSchemaClass", "LoadSchema", 0, QApplication::UnicodeUTF8));
         action->setText(QApplication::translate("LoadSchemaClass", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214", 0, QApplication::UnicodeUTF8));
+        action_2->setText(QString());
     } // retranslateUi
 
 };

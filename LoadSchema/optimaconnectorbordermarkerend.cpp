@@ -19,7 +19,7 @@ OptimaConnectorBorderMarkerEnd::OptimaConnectorBorderMarkerEnd(OptimaScene* opti
 }
 
 OptimaConnectorBorderMarkerEnd::OptimaConnectorBorderMarkerEnd(OptimaConnector* connector)
-	: OptimaConnectorMarker(connector, connector->last(), Qt::SizeAllCursor)
+	: OptimaConnectorMarker(connector, connector->last(), Qt::SizeAllCursor, tag::undo::point_start_index + connector->points().size() - 1)
 {
 	mConnectorBeginMarker =  new OptimaConnectorBorderMarkerBegin(connector, this);
 	mConnectorEndMarker = this;

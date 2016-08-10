@@ -117,12 +117,14 @@
     <ClCompile Include="optimafigure.cpp" />
     <ClCompile Include="optimacross.cpp" />
     <ClCompile Include="optimaline.cpp" />
+    <ClCompile Include="optimanoworkspace.cpp" />
     <ClCompile Include="optimapath.cpp" />
     <ClCompile Include="optimapoint.cpp" />
     <ClCompile Include="optimarectanglemarker.cpp" />
     <ClCompile Include="optimascene.cpp" />
     <ClCompile Include="optimatemporaryconnector.cpp" />
     <ClCompile Include="optimatext.cpp" />
+    <ClCompile Include="optimaundocommand.cpp" />
     <ClCompile Include="optimaview.cpp" />
     <ClCompile Include="optimaxml.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -146,6 +148,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../optimascene.h"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SVG_LIB -DQT_XMLPATTERNS_LIB "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtSvg" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
     </CustomBuild>
+    <ClInclude Include="optimanoworkspace.h" />
+    <ClInclude Include="optimaundocommand.h" />
     <ClInclude Include="optimaxml.h" />
     <ClInclude Include="tag.h" />
     <CustomBuild Include="loadschema.h">

@@ -13,7 +13,7 @@ class OptimaConnectorMarker : public OptimaRectangleMarker
 public:
 	enum { Type = UserType + tag::element::borderMarker };
 
-	OptimaConnectorMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape);
+	OptimaConnectorMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape, int сhangeIndex);
 
 	OptimaConnectorMarker(OptimaScene* optimaScene, const OptimaPoint & pos, Qt::CursorShape cursorShape);
 
@@ -70,11 +70,9 @@ protected:
 	virtual void keyPressEvent(QKeyEvent *event);
 
 private:
-
-	bool mReversed;
-
-	/// признак того, что этот маркер отображает присоединение
-	bool mLinked;
+	bool mLinked; ///< признак того, что этот маркер отображает присоединение
+	
+	int mChangeIndex; ///< некий индекс изменяемого элемента точка\или линия
 
 	QString getLinkedUuid(OptimaConnectorMarker *marker) const;
 

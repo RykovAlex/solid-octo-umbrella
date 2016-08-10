@@ -23,6 +23,7 @@ public:
 	void setXmlValue(const QString & name, const qreal value);
 	void setXmlValue(const QString & name, const QString &value);
 
+	void setXmlValue(const OptimaPointVector &points, const QString &ownerId);
 	void applyXml(const QDomNode & element, const QDomNode & elementPattern);
 
 	///ѕолучить из xml -описател€ различные значени€
@@ -36,6 +37,7 @@ public:
 	qreal getXmlValue(const QString & name, const qreal defaultValue) const;
 	QColor getXmlValue(const QString & name, const QColor defaultColor) const;
 
+	QString getXmlString();
 protected:
 	///ѕолучить тектовое представление xml
 	static QString getXmlString(const QDomNode & element);

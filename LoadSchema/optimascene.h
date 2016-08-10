@@ -1,10 +1,13 @@
 #pragma once
 #include "QGraphicsScene"
 #include "optimaxml.h"
+#include "optimanoworkspace.h"
 
 class OptimaElement;
 class OptimaConnectorMarker;
 class OptimaConnectorBorderMarkerEnd;
+class OptimaNoWorkspace;
+
 class OptimaScene: public QGraphicsScene, public OptimaXml
 {
 	Q_OBJECT;
@@ -19,7 +22,7 @@ Q_SIGNALS:
 public:
 	enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
 
-	OptimaScene();
+	OptimaScene(QUndoStack *stack);
 
 	~OptimaScene();
 
@@ -55,6 +58,10 @@ public:
 
 	qreal findNextZOrder() const;
 
+	QString SaveScheme();
+
+	void pushUndoCommand( QUndoCommand *undoCommand );
+
 protected:
 
 	virtual void keyPressEvent(QKeyEvent *event);
@@ -68,6 +75,8 @@ protected:
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+	OptimaNoWorkspace mNoWorkspace;///<Описатель нерабочего пространства
+
 	QDomDocument mPatternDoc;///<Этот объект сохраняет всю xml-структуру шаблона
 
 	QDomDocument mDoc;///<Этот объект сохраняет всю xml-структуру 
@@ -96,33 +105,8 @@ private:
 	void before1CCall();
 
 	void loadWorkspace(const QDomNodeList &workspace);
+
+	void loadNoWorkspace(const QDomNodeList & noWorkspace);
+	
+	QUndoStack * mStack;
 };
-
-template <class T>
-void OptimaScene::loadElements(const QDomNodeList &elements, bool loadAllways)
-{
-	for ( int nn = 0; nn < elements.size( ); ++nn )
-	{
-		loadElement<T>(elements.at( nn ), loadAllways);	
-	}
-}
-
-template <class T>
-T * OptimaScene::getItem(const QString &itemUuid)
-{
-	const QList<QGraphicsItem*> itemList = items();
-	for (QList<QGraphicsItem*>::const_iterator i = itemList.constBegin(); i != itemList.constEnd(); ++i )
-	{
-		QGraphicsItem* item = *i;
-		QString uuid = getUuid(item);
-		if (itemUuid == uuid)
-		{
-			return dynamic_cast<T*>(item);
-		}
-	}
-
-	T *item = new T(itemUuid);
-	addItem(item);			
-
-	return item;
-}

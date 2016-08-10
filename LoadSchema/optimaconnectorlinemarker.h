@@ -15,7 +15,7 @@ public:
 	{
 	}
 
-	int getIndexLine() const;
+	int getLineIndex() const;
 
 	OptimaPoint p1() const;
 

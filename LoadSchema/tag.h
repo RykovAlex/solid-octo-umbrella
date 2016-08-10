@@ -30,6 +30,18 @@ namespace tag
 		};
 	}
 
+	namespace undo
+	{
+		enum {
+			change_geometry_connector = 0
+		};
+		enum {
+			point_start_index = 0
+			,line_start_index = 1000
+		};
+
+	}
+
 	static const QString back_color( "BackColor" );
 	static const QString gradient_color( "GradientColor" );
 	static const QString gradient_type( "GradientType" );
@@ -64,7 +76,7 @@ namespace tag
 	static const QString thickness_line( "ThicknessLine" );
 	static const QString type_line( "TypeLine" );
 	static const QString underline_font( "UnderlineFont" );
-	static const QString workspace( "Workspace" );
+	static const QString noWorkspace( "Workspace" );
 	static const QString no_workspace( "Noworkspace" );
 	static const QString user_properties( "UserProperties" );
 	static const QString no( "NO" );

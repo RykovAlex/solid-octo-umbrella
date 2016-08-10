@@ -61,7 +61,7 @@ public:
 
 	QPointF center() const;
 
-	int getIndexLine() const;
+	int getLineIndex() const;
 	
 	OptimaPoint operator[] (OptimaLine::OptimaLinePointIndex index) const;
 protected:

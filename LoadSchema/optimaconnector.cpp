@@ -4,6 +4,7 @@
 #include "optimaconnector.h"
 #include "OptimaConnectorMarker.h"
 #include "optimaconnectorbordermarkerend.h"
+#include "optimaundocommand.h"
 
 OptimaConnector::OptimaConnector(const QString &itemUuid) 
 	:OptimaElement(this, itemUuid)
@@ -306,16 +307,17 @@ void OptimaConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 	}
 }		
 
-void OptimaConnector::setRebuild(bool val)
+void OptimaConnector::setRebuild(bool val, int changedIndex  /*= -1*/)
 {
 	mRebuild = val;
+	mChangeIndex = changedIndex;
 	setData(tag::data::linkable, !mRebuild);
 	update();
 }
 
 void OptimaConnector::onLineMove(const OptimaConnectorLineMarker* lineMarker)
 {
-	int indexLine = lineMarker->getIndexLine();
+	int indexLine = lineMarker->getLineIndex();
 	
 	Q_ASSERT( indexLine >= 0 && indexLine < mPoints.size() - 1 );
 
@@ -465,8 +467,15 @@ void OptimaConnector::onConnectorMove(QPointF deltaPoint)
 	rebuildMarkers();
 }
 
-void OptimaConnector::setPoints(const OptimaPointVector & val)
+void OptimaConnector::setPoints(const OptimaPointVector & val, bool isUndo/* = false*/)
 {
+	if (!isUndo)
+	{
+		scene()->pushUndoCommand(new ChangeGeometryConnector(this, val, getChangeIndex()));
+	}
+	
+	setXmlValue(val, uuid());
+
 	OptimaTemporaryConnector::setPoints(val);
 	rebuildMarkers();
 }

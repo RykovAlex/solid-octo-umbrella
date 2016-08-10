@@ -1,0 +1,32 @@
+﻿<Schema>
+<Collection name="Первая коллекция">
+<NamePattern name="Первый ромб">
+  <Figure>
+    <PaintLine>c0c0c0ff</PaintLine>
+    <ThicknessLine>1</ThicknessLine>
+    <GradientType>vertical</GradientType>
+    <GradientColor>ffffffff</GradientColor>
+    <BackColor>f4ecc5ff</BackColor>
+    <TypeLine>line</TypeLine>
+    <BackLine>Solid</BackLine>
+    <Order>36</Order>
+    <Transparent>100</Transparent>
+    <PictureHeight>0</PictureHeight>
+    <PictureWidth>0</PictureWidth>
+    <DoubleLine>0</DoubleLine>
+    <DropShadow>0</DropShadow>
+    <Picture></Picture>
+    <PictureCoordinate>0:0</PictureCoordinate>
+    <ScalePicToOwner>0</ScalePicToOwner>
+    <PictureLinked>TopLeft</PictureLinked>
+    <BiDirectResize>0</BiDirectResize>
+    <StructureDot>
+      <dot>0:50:5</dot>
+      <dot>70:0:5</dot>
+      <dot>140:25:5</dot>
+      <dot>70:100:5</dot>
+    </StructureDot>
+  </Figure>
+</NamePattern>
+</Collection>
+</Schema>

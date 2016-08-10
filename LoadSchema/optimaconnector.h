@@ -58,9 +58,9 @@ public:
 
 	bool isRebuild() const { return mRebuild; }
 	
-	void setRebuild(bool val);
+	void setRebuild(bool val, int changedIndex = -1);
 
-	void setPoints(const OptimaPointVector & val);
+	void setPoints(const OptimaPointVector & val, bool isUndo = false);
 
 	void rebuildMarkers();
 
@@ -71,6 +71,9 @@ public:
 	OptimaElement *getBorderLinking(const QString &nameId);
 
 	OptimaScene *scene();
+
+	inline int getChangeIndex() const {return mChangeIndex;}
+
 protected:
 
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -81,6 +84,8 @@ protected:
 private:
 
 	bool mIsAngledСonnector;///< признак что это угловой коннетор
+
+	int mChangeIndex;///<во время изменения геометрии коннектора, здесь будем хранить индекс линии или точки, которые изменяются
 
 	void intersected(OptimaPath & connectorPath);
 	
@@ -127,6 +132,8 @@ private:
 	qreal mNonSelectedZOrder;
 
 	void hideMarkers(const OptimaConnectorLineMarker* lineMarker, bool hide);
+	
+
 };
 
 inline bool isConnector(const QGraphicsItem* item)

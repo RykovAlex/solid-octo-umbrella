@@ -3,17 +3,19 @@
 #include "optimascene.h"
 #include "optimaconnectorbordermarkerbegin.h"
 #include "optimaconnectorbordermarkerend.h"
+#include "optimaconnectorlinemarker.h"
 #include "OptimaConnectorMarker.h"
 #include "optimaconnector.h"
 
 
-OptimaConnectorMarker::OptimaConnectorMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape)
+OptimaConnectorMarker::OptimaConnectorMarker(OptimaConnector* parent, const OptimaPoint & pos, Qt::CursorShape cursorShape, int сhangeIndex)
 	: OptimaRectangleMarker(parent, pos, cursorShape, dynamic_cast<OptimaScene*>(parent->scene()))
 	, mNewConnector(nullptr)
 	, mCreatePos(pos)
 	, mLinkedElement(nullptr)
 	, mConnectorBeginMarker(nullptr)
 	, mConnectorEndMarker(nullptr)
+	, mChangeIndex(сhangeIndex)
 {
 	setLinkedElement(nullptr);
 }
@@ -25,6 +27,7 @@ OptimaConnectorMarker::OptimaConnectorMarker(OptimaScene* optimaScene, const Opt
 	, mConnectorBeginMarker(nullptr)
 	, mConnectorEndMarker(nullptr)
 	, mLinkedElement(nullptr)
+	, mChangeIndex(-1)
 {
 }
 
@@ -43,17 +46,6 @@ OptimaConnectorMarker::~OptimaConnectorMarker()
 int OptimaConnectorMarker::type() const
 {
 	return Type;
-}
-
-void OptimaConnectorMarker::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-	//необходимо для правильного расчета движения маркера
-	OptimaRectangleMarker::mousePressEvent(event);
-
-	OptimaConnector *connector = qgraphicsitem_cast<OptimaConnector*>(parentItem());
-	
-	Q_ASSERT(connector != nullptr);
-	connector->setRebuild(true);
 }
 
 void OptimaConnectorMarker::setNewConnectorPoints()
@@ -142,6 +134,18 @@ void OptimaConnectorMarker::setNewConnectorPoints()
 	mNewConnector->setPoints(newPoints);
 }
 
+void OptimaConnectorMarker::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	//необходимо для правильного расчета движения маркера
+	OptimaRectangleMarker::mousePressEvent(event);
+
+	OptimaConnector *connector = qgraphicsitem_cast<OptimaConnector*>(parentItem());
+
+	Q_ASSERT(connector != nullptr);
+
+	connector->setRebuild(true, mChangeIndex);
+}
+
 void OptimaConnectorMarker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	rebuildConnector();
@@ -192,22 +196,17 @@ void OptimaConnectorMarker::rebuildConnector()
 {
 	OptimaConnector *oldConnector = qgraphicsitem_cast<OptimaConnector*>(parentItem());
 
-	//укажем коннектору что его изменение завершилось
-	oldConnector->setRebuild(false);
-
 	//новый коннектор попрождается только при движении мыши, поэтому если его нет, 
 	//то и сизменять нечего
-	if ( mNewConnector == nullptr )
+	if ( mNewConnector != nullptr )
 	{
-		return;
+		oldConnector->setLinked( mConnectorBeginMarker->getLinkedElement(), mConnectorEndMarker->getLinkedElement());
+
+		oldConnector->setPoints(getNewConnectorPoints());
 	}
 
-	oldConnector->setLinked( mConnectorBeginMarker->getLinkedElement(), mConnectorEndMarker->getLinkedElement());
-
-	oldConnector->setPoints(getNewConnectorPoints());
-
-	//buildIntersectionConnectors();
-
+	//укажем коннектору что его изменение завершилось
+	oldConnector->setRebuild(false);
 }
 
 QString OptimaConnectorMarker::getLinkedBeginUuid() const
